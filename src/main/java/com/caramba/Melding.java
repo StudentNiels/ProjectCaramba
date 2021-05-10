@@ -7,13 +7,17 @@ public class Melding {
     private HashMap<String, Integer> products;
     private HashMap<String, Integer> minimumStock;
     private HashMap<String, Integer> soldProducts;
+    private HashMap<String, Integer> orderList;
     //TODO: Create a map of products that need to be bought by the company
+
+    //Add items to a needsToBeBought list when they go <20%
 
     public Melding(){
 
         products = new HashMap<>();
         minimumStock = new HashMap<>();
         soldProducts = new HashMap<>();
+        orderList = new HashMap<>();
         fillProductsMap();
     }
 
@@ -70,6 +74,24 @@ public class Melding {
         }
     }
 
+    public void showOrderList(){
+        System.out.println("Items to be ordered:");
+        for(Map.Entry<String, Integer> item : orderList.entrySet()){
+            String product = item.getKey();
+            int toBeOrdered = item.getValue();
+
+            System.out.println(product+"/"+toBeOrdered);
+        }
+    }
+
+    /** Add item to orderList
+     * @param itemName Item name, will be replaced with Product object at some point
+     * @param amount The amount that has to be ordered
+     */
+    public void addToOrderList(String itemName, int amount){
+        orderList.put(itemName,amount);
+    }
+
     /**
      * This method will be used to keep track of the stocks and if something hits 20% or lower of the wanted minimum
      * it will give a notification of the products which meet this requirement
@@ -81,15 +103,16 @@ public class Melding {
         //TODO: think of solution to use sold Items to decide when to resupply
         for (Map.Entry<String,Integer> itemStock : minimumStock.entrySet()) {
             String productStock = itemStock.getKey();
-            int stockStock = itemStock.getValue();
+            int minStock = itemStock.getValue();
 
             for (Map.Entry<String,Integer> item : products.entrySet()) {
                 String product = item.getKey();
                 int stock = item.getValue();
-                int lowStock = stockStock / 100 * 20;
+                int lowStock = minStock / 100 * 20;
 
                 //als Verkochte items - voorraad X percentage raakt, geef melding
                 if(product.equals(productStock) && stock <= lowStock){
+                    addToOrderList(product,(minStock - stock));
                     if(stock == 0){
                         System.out.println("Er is momenteel geen voorraad meer van het product '" + product + "' in het warenhuis.");
                     }else{
@@ -140,6 +163,11 @@ public class Melding {
         System.out.println("End checking Sold items");
         System.out.println("---------------------------------------------------");
 
+        System.out.println("---------------------------------------------------");
+        System.out.println("Start checking orderList");
+        melding.showOrderList();
+        System.out.println("End checking orderList");
+        System.out.println("---------------------------------------------------");
 
     }
 
