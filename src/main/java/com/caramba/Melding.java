@@ -74,6 +74,7 @@ public class Melding {
         }
     }
 
+    /** Loop through the items listed in orderList */
     public void showOrderList(){
         System.out.println("Items to be ordered:");
         for(Map.Entry<String, Integer> item : orderList.entrySet()){
