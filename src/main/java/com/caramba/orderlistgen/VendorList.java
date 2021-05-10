@@ -4,14 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VendorList {
-    List<Vendor> vendors = new ArrayList<>();
+    private List<Vendor> vendors = new ArrayList<>();
 
     public List<Vendor> getVendors() {
         return vendors;
     }
 
     public Vendor getVendor(int index){
-        return vendors.get(index);
+        try{
+            return vendors.get(index);
+        }catch (IndexOutOfBoundsException e){
+            return null;
+        }
+    }
+
+    public void remove(int index){
+        vendors.remove(index);
     }
 
     public void clear(){
@@ -24,5 +32,9 @@ public class VendorList {
 
     public void addNew(String name, int deliveryTime){
         vendors.add(new Vendor(name, deliveryTime));
+    }
+
+    public int count(){
+        return vendors.size();
     }
 }
