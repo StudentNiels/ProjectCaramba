@@ -7,6 +7,7 @@ public class Melding {
     private HashMap<String, Integer> products;
     private HashMap<String, Integer> minimumStock;
     private HashMap<String, Integer> soldProducts;
+    //TODO: Create a map of products that need to be bought by the company
 
     public Melding(){
 
@@ -14,9 +15,9 @@ public class Melding {
         minimumStock = new HashMap<>();
         soldProducts = new HashMap<>();
         fillProductsMap();
-
     }
 
+    /** Test method for filling the products and minimumStock maps */
     public void fillProductsMap(){
         for (int i = 1; i <= 10; i++) {
             products.put(("Item-" + i), 100);
@@ -24,6 +25,7 @@ public class Melding {
         }
     }
 
+    /**  Make a list from all the products in products */
     public void listProducts(){
         for (Map.Entry<String,Integer> item : products.entrySet()) {
             String product = item.getKey();
@@ -34,10 +36,21 @@ public class Melding {
         }
     }
 
+    /**
+     * This method allows the user to set the wished minimum amount to keep in stock
+     * @param itemName This is currently a placeholder for the actual product object
+     * @param amount The desired minimum amount
+     */
     public void setMinimumStock(String itemName, int amount){
         minimumStock.replace(itemName, amount);
     }
 
+    /**
+     * This method will be used to sell a product and replace the amount available in products
+     * @param itemName This is currently a placeholder for the actual product object
+     * @param amount The amount sold
+     * TODO: ensure that negative numbers will be added to additional demand list
+     */
     public void sellProduct(String itemName, int amount){
         products.replace(itemName, products.get(itemName) - amount);
         if(soldProducts.containsKey(itemName)){
@@ -47,6 +60,7 @@ public class Melding {
         }
     }
 
+    /** This method is used to list the sold products */
     public void listSoldProducts(){
         for (Map.Entry<String,Integer> item : soldProducts.entrySet()) {
             String product = item.getKey();
@@ -56,6 +70,13 @@ public class Melding {
         }
     }
 
+    /**
+     * This method will be used to keep track of the stocks and if something hits 20% or lower of the wanted minimum
+     * it will give a notification of the products which meet this requirement
+     *
+     * Currently return nothing, but should a list of items to be ordered
+     * TODO: Return a list of products that need to be bought
+     * */
     public void notifyLowStock(){
         //TODO: think of solution to use sold Items to decide when to resupply
         for (Map.Entry<String,Integer> itemStock : minimumStock.entrySet()) {
@@ -80,6 +101,8 @@ public class Melding {
 
     }
 
+    // Main method used for testing
+    // TODO: make unit test for Melding.java
     public static void main(String[] args){
 
         Melding melding = new Melding();
