@@ -3,16 +3,14 @@ package com.caramba;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Melding {
+public class Notification {
     private HashMap<String, Integer> products;
     private HashMap<String, Integer> minimumStock;
     private HashMap<String, Integer> soldProducts;
     private HashMap<String, Integer> orderList;
     //TODO: Create a map of products that need to be bought by the company
 
-    //Add items to a needsToBeBought list when they go <20%
-
-    public Melding(){
+    public Notification(){
 
         products = new HashMap<>();
         minimumStock = new HashMap<>();
@@ -56,6 +54,15 @@ public class Melding {
      * TODO: ensure that negative numbers will be added to additional demand list
      */
     public void sellProduct(String itemName, int amount){
+        /*
+        * Als (stock - amount) < 0
+        * Zet stock naar 0
+        * voeg amount toe aan soldProducts
+        * voeg amount toe aan orderList
+        *
+        *
+        *
+        * */
         products.replace(itemName, products.get(itemName) - amount);
         if(soldProducts.containsKey(itemName)){
             soldProducts.replace(itemName, soldProducts.get(itemName) + amount);
@@ -90,7 +97,11 @@ public class Melding {
      * @param amount The amount that has to be ordered
      */
     public void addToOrderList(String itemName, int amount){
-        orderList.put(itemName,amount);
+        if(orderList.containsKey(itemName)){
+            orderList.replace(itemName, orderList.get(itemName) + amount);
+        }else{
+            orderList.put(itemName, amount);
+        }
     }
 
     /**
@@ -114,7 +125,7 @@ public class Melding {
                 //als Verkochte items - voorraad X percentage raakt, geef melding
                 if(product.equals(productStock) && stock <= lowStock){
                     addToOrderList(product,(minStock - stock));
-                    if(stock == 0){
+                    if(stock == 0 || stock < 0){
                         System.out.println("Er is momenteel geen voorraad meer van het product '" + product + "' in het warenhuis.");
                     }else{
                         System.out.println("Er is nog een lage aantal van product '" + product + "' in het warenhuis. Er zijn momenteel nog " + stock + " in voorraad.");
@@ -122,16 +133,30 @@ public class Melding {
                 }
             }
         }
+    }
 
+    public HashMap<String, Integer> getProducts() {
+        return products;
+    }
+
+    public HashMap<String, Integer> getMinimumStock() {
+        return minimumStock;
+    }
+
+    public HashMap<String, Integer> getSoldProducts() {
+        return soldProducts;
+    }
+
+    public HashMap<String, Integer> getOrderList() {
+        return orderList;
     }
 
     // Main method used for testing
-    // dasdasdas
     // TODO: make unit test for Melding.java
     public static void main(String[] args){
 
-        Melding melding = new Melding();
-
+        Notification notification = new Notification();
+/*
         System.out.println("---------------------------------------------------");
         System.out.println("Start product listing");
         melding.listProducts();
@@ -141,23 +166,23 @@ public class Melding {
         melding.sellProduct("Item-1",10);
         melding.sellProduct("Item-5",50);
         melding.sellProduct("Item-8",80);
-        melding.sellProduct("Item-10",100);
+        melding.sellProduct("Item-10",150);
 
         System.out.println("---------------------------------------------------");
         System.out.println("Start product listing after order");
         melding.listProducts();
         System.out.println("End product listing after order");
         System.out.println("---------------------------------------------------");
-
+*/
         System.out.println("---------------------------------------------------");
         System.out.println("Start testing notification on low stock");
-        melding.notifyLowStock();
+        notification.notifyLowStock();
         System.out.println("Raising Item-5 minimumStock");
-        melding.setMinimumStock("Item-5", 500);
-        melding.notifyLowStock();
+        notification.setMinimumStock("Item-5", 500);
+        notification.notifyLowStock();
         System.out.println("End testing notification on low stock");
         System.out.println("---------------------------------------------------");
-
+/*
         System.out.println("---------------------------------------------------");
         System.out.println("Start checking Sold items");
         melding.listSoldProducts();
@@ -169,7 +194,7 @@ public class Melding {
         melding.showOrderList();
         System.out.println("End checking orderList");
         System.out.println("---------------------------------------------------");
-
+*/
     }
 
 }
