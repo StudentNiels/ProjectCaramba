@@ -1,11 +1,12 @@
-import com.caramba.Notification;
+package com.caramba;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class NotificationTest {
+class NotificationTest {
 
     private Notification notification;
 
@@ -22,6 +23,5 @@ public class NotificationTest {
         notification.notifyLowStock();
         assertEquals(0, notification.getOrderList().get("Item-1"));
     }
-
 
 }
