@@ -154,24 +154,24 @@ public class Notification {
     public static void main(String[] args){
 
         Notification notification = new Notification();
-/*
+
         System.out.println("---------------------------------------------------");
         System.out.println("Start product listing");
-        melding.listProducts();
+        notification.listProducts();
         System.out.println("End product listing");
         System.out.println("---------------------------------------------------");
 
-        melding.sellProduct("Item-1",10);
-        melding.sellProduct("Item-5",50);
-        melding.sellProduct("Item-8",80);
-        melding.sellProduct("Item-10",150);
+        notification.sellProduct("Item-1",10);
+        notification.sellProduct("Item-5",50);
+        notification.sellProduct("Item-8",80);
+        notification.sellProduct("Item-10",150);
 
         System.out.println("---------------------------------------------------");
         System.out.println("Start product listing after order");
-        melding.listProducts();
+        notification.listProducts();
         System.out.println("End product listing after order");
         System.out.println("---------------------------------------------------");
-*/
+
         System.out.println("---------------------------------------------------");
         System.out.println("Start testing notification on low stock");
         notification.notifyLowStock();
@@ -183,13 +183,13 @@ public class Notification {
 /*
         System.out.println("---------------------------------------------------");
         System.out.println("Start checking Sold items");
-        melding.listSoldProducts();
+        notification.listSoldProducts();
         System.out.println("End checking Sold items");
         System.out.println("---------------------------------------------------");
 
         System.out.println("---------------------------------------------------");
         System.out.println("Start checking orderList");
-        melding.showOrderList();
+        notification.showOrderList();
         System.out.println("End checking orderList");
         System.out.println("---------------------------------------------------");
 */
