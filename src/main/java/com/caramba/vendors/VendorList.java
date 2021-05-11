@@ -1,4 +1,4 @@
-package com.caramba.orderlistgen;
+package com.caramba.vendors;
 
 import java.util.ArrayList;
 import java.util.List;
