@@ -20,8 +20,10 @@ class NotificationTest {
     @DisplayName("Generate notification")
     public void testNotification(){
         notification.sellProduct("Item-1",100);
+        notification.sellProduct("Item-2",80);
         notification.notifyLowStock();
-        assertEquals(0, notification.getOrderList().get("Item-1"));
+        assertEquals(100, notification.getOrderList().get("Item-1"));
+        assertEquals(80, notification.getOrderList().get("Item-2"));
     }
 
 }
