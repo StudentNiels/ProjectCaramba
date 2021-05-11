@@ -126,7 +126,14 @@ public class VendorManager {
     }
 
     private static void showHelp(){
-        System.out.println("=========================");
+        System.out.println("=========================" +
+                "\n This program is used to view amd edit the list of available vendors" +
+                "\n The program supports the following arugments;" +
+                "\n help - Show help text" +
+                "\n add [vendor name] [estimated delivery times in days] - Add a new vendor" +
+                "\n rm [vendor id] - removes the vendor from the list" +
+                "\n clear - removes all vendors from the list" +
+                "\n =========================");
     }
 
     private static void printArgumentError(){
