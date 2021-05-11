@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Vendor {
     private String name;
+    /**
+     * Estimated delivery time in days
+     */
     private int DeliveryTime;
 
     public Vendor(
