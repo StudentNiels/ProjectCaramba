@@ -8,7 +8,6 @@ public class Notification {
     private HashMap<String, Integer> minimumStock;
     private HashMap<String, Integer> soldProducts;
     private HashMap<String, Integer> orderList;
-    //TODO: Create a map of products that need to be bought by the company
 
     public Notification(){
 
@@ -152,7 +151,6 @@ public class Notification {
     }
 
     // Main method used for testing
-    // TODO: make unit test for Melding.java
     public static void main(String[] args){
 
         Notification notification = new Notification();
