@@ -1,7 +1,5 @@
 package com.caramba.vendors;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class VendorListTest {
     VendorList vl = new VendorList();
 
+    //Assure index out of bounds exception is getting caught in the function
     @Test
     void getVendor() {
         String s = "test";
