@@ -1,4 +1,4 @@
-package com.caramba.vendors;
+package com.caramba.ordertool;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

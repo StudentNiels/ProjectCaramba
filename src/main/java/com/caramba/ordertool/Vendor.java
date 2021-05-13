@@ -1,4 +1,4 @@
-package com.caramba.vendors;
+package com.caramba.ordertool;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
