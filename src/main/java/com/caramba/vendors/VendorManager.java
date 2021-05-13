@@ -70,6 +70,7 @@ public class VendorManager {
      * Clears the vendor list
      */
     private static void removeAllVendors() {
+        System.out.println("The vendor list was cleared");
         vendorlist.clear();
         updateJson();
     }
