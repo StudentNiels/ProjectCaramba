@@ -26,7 +26,7 @@ test {
 
 jar{
     manifest {
-        attributes "Main-Class": "com.caramba.vendors.VendorManager"
+        attributes "Main-Class": "com.caramba.ordertool.Application"
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
