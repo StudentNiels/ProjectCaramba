@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VendorList {
-    private List<Vendor> vendors = new ArrayList<>();
+    private final List<Vendor> vendors = new ArrayList<>();
 
     public List<Vendor> getVendors() {
         return vendors;

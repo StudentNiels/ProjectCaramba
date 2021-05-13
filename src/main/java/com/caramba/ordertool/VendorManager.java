@@ -6,13 +6,14 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
- * Command line jar that allows the user to edit and view a json with vendors
+ * Command line application that allows the user to edit and view a json with vendors
+ * this should be merged with the main application at some point
  */
 public class VendorManager {
 
-    private static File vendorsFile = new File("json/vendors.json");
+    private static final File vendorsFile = new File("json/vendors.json");
     private static VendorList vendorlist = new VendorList();
-    private static ObjectMapper objectmapper = new ObjectMapper();
+    private static final ObjectMapper objectmapper = new ObjectMapper();
 
     public static void main(String[] args){
         loadJson();
@@ -31,11 +32,12 @@ public class VendorManager {
     }
 
     /**
-     * Loads the json to the vendorlist object and creates a new json file if it doesn't exist.
+     * Loads the json to the vendor list object and creates a new json file if it doesn't exist.
      */
     private static void loadJson(){
         //create json if it doesn't exist
         try{
+            //noinspection ResultOfMethodCallIgnored
             vendorsFile.getParentFile().mkdirs();
             if(vendorsFile.createNewFile()){
                 System.out.println("Created a new json file");
@@ -46,6 +48,7 @@ public class VendorManager {
             e.printStackTrace();
             System.exit(1);
         }
+        //Load the data
         try{
             vendorlist = objectmapper.readValue(vendorsFile, VendorList.class);
         }catch(IOException e){
@@ -55,7 +58,7 @@ public class VendorManager {
     }
 
     /**
-     * Writes vendorlist to the json file
+     * Writes vendor list to the json file
      */
     private static void updateJson(){
         try {
@@ -114,8 +117,8 @@ public class VendorManager {
         if(args.length >= 3){
             String name = args[1];
             try{
-                int deliverytime = Integer.parseInt(args[2]);
-                vendorlist.addNew(name, deliverytime);
+                int deliveryTime = Integer.parseInt(args[2]);
+                vendorlist.addNew(name, deliveryTime);
                 System.out.println(name + " was added to the vendor list");
                 updateJson();
             }catch (NumberFormatException e){
@@ -127,14 +130,15 @@ public class VendorManager {
     }
 
     private static void showHelp(){
-        System.out.println("=========================" +
-                "\n This program is used to view amd edit the list of available vendors" +
-                "\n The program supports the following arugments;" +
-                "\n help - Show help text" +
-                "\n add [vendor name] [estimated delivery times in days] - Add a new vendor" +
-                "\n rm [vendor id] - removes the vendor from the list" +
-                "\n clear - removes all vendors from the list" +
-                "\n =========================");
+        System.out.println("""
+                =========================
+                 This program is used to view amd edit the list of available vendors
+                 The program supports the following arguments;
+                 help - Show help text
+                 add [vendor name] [estimated delivery times in days] - Add a new vendor
+                 rm [vendor id] - removes the vendor from the list
+                 clear - removes all vendors from the list
+                 =========================""");
     }
 
     private static void printArgumentError(){
