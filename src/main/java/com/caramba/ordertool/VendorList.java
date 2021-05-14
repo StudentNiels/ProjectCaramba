@@ -10,7 +10,7 @@ public class VendorList {
         return vendors;
     }
 
-    public Vendor getVendor(int index){
+    public Vendor get(int index){
         try{
             return vendors.get(index);
         }catch (IndexOutOfBoundsException e){
@@ -30,11 +30,7 @@ public class VendorList {
         vendors.add(vendor);
     }
 
-    public void addNew(String name, int deliveryTime){
-        vendors.add(new Vendor(name, deliveryTime));
-    }
-
-    public int count(){
+    public int size(){
         return vendors.size();
     }
 }

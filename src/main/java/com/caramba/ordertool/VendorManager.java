@@ -82,12 +82,12 @@ public class VendorManager {
      * Prints the vendor information of each vendor on the list
      */
     private static void printVendors() {
-        if(vendorlist.count() == 0){
+        if(vendorlist.size() == 0){
             System.out.println("The vendor list is empty");
         }else{
             System.out.println("The following vendors are registered:\n");
-            for (int i = 0; i < vendorlist.count(); i++){
-                Vendor v = vendorlist.getVendor(i);
+            for (int i = 0; i < vendorlist.size(); i++){
+                Vendor v = vendorlist.get(i);
                 System.out.println("| #" + i + " | Name: " + v.getName() + " | Estimated delivery time: " + v.getDeliveryTime() + " |");
             }
         }
@@ -97,7 +97,7 @@ public class VendorManager {
         if(args.length >= 2){
             try {
                 int i = Integer.parseInt(args[1]);
-                Vendor v = vendorlist.getVendor(i);
+                Vendor v = vendorlist.get(i);
                 if(v == null){
                     System.out.println("Vendor #" + i + " does not exist");
                 }else{
@@ -118,7 +118,7 @@ public class VendorManager {
             String name = args[1];
             try{
                 int deliveryTime = Integer.parseInt(args[2]);
-                vendorlist.addNew(name, deliveryTime);
+                vendorlist.add(new Vendor(name, deliveryTime));
                 System.out.println(name + " was added to the vendor list");
                 updateJson();
             }catch (NumberFormatException e){

@@ -11,9 +11,9 @@ class VendorListTest {
     @Test
     void getVendor() {
         String s = "test";
-        assertNull(vl.getVendor(0));
-        vl.addNew(s, 7);
-        assertEquals(vl.getVendor(0).getName(), s);
+        assertNull(vl.get(0));
+        vl.add(new Vendor(s, 7));
+        assertEquals(vl.get(0).getName(), s);
     }
 
 }
