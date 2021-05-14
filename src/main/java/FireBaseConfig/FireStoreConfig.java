@@ -19,9 +19,9 @@ import java.util.concurrent.ExecutionException;
 
 public class FireStoreConfig
 {
-    public static void main(String[] args) throws ExecutionException, InterruptedException, FileNotFoundException
+    public void fireStoreConfig() throws ExecutionException, InterruptedException, FileNotFoundException
     {
-            FileInputStream serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
+        FileInputStream serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
 
         FirebaseOptions options = null;
         try
@@ -36,10 +36,11 @@ public class FireStoreConfig
         FirebaseApp.initializeApp(options);
 
         readFromDB();
+
     }
 
     /*
-     * todo: write a method that can write multiple maps to the DB
+     * todo: write a method that can write multiple hashmaps to the DB
      */
     public void writeToDB() throws ExecutionException, InterruptedException
     {
@@ -47,7 +48,7 @@ public class FireStoreConfig
         DocumentReference docRef = db.collection("sampleData").document("inspiration");
 
         Map<String, String> data = new HashMap<>();
-        data.put("first", "Ada");
+        data.put("first", "Tinus");
         data.put("last", "Lovelace");
         data.put("born", "1815");
         //asynchronously write data
@@ -60,7 +61,7 @@ public class FireStoreConfig
     /*
      * todo: write a method that can read from the DB
      */
-    public static void readFromDB() throws ExecutionException, InterruptedException
+    public void readFromDB() throws ExecutionException, InterruptedException
     {
         Firestore db = FirestoreClient.getFirestore();
         DocumentReference docRef = db.collection("sampleData").document("inspiration");
