@@ -3,7 +3,7 @@ package com.caramba.ordertool;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VendorList {
+public class VendorList{
     private final List<Vendor> vendors = new ArrayList<>();
 
     public List<Vendor> getVendors() {
@@ -32,5 +32,20 @@ public class VendorList {
 
     public int size(){
         return vendors.size();
+    }
+
+    /**
+     *
+     * @param product product to search for
+     * @return a arraylist of vendors that offer the given product
+     */
+    public ArrayList<Vendor> getVendorsSellingProduct(Product product){
+        ArrayList<Vendor> result = new ArrayList();
+        for(Vendor v: vendors){
+            if(v.getProducts().contains(product)){
+                result.add(v);
+            }
+        }
+        return result;
     }
 }

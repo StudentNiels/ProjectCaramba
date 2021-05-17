@@ -1,21 +1,21 @@
 package com.caramba.ordertool;
 
 public class Product {
-    private String id;
+    private String productNum;
     private String description;
 
-    public Product(String id, String description) {
-        this.id = id;
+    public Product(String productNum, String description) {
+        this.productNum = productNum;
         this.description = description;
     }
 
     //region Getters and Setters
-    public String getId() {
-        return id;
+    public String getProductNum() {
+        return productNum;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setProductNum(String productNum) {
+        this.productNum = productNum;
     }
 
     public String getDescription() {
