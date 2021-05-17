@@ -42,7 +42,7 @@ public class Application {
         }
     }
 
-    private static void displayVendors(){
+    public static void displayVendors(){
         if(vendors.size() == 0){
             System.out.println("The vendor list is empty");
         }else{
@@ -54,7 +54,7 @@ public class Application {
         }
     }
 
-    private static void displayProducts(){
+    public static void displayProducts(){
         if(products.size() == 0){
             System.out.println("The product list is empty");
         }else{
@@ -82,7 +82,7 @@ public class Application {
         }
     }
 
-    private static void addVendor(String[] command) {
+    public static void addVendor(String[] command) {
             try{
                 String name = command[2];
                 int deliveryTime = Integer.parseInt(command[3]);
@@ -92,12 +92,12 @@ public class Application {
                 }
                 vendors.add(new Vendor(name, deliveryTime));
                 System.out.println(name + " was added to the vendor list");
-            }catch (IndexOutOfBoundsException | NumberFormatException e){
+            }catch (IndexOutOfBoundsException | NumberFormatException | InvalidParameterException e){
                 System.out.println("Please use add vendor [name] [delivery time in days]");
             }
     }
 
-    private static void addProduct(String[] command) {
+    public static void addProduct(String[] command) {
         try{
             String productNumber = command[2];
             String description = command[3];
@@ -120,7 +120,7 @@ public class Application {
         }
     }
 
-    private static void removeVendor(String[] command){
+    public static void removeVendor(String[] command){
         int i;
         try{
              i = Integer.parseInt(command[2]);
@@ -136,7 +136,7 @@ public class Application {
         }
     }
 
-    private static void removeProduct(String[] command){
+    public static void removeProduct(String[] command){
         int i;
         try{
             i = Integer.parseInt(command[2]);
@@ -152,7 +152,7 @@ public class Application {
         }
     }
 
-    private static void link(String[] command){
+    public static void link(String[] command){
         int i;
         try{
             i = Integer.parseInt(command[1]);
