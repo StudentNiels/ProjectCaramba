@@ -17,33 +17,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class FireStoreConfig
-{
-    public void fireStoreConfig() throws ExecutionException, InterruptedException, FileNotFoundException
-    {
+public class FireStoreConfig {
+    public void fireStoreConfig() throws ExecutionException, InterruptedException, FileNotFoundException {
+        /**
+         * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
+         */
         FileInputStream serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
 
         FirebaseOptions options = null;
-        try
-        {
+        try {
             options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             e.printStackTrace();
         }
-
         FirebaseApp.initializeApp(options);
 
         readFromDB();
-
     }
 
-    /*
+    /**
      * todo: write a method that can write multiple hashmaps to the DB
+     *
      */
-    public void writeToDB() throws ExecutionException, InterruptedException
-    {
+    public void writeToDB() throws ExecutionException, InterruptedException {
         Firestore db = FirestoreClient.getFirestore();
         DocumentReference docRef = db.collection("sampleData").document("inspiration");
 
@@ -58,11 +55,10 @@ public class FireStoreConfig
         System.out.println("Update time : " + result.get().getUpdateTime());
     }
 
-    /*
+    /**
      * todo: write a method that can read from the DB
      */
-    public void readFromDB() throws ExecutionException, InterruptedException
-    {
+    public void readFromDB() throws ExecutionException, InterruptedException {
         Firestore db = FirestoreClient.getFirestore();
         DocumentReference docRef = db.collection("sampleData").document("inspiration");
 
@@ -73,9 +69,9 @@ public class FireStoreConfig
         DocumentSnapshot document = future.get();
         if (document.exists()) {
             System.out.println("Document data: " + document.getData());
-        } else {
+        }
+        else {
             System.out.println("No such document!");
         }
     }
-
 }
