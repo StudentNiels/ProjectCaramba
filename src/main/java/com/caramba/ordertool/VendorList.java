@@ -10,6 +10,7 @@ public class VendorList{
         return vendors;
     }
 
+//#region delegate functions
     public Vendor get(int index){
         try{
             return vendors.get(index);
@@ -33,7 +34,7 @@ public class VendorList{
     public int size(){
         return vendors.size();
     }
-
+//#endregion
     /**
      *
      * @param product product to search for

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class ProductList {
     private ArrayList<Product> products = new ArrayList<>();
 
+    //#region delegate functions
     public int size() {
         return products.size();
     }
@@ -28,4 +29,5 @@ public class ProductList {
     public boolean contains(Object o) {
         return products.contains(o);
     }
+    //#endregion
 }
