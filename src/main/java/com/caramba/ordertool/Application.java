@@ -25,6 +25,7 @@ public class Application {
                 case "add" -> add(command);
                 case "remove" -> remove(command);
                 case "link" -> link(command);
+                case "clear" -> clear(command);
                 default -> System.out.println("Unknown command " + command[0] + ". Use --help to see supported commands");
             }
         }
@@ -164,6 +165,32 @@ public class Application {
         }catch(NumberFormatException| IndexOutOfBoundsException e) {
             System.out.println("use [product index] [vendor index]");
         }
+    }
+
+    private static void clear(String[] command){
+        try{
+            switch(command[1]) {
+                case "vendors" -> clearVendors();
+                case "products" -> clearProducts();
+                case "all" -> clearAll();
+                default -> throw new InvalidParameterException();
+            }
+        }catch(IndexOutOfBoundsException | InvalidParameterException e){
+            System.out.println("Please use clear [products/vendors/all]");
+        }
+    }
+
+    public static void clearAll() {
+        clearProducts();
+        clearVendors();
+    }
+
+    public static void clearProducts() {
+        products.clear();
+    }
+
+    public static void clearVendors() {
+        vendors.clear();
     }
 
 
