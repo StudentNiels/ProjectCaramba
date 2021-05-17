@@ -86,6 +86,10 @@ public class Application {
             try{
                 String name = command[2];
                 int deliveryTime = Integer.parseInt(command[3]);
+                if(deliveryTime < 0){
+                    System.out.println("Delivery time can't be negative");
+                    throw new InvalidParameterException();
+                }
                 vendors.add(new Vendor(name, deliveryTime));
                 System.out.println(name + " was added to the vendor list");
             }catch (IndexOutOfBoundsException | NumberFormatException e){

@@ -3,6 +3,7 @@ package com.caramba.ordertool;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class Vendor {
@@ -20,7 +21,7 @@ public class Vendor {
     public Vendor(
             @JsonProperty("name") String name,
             @JsonProperty("DeliveryTime") int DeliveryTime){
-        this.DeliveryTime = DeliveryTime;
+        setDeliveryTime(DeliveryTime);
         this.name = name;
     }
 //region Getters and Setters
@@ -29,6 +30,9 @@ public class Vendor {
     }
 
     public void setDeliveryTime(int deliveryTime) {
+        if(deliveryTime < 0){
+            throw new InvalidParameterException();
+        }
         DeliveryTime = deliveryTime;
     }
 
