@@ -34,7 +34,12 @@ public class VendorList{
     public int size(){
         return vendors.size();
     }
-//#endregion
+
+    public boolean contains(Object o) {
+        return vendors.contains(o);
+    }
+
+    //#endregion
     /**
      *
      * @param product product to search for
