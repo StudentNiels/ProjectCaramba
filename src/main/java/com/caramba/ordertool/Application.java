@@ -62,7 +62,7 @@ public class Application {
             for (int i = 0; i < products.size(); i++){
                 Product p = products.get(i);
                 StringBuilder vendorsString = new StringBuilder("Vendors that sell this product:");
-                for(Vendor v : vendors.getVendorsSellingProduct(p)){
+                for(Vendor v : vendors.getVendorsSellingProduct(p).getVendors()){
                     vendorsString.append(" ").append(v.getName());
                 }
                 System.out.println("| #" + i + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + vendorsString);

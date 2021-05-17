@@ -40,8 +40,8 @@ public class VendorList{
      * @param product product to search for
      * @return a arraylist of vendors that offer the given product
      */
-    public ArrayList<Vendor> getVendorsSellingProduct(Product product){
-        ArrayList<Vendor> result = new ArrayList();
+    public VendorList getVendorsSellingProduct(Product product){
+        VendorList result = new VendorList();
         for(Vendor v: vendors){
             if(v.getProducts().contains(product)){
                 result.add(v);
