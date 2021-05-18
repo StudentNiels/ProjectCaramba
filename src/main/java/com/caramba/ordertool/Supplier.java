@@ -21,6 +21,11 @@ public class Supplier {
         setDeliveryTime(DeliveryTime);
         this.name = name;
     }
+
+    public Supplier(String name){
+        setDeliveryTime(0);
+        this.name = name;
+    }
 //region Getters and Setters
     public int getDeliveryTime() {
         return DeliveryTime;
