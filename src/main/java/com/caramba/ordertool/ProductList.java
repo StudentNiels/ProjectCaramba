@@ -3,7 +3,7 @@ package com.caramba.ordertool;
 import java.util.ArrayList;
 
 public class ProductList {
-    private ArrayList<Product> products = new ArrayList<>();
+    private final ArrayList<Product> products = new ArrayList<>();
 
     //#region delegate functions
     public int size() {
@@ -26,6 +26,7 @@ public class ProductList {
         products.clear();
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     public boolean contains(Object o) {
         return products.contains(o);
     }

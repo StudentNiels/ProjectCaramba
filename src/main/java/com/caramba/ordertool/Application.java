@@ -1,15 +1,13 @@
 package com.caramba.ordertool;
 
-import java.io.File;
-import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Scanner;
 
 public class Application {
     //keeps track of all known products
-    private static ProductList products = new ProductList();
+    private static final ProductList products = new ProductList();
     //Keeps track of all known vendors
-    private static VendorList vendors = new VendorList();
+    private static final VendorList vendors = new VendorList();
 
     private static String[] cmdArguments;
 
@@ -149,7 +147,7 @@ public class Application {
                 products.remove(i);
             }
         }catch(NumberFormatException| IndexOutOfBoundsException e) {
-            System.out.println("'" + command[2] + "' is not a cvalid index");
+            System.out.println("'" + command[2] + "' is not a valid index");
         }
     }
 

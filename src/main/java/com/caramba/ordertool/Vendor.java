@@ -4,7 +4,6 @@ package com.caramba.ordertool;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 
 public class Vendor {
     private String name;
@@ -16,7 +15,7 @@ public class Vendor {
     /**
      * Products sold by this vendor
      */
-    private ProductList products = new ProductList();
+    private final ProductList products = new ProductList();
 
     public Vendor(
             @JsonProperty("name") String name,

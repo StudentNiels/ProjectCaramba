@@ -35,6 +35,7 @@ public class VendorList{
         return vendors.size();
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     public boolean contains(Object o) {
         return vendors.contains(o);
     }
