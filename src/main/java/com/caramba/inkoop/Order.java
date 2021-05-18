@@ -16,6 +16,7 @@ public class Order {
         this.bestelDatum = bestelDatum;
         this.factuurDatum = factuurDatum;
         this.shoppingCart = shoppingCart;
+        this.suppliers = new ArrayList<>();
     }
 
     //region Getters and Setters
@@ -42,6 +43,15 @@ public class Order {
     public void setShoppingCart(HashMap<Product, Integer> shoppingCart) {
         this.shoppingCart = shoppingCart;
     }
+
+    public ArrayList<Supplier> getSuppliers() {
+        return suppliers;
+    }
+
+    public void setSuppliers(ArrayList<Supplier> suppliers) {
+        this.suppliers = suppliers;
+    }
+
     //endregion
 
     public void addToShoppingCart(Product product, int amount){
@@ -51,5 +61,9 @@ public class Order {
         else{
             shoppingCart.put(product, amount);
         }
+    }
+
+    public void addSupplier(Supplier supplier){
+        this.suppliers.add(supplier);
     }
 }

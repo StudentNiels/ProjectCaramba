@@ -29,5 +29,6 @@ public class InkoopTestMain {
         System.out.println("Supplier3 products");
         supplier3.listProducts();
 
+
     }
 }

@@ -18,4 +18,15 @@ public class Orderlist {
         this.orders = new ArrayList<>();
     }
 
+    public void addToOrderList(Order order){
+        this.orders.add(order);
+    }
+
+    public ArrayList<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(ArrayList<Order> orders) {
+        this.orders = orders;
+    }
 }
