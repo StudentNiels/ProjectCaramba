@@ -1,7 +1,7 @@
 package com.caramba.ordertool;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 import java.security.InvalidParameterException;
 
@@ -17,9 +17,7 @@ public class Vendor {
      */
     private final ProductList products = new ProductList();
 
-    public Vendor(
-            @JsonProperty("name") String name,
-            @JsonProperty("DeliveryTime") int DeliveryTime){
+    public Vendor(String name, int DeliveryTime){
         setDeliveryTime(DeliveryTime);
         this.name = name;
     }
