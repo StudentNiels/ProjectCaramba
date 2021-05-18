@@ -5,7 +5,7 @@ package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
 
-public class Vendor {
+public class Supplier {
     private String name;
     /**
      * Estimated delivery time in days
@@ -13,11 +13,11 @@ public class Vendor {
     private int DeliveryTime;
 
     /**
-     * Products sold by this vendor
+     * Products sold by this supplier
      */
     private final ProductList products = new ProductList();
 
-    public Vendor(String name, int DeliveryTime){
+    public Supplier(String name, int DeliveryTime){
         setDeliveryTime(DeliveryTime);
         this.name = name;
     }

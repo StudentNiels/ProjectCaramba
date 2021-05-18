@@ -3,41 +3,41 @@ package com.caramba.ordertool;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VendorList{
-    private final List<Vendor> vendors = new ArrayList<>();
+public class SupplierList {
+    private final List<Supplier> suppliers = new ArrayList<>();
 
-    public List<Vendor> getVendors() {
-        return vendors;
+    public List<Supplier> getSuppliers() {
+        return suppliers;
     }
 
 //#region delegate functions
-    public Vendor get(int index){
+    public Supplier get(int index){
         try{
-            return vendors.get(index);
+            return suppliers.get(index);
         }catch (IndexOutOfBoundsException e){
             return null;
         }
     }
 
     public void remove(int index){
-        vendors.remove(index);
+        suppliers.remove(index);
     }
 
     public void clear(){
-        vendors.clear();
+        suppliers.clear();
     }
 
-    public void add(Vendor vendor){
-        vendors.add(vendor);
+    public void add(Supplier supplier){
+        suppliers.add(supplier);
     }
 
     public int size(){
-        return vendors.size();
+        return suppliers.size();
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
     public boolean contains(Object o) {
-        return vendors.contains(o);
+        return suppliers.contains(o);
     }
 
     //#endregion
@@ -46,9 +46,9 @@ public class VendorList{
      * @param product product to search for
      * @return a arraylist of vendors that offer the given product
      */
-    public VendorList getVendorsSellingProduct(Product product){
-        VendorList result = new VendorList();
-        for(Vendor v: vendors){
+    public SupplierList getSuppliersSellingProduct(Product product){
+        SupplierList result = new SupplierList();
+        for(Supplier v: suppliers){
             if(v.getProducts().contains(product)){
                 result.add(v);
             }

@@ -6,8 +6,8 @@ import java.util.Scanner;
 public class Application {
     //keeps track of all known products
     private static final ProductList products = new ProductList();
-    //Keeps track of all known vendors
-    private static final VendorList vendors = new VendorList();
+    //Keeps track of all known suppliers
+    private static final SupplierList suppliers = new SupplierList();
 
     private static String[] cmdArguments;
 
@@ -32,22 +32,22 @@ public class Application {
     private static void display(String[] command){
         try{
             switch(command[1]) {
-                case "vendors" -> displayVendors();
+                case "suppliers" -> displaySuppliers();
                 case "products" -> displayProducts();
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use 'display products' or 'display vendors'");
+            System.out.println("Please use 'display products' or 'display suppliers'");
         }
     }
 
-    public static void displayVendors(){
-        if(vendors.size() == 0){
-            System.out.println("The vendor list is empty");
+    public static void displaySuppliers(){
+        if(suppliers.size() == 0){
+            System.out.println("The supplier list is empty");
         }else{
-            System.out.println("The following vendors are registered:\n");
-            for (int i = 0; i < vendors.size(); i++){
-                Vendor v = vendors.get(i);
+            System.out.println("The following suppliers are registered:\n");
+            for (int i = 0; i < suppliers.size(); i++){
+                Supplier v = suppliers.get(i);
                 System.out.println("| #" + i + " | Name: " + v.getName() + " | Estimated delivery time: " + v.getDeliveryTime() + " |");
             }
         }
@@ -60,11 +60,11 @@ public class Application {
             System.out.println("The following products are registered:\n");
             for (int i = 0; i < products.size(); i++){
                 Product p = products.get(i);
-                StringBuilder vendorsString = new StringBuilder("Vendors that sell this product:");
-                for(Vendor v : vendors.getVendorsSellingProduct(p).getVendors()){
-                    vendorsString.append(" ").append(v.getName());
+                StringBuilder suppliersString = new StringBuilder("suppliers that sell this product:");
+                for(Supplier v : suppliers.getSuppliersSellingProduct(p).getSuppliers()){
+                    suppliersString.append(" ").append(v.getName());
                 }
-                System.out.println("| #" + i + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + vendorsString);
+                System.out.println("| #" + i + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + suppliersString);
             }
         }
     }
@@ -72,16 +72,16 @@ public class Application {
     private static void add(String[] command){
         try{
             switch(command[1]) {
-                case "vendor" -> addVendor(command);
+                case "supplier" -> addSupplier(command);
                 case "product" -> addProduct(command);
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use add [product/vendor] [arguments]");
+            System.out.println("Please use add [product/supplier] [arguments]");
         }
     }
 
-    public static void addVendor(String[] command) {
+    public static void addSupplier(String[] command) {
             try{
                 String name = command[2];
                 int deliveryTime = Integer.parseInt(command[3]);
@@ -89,10 +89,10 @@ public class Application {
                     System.out.println("Delivery time can't be negative");
                     throw new InvalidParameterException();
                 }
-                vendors.add(new Vendor(name, deliveryTime));
-                System.out.println(name + " was added to the vendor list");
+                suppliers.add(new Supplier(name, deliveryTime));
+                System.out.println(name + " was added to the supplier list");
             }catch (IndexOutOfBoundsException | NumberFormatException | InvalidParameterException e){
-                System.out.println("Please use add vendor [name] [delivery time in days]");
+                System.out.println("Please use add supplier [name] [delivery time in days]");
             }
     }
 
@@ -110,25 +110,25 @@ public class Application {
     private static void remove(String[] command){
         try{
             switch(command[1]) {
-                case "vendors" -> removeVendor(command);
+                case "suppliers" -> removeSupplier(command);
                 case "products" -> removeProduct(command);
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use remove [product/vendor] [index]");
+            System.out.println("Please use remove [product/supplier] [index]");
         }
     }
 
-    public static void removeVendor(String[] command){
+    public static void removeSupplier(String[] command){
         int i;
         try{
              i = Integer.parseInt(command[2]);
-            Vendor v = vendors.get(i);
+            Supplier v = suppliers.get(i);
             if(v == null){
-                System.out.println("that vendor does not exist");
+                System.out.println("that supplier does not exist");
             }else{
                 System.out.println("'" + v.getName() + "' was removed");
-                vendors.remove(i);
+                suppliers.remove(i);
             }
         }catch(NumberFormatException| IndexOutOfBoundsException e) {
             System.out.println("'" + command[2] + "' is not a valid index");
@@ -157,38 +157,38 @@ public class Application {
             i = Integer.parseInt(command[1]);
             Product p = products.get(i);
             i = Integer.parseInt(command[2]);
-            Vendor v = vendors.get(i);
+            Supplier v = suppliers.get(i);
             v.addProduct(p);
             System.out.println("Created link between " + v.getName() + " and " + p.getDescription());
         }catch(NumberFormatException| IndexOutOfBoundsException e) {
-            System.out.println("use [product index] [vendor index]");
+            System.out.println("use [product index] [supplier index]");
         }
     }
 
     private static void clear(String[] command){
         try{
             switch(command[1]) {
-                case "vendors" -> clearVendors();
+                case "suppliers" -> clearSuppliers();
                 case "products" -> clearProducts();
                 case "all" -> clearAll();
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use clear [products/vendors/all]");
+            System.out.println("Please use clear [products/suppliers/all]");
         }
     }
 
     public static void clearAll() {
         clearProducts();
-        clearVendors();
+        clearSuppliers();
     }
 
     public static void clearProducts() {
         products.clear();
     }
 
-    public static void clearVendors() {
-        vendors.clear();
+    public static void clearSuppliers() {
+        suppliers.clear();
     }
 
 
@@ -197,8 +197,8 @@ public class Application {
         return products;
     }
 
-    public static VendorList getMainVendorList() {
-        return vendors;
+    public static SupplierList getMainSupplierList() {
+        return suppliers;
     }
 
     public static String[] getCmdArguments() {

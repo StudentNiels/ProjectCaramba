@@ -5,16 +5,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class VendorListTest {
+class SupplierListTest {
 
-    VendorList vendors = new VendorList();
+    SupplierList vendors = new SupplierList();
     ProductList products = new ProductList();
 
     @BeforeEach
     void setUp() {
-        vendors.add(new Vendor("Vendor1", 10));
-        vendors.add(new Vendor("CoolVendor2", 10));
-        vendors.add(new Vendor("VendorNumber3", 10));
+        vendors.add(new Supplier("Vendor1", 10));
+        vendors.add(new Supplier("CoolVendor2", 10));
+        vendors.add(new Supplier("VendorNumber3", 10));
         products.add(new Product("abc", "testPoduct"));
         products.add(new Product("123456789", "testme"));
         //the first vendor has one product
@@ -29,13 +29,13 @@ class VendorListTest {
     @Test
     void getVendorsSellingProduct() {
         //first product
-        VendorList Result = vendors.getVendorsSellingProduct(products.get(0));
+        SupplierList Result = vendors.getSuppliersSellingProduct(products.get(0));
 
         assertTrue(Result.contains(vendors.get(0)));
         assertTrue(Result.contains(vendors.get(1)));
         assertFalse(Result.contains(vendors.get(2)));
         //second product
-        Result = vendors.getVendorsSellingProduct(products.get(1));
+        Result = vendors.getSuppliersSellingProduct(products.get(1));
         assertFalse(Result.contains(vendors.get(0)));
         assertTrue(Result.contains(vendors.get(1)));
         assertFalse(Result.contains(vendors.get(2)));
