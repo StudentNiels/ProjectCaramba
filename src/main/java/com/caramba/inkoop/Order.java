@@ -1,5 +1,6 @@
 package com.caramba.inkoop;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -8,8 +9,8 @@ public class Order {
     private Date bestelDatum;
     private Date factuurDatum;
     private HashMap<Product, Integer> shoppingCart;
+    private ArrayList<Supplier> suppliers;
     // TODO: Leverancier opvangen voor de inkopen
-
 
     public Order(Date bestelDatum, Date factuurDatum, HashMap<Product, Integer> shoppingCart) {
         this.bestelDatum = bestelDatum;

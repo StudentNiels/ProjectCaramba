@@ -8,5 +8,14 @@ Wil ik: op basis van het seizoen, verkoop trends, geschatte levertijd en beschik
 Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 */
 
+import java.util.ArrayList;
+
 public class Orderlist {
+
+    private ArrayList<Order> orders;
+
+    public Orderlist(){
+        this.orders = new ArrayList<>();
+    }
+
 }
