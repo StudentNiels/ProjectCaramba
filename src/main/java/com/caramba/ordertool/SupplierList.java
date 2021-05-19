@@ -1,34 +1,39 @@
 package com.caramba.ordertool;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SupplierList {
-    private final List<Supplier> suppliers = new ArrayList<>();
+    private final HashMap<UUID, Supplier> suppliers = new HashMap<>();
 
-    public List<Supplier> getSuppliers() {
+    public HashMap<UUID, Supplier> getSuppliers() {
         return suppliers;
     }
 
 //#region delegate functions
-    public Supplier get(int index){
-        try{
-            return suppliers.get(index);
-        }catch (IndexOutOfBoundsException e){
-            return null;
-        }
+    public Supplier get(UUID id){
+        return suppliers.get(id);
     }
 
-    public void remove(int index){
-        suppliers.remove(index);
+    public void remove(UUID id){
+        suppliers.remove(id);
     }
 
     public void clear(){
         suppliers.clear();
     }
 
+    public void add(UUID id, Supplier supplier){
+        suppliers.put(id, supplier);
+    }
+
     public void add(Supplier supplier){
-        suppliers.add(supplier);
+        //add with auto generated id
+        UUID id = null;
+        while(id == null || containsKey(id)){
+            //reroll key if there is a collision
+            id = UUID.randomUUID();
+        }
+        add(id, supplier);
     }
 
     public int size(){
@@ -36,8 +41,12 @@ public class SupplierList {
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
-    public boolean contains(Object o) {
-        return suppliers.contains(o);
+    public boolean contains(Supplier o) {
+        return suppliers.containsValue(o);
+    }
+
+    public boolean containsKey(UUID k) {
+        return suppliers.containsKey(k);
     }
 
     //#endregion
@@ -48,9 +57,10 @@ public class SupplierList {
      */
     public SupplierList getSuppliersSellingProduct(Product product){
         SupplierList result = new SupplierList();
-        for(Supplier v: suppliers){
-            if(v.getProducts().contains(product)){
-                result.add(v);
+        for (Map.Entry<UUID, Supplier> entry : suppliers.entrySet()) {
+            Supplier s = entry.getValue();
+            if(s.getProducts().contains(product)){
+                result.add(s);
             }
         }
         return result;

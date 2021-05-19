@@ -1,7 +1,9 @@
 package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Application {
     //keeps track of all known products
@@ -46,9 +48,10 @@ public class Application {
             System.out.println("The supplier list is empty");
         }else{
             System.out.println("The following suppliers are registered:\n");
-            for (int i = 0; i < suppliers.size(); i++){
-                Supplier v = suppliers.get(i);
-                System.out.println("| #" + i + " | Name: " + v.getName() + " | Estimated delivery time: " + v.getDeliveryTime() + " |");
+            for (Map.Entry<UUID, Supplier> entry : suppliers.getSuppliers().entrySet()) {
+                UUID id = entry.getKey();
+                Supplier s = entry.getValue();
+                System.out.println("| id: " + id.toString() + " | Name: " + s.getName() + " | Estimated delivery time: " + s.getDeliveryTime() + " |");
             }
         }
     }
@@ -58,13 +61,15 @@ public class Application {
             System.out.println("The product list is empty");
         }else{
             System.out.println("The following products are registered:\n");
-            for (int i = 0; i < products.size(); i++){
-                Product p = products.get(i);
+            for (Map.Entry<UUID, Product> entry : products.getProducts().entrySet()) {
+                UUID id = entry.getKey();
+                Product p = entry.getValue();
                 StringBuilder suppliersString = new StringBuilder("suppliers that sell this product:");
-                for(Supplier v : suppliers.getSuppliersSellingProduct(p).getSuppliers()){
-                    suppliersString.append(" ").append(v.getName());
+                for (Map.Entry<UUID, Supplier> supplierEntry : suppliers.getSuppliersSellingProduct(p).getSuppliers().entrySet()) {
+                    Supplier s = supplierEntry.getValue();
+                    suppliersString.append(" ").append(s.getName());
                 }
-                System.out.println("| #" + i + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + suppliersString);
+                System.out.println("| id: " + id.toString() + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + suppliersString);
             }
         }
     }
@@ -120,47 +125,47 @@ public class Application {
     }
 
     public static void removeSupplier(String[] command){
-        int i;
+        UUID id;
         try{
-             i = Integer.parseInt(command[2]);
-            Supplier v = suppliers.get(i);
+            id = UUID.fromString(command[2]);
+            Supplier v = suppliers.get(id);
             if(v == null){
                 System.out.println("that supplier does not exist");
             }else{
                 System.out.println("'" + v.getName() + "' was removed");
-                suppliers.remove(i);
+                suppliers.remove(id);
             }
-        }catch(NumberFormatException| IndexOutOfBoundsException e) {
-            System.out.println("'" + command[2] + "' is not a valid index");
+        }catch(IndexOutOfBoundsException | IllegalArgumentException e) {
+            System.out.println("'" + command[2] + "' is not a valid id");
         }
     }
 
     public static void removeProduct(String[] command){
-        int i;
+        UUID id;
         try{
-            i = Integer.parseInt(command[2]);
-            Product p = products.get(i);
+            id = UUID.fromString(command[2]);
+            Product p = products.get(id);
             if(p == null){
                 System.out.println("that product does not exist");
             }else{
                 System.out.println("'" + p.getDescription() + "' was removed");
-                products.remove(i);
+                products.remove(id);
             }
-        }catch(NumberFormatException| IndexOutOfBoundsException e) {
+        }catch(IndexOutOfBoundsException | IllegalArgumentException e) {
             System.out.println("'" + command[2] + "' is not a valid index");
         }
     }
 
     public static void link(String[] command){
-        int i;
+        UUID id;
         try{
-            i = Integer.parseInt(command[1]);
-            Product p = products.get(i);
-            i = Integer.parseInt(command[2]);
-            Supplier v = suppliers.get(i);
+            id = UUID.fromString(command[1]);
+            Product p = products.get(id);
+            id = UUID.fromString(command[2]);
+            Supplier v = suppliers.get(id);
             v.addProduct(p);
             System.out.println("Created link between " + v.getName() + " and " + p.getDescription());
-        }catch(NumberFormatException| IndexOutOfBoundsException e) {
+        }catch(IndexOutOfBoundsException | IllegalArgumentException e) {
             System.out.println("use [product index] [supplier index]");
         }
     }
