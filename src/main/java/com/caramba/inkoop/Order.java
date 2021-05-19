@@ -3,20 +3,25 @@ package com.caramba.inkoop;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Order {
 
     private Date bestelDatum;
     private Date factuurDatum;
     private HashMap<Product, Integer> shoppingCart;
-    private ArrayList<Supplier> suppliers;
     // TODO: Leverancier opvangen voor de inkopen
+
+    public Order(){
+        this.bestelDatum = null;
+        this.factuurDatum = null;
+        this.shoppingCart = new HashMap<>();
+    }
 
     public Order(Date bestelDatum, Date factuurDatum, HashMap<Product, Integer> shoppingCart) {
         this.bestelDatum = bestelDatum;
         this.factuurDatum = factuurDatum;
         this.shoppingCart = shoppingCart;
-        this.suppliers = new ArrayList<>();
     }
 
     //region Getters and Setters
@@ -43,15 +48,6 @@ public class Order {
     public void setShoppingCart(HashMap<Product, Integer> shoppingCart) {
         this.shoppingCart = shoppingCart;
     }
-
-    public ArrayList<Supplier> getSuppliers() {
-        return suppliers;
-    }
-
-    public void setSuppliers(ArrayList<Supplier> suppliers) {
-        this.suppliers = suppliers;
-    }
-
     //endregion
 
     public void addToShoppingCart(Product product, int amount){
@@ -63,7 +59,13 @@ public class Order {
         }
     }
 
-    public void addSupplier(Supplier supplier){
-        this.suppliers.add(supplier);
+    public void listShoppingCart(){
+        System.out.println("Orderlist items:");
+        for(Map.Entry<Product, Integer> product : this.shoppingCart.entrySet()){
+            Product item = product.getKey();
+            int amount = product.getValue();
+
+            System.out.println(item.getArticlenr() + " " + item.getDescription() + "/" + amount);
+        }
     }
 }

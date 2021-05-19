@@ -47,10 +47,10 @@ public class Supplier {
         }
     }
 
-    public Product getProduct(String articlenr){
+    public Product getProduct(String articleNr){
         Product selectedProduct = null;
         for(Map.Entry<Product,Integer> product : this.products.entrySet()){
-            if(product.getKey().getArticlenr().equals(articlenr)){
+            if(product.getKey().getArticlenr().equals(articleNr)){
                 selectedProduct = product.getKey();
             }
         }

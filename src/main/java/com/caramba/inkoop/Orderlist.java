@@ -9,6 +9,7 @@ Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 */
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Orderlist {
 
@@ -19,6 +20,9 @@ public class Orderlist {
     }
 
     public void addToOrderList(Order order){
+        order.setBestelDatum(Calendar.getInstance().getTime());
+        order.setFactuurDatum(Calendar.getInstance().getTime());
+
         this.orders.add(order);
     }
 
@@ -28,5 +32,12 @@ public class Orderlist {
 
     public void setOrders(ArrayList<Order> orders) {
         this.orders = orders;
+    }
+
+    public void listOrders(){
+        for(Order order : this.orders){
+            System.out.println(order.getBestelDatum() + "/" + order.getFactuurDatum());
+            order.listShoppingCart();
+        }
     }
 }
