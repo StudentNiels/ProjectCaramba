@@ -1,4 +1,4 @@
-package com.caramba.inkoop;
+package com.caramba.ordertool;
 
 public class InkoopTestMain {
     public static void main(String[] args){

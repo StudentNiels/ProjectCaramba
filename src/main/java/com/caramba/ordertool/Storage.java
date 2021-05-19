@@ -1,4 +1,4 @@
-package com.caramba.inkoop;
+package com.caramba.ordertool;
 
 import java.util.HashMap;
 

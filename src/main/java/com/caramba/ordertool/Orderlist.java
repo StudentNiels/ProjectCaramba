@@ -1,4 +1,4 @@
-package com.caramba.inkoop;
+package com.caramba.ordertool;
 
 /*
 Als: medewerker van de inkoop
@@ -7,6 +7,8 @@ Wil ik: op basis van het seizoen, verkoop trends, geschatte levertijd en beschik
 
 Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 */
+
+import com.caramba.ordertool.Order;
 
 import java.util.ArrayList;
 import java.util.Calendar;

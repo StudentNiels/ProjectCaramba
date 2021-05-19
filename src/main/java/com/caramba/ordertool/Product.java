@@ -3,10 +3,16 @@ package com.caramba.ordertool;
 public class Product {
     private String productNum;
     private String description;
+    private Season season;
 
-    public Product(String productNum, String description) {
+    public Product(String productNum, String description, Season season) {
         this.productNum = productNum;
         this.description = description;
+        this.season = season;
+    }
+
+    public Product(String productNum, String description) {
+        this(productNum, description, Season.UNDEFINED);
     }
 
     //region Getters and Setters

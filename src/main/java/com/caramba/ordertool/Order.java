@@ -1,4 +1,4 @@
-package com.caramba.inkoop;
+package com.caramba.ordertool;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,7 +65,7 @@ public class Order {
             Product item = product.getKey();
             int amount = product.getValue();
 
-            System.out.println(item.getArticlenr() + " " + item.getDescription() + "/" + amount);
+            System.out.println(item.getProductNum() + " " + item.getDescription() + "/" + amount);
         }
     }
 }
