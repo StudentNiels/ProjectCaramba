@@ -3,14 +3,20 @@ package com.caramba.inkoop;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Order {
 
     private Date bestelDatum;
     private Date factuurDatum;
     private HashMap<Product, Integer> shoppingCart;
-    private ArrayList<Supplier> suppliers;
     // TODO: Leverancier opvangen voor de inkopen
+
+    public Order(){
+        this.bestelDatum = null;
+        this.factuurDatum = null;
+        this.shoppingCart = new HashMap<>();
+    }
 
     public Order(Date bestelDatum, Date factuurDatum, HashMap<Product, Integer> shoppingCart) {
         this.bestelDatum = bestelDatum;
@@ -50,6 +56,16 @@ public class Order {
         }
         else{
             shoppingCart.put(product, amount);
+        }
+    }
+
+    public void listShoppingCart(){
+        System.out.println("Orderlist items:");
+        for(Map.Entry<Product, Integer> product : this.shoppingCart.entrySet()){
+            Product item = product.getKey();
+            int amount = product.getValue();
+
+            System.out.println(item.getArticlenr() + " " + item.getDescription() + "/" + amount);
         }
     }
 }

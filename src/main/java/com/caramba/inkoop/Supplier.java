@@ -46,4 +46,14 @@ public class Supplier {
             System.out.println(selectedProduct.getArticlenr() + " " + selectedProduct.getDescription() + " Levertijd: " + leverTijd + " dagen");
         }
     }
+
+    public Product getProduct(String articleNr){
+        Product selectedProduct = null;
+        for(Map.Entry<Product,Integer> product : this.products.entrySet()){
+            if(product.getKey().getArticlenr().equals(articleNr)){
+                selectedProduct = product.getKey();
+            }
+        }
+        return selectedProduct;
+    }
 }
