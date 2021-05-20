@@ -1,15 +1,15 @@
 package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class Application {
     //keeps track of all known products
     private static final ProductList products = new ProductList();
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
+    //Keeps track of all known orders
+    private static final Orderlist orders = new Orderlist();
 
     private static String[] cmdArguments;
 
@@ -36,6 +36,7 @@ public class Application {
             switch(command[1]) {
                 case "suppliers" -> displaySuppliers();
                 case "products" -> displayProducts();
+                case "orders" -> displayOrders();
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
@@ -74,15 +75,29 @@ public class Application {
         }
     }
 
+    public static void displayOrders(){
+        if(orders.size() == 0){
+            System.out.println("The order list is empty");
+        }else{
+            System.out.println("The following orders are registered:\n");
+            for (int i = 0; i < orders.size(); i++) {
+                Order selectedOrder = orders.getOrderByID(i);
+                System.out.println(selectedOrder.getBestelDatum() +"/"+ selectedOrder.getFactuurDatum());
+                selectedOrder.listShoppingCart();
+            }
+        }
+    }
+
     private static void add(String[] command){
         try{
             switch(command[1]) {
                 case "supplier" -> addSupplier(command);
                 case "product" -> addProduct(command);
+                case "order" -> addOrder(command);
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use add [product/supplier] [arguments]");
+            System.out.println("Please use add [product/supplier/order] [arguments]");
         }
     }
 
@@ -109,6 +124,28 @@ public class Application {
             System.out.println(description + " was added to the product list");
         }catch (IndexOutOfBoundsException | NumberFormatException e){
             System.out.println("Please use add product [product number] [description]");
+        }
+    }
+
+    public static void addOrder(String[] command){
+        try{
+            HashMap<Product, Integer> orderProducts = new HashMap<>();
+            for (int i = 2; i < command.length; i += 2) {
+                UUID productNum = UUID.fromString(command[i]);
+                int amount = Integer.parseInt(command[(i+1)]);
+                if(productNum == null){
+                    System.out.println("This product does not exist!");
+                }else if(amount < 0){
+                    System.out.println("Negative amounts are not allowed!");
+                }else{
+                    orderProducts.put(products.get(productNum), amount);
+                    orders.addToOrderList(new Order(orderProducts));
+                    System.out.println("Order has been created.");
+                }
+            }
+        }
+        catch(Exception e){
+            System.out.println("Please use add order [productNum] [amount] [productNum] [amount] etc.");
         }
     }
 
@@ -205,6 +242,8 @@ public class Application {
     public static SupplierList getMainSupplierList() {
         return suppliers;
     }
+
+    public static Orderlist getMainOrderList(){return orders;}
 
     public static String[] getCmdArguments() {
         return cmdArguments;

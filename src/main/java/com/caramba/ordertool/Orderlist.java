@@ -28,12 +28,20 @@ public class Orderlist {
         this.orders.add(order);
     }
 
+    public int size(){
+        return orders.size();
+    }
+
     public ArrayList<Order> getOrders() {
         return orders;
     }
 
     public void setOrders(ArrayList<Order> orders) {
         this.orders = orders;
+    }
+
+    public Order getOrderByID(int index){
+        return orders.get(index);
     }
 
     public void listOrders(){

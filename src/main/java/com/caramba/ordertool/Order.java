@@ -18,9 +18,9 @@ public class Order {
         this.shoppingCart = new HashMap<>();
     }
 
-    public Order(Date bestelDatum, Date factuurDatum, HashMap<Product, Integer> shoppingCart) {
-        this.bestelDatum = bestelDatum;
-        this.factuurDatum = factuurDatum;
+    public Order(HashMap<Product, Integer> shoppingCart) {
+        this.bestelDatum = null;
+        this.factuurDatum = null;
         this.shoppingCart = shoppingCart;
     }
 

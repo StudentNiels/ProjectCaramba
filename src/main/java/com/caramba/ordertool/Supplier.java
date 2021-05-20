@@ -77,13 +77,12 @@ public class Supplier {
         products.add(id, product);
     }
 
-    //TODO fix this
-  /*  public void listProducts(){
-        for(Map.Entry<Product, Integer> product : products.entrySet()){
-            Product selectedProduct = product.getKey();
-            int leverTijd = product.getValue();
+    public void listProducts(){
+        for(Map.Entry<UUID, Product> product : products.getProducts().entrySet()){
+            UUID ID = product.getKey();
+            Product selectedProduct = product.getValue();
 
-            System.out.println(selectedProduct.getArticlenr() + " " + selectedProduct.getDescription() + " Levertijd: " + leverTijd + " dagen");
+            System.out.println("ProductID = " + ID + "/" + selectedProduct.getProductNum() + " " + selectedProduct.getDescription());
         }
-    }*/
+    }
 }
