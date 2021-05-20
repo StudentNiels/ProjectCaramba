@@ -1,5 +1,6 @@
 package com.caramba.ordertool;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,7 +78,8 @@ public class NotificationManager {
     }
 
     public void printToConsole(Notification n){
-        String s = "[" + n.getTimestamp().toString() + "] " +
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String s = "[" + n.getTimestamp().format(f) + "] " +
                 n.getType().toString() + ": " +
                 n.getContents();
         System.out.println(s);
