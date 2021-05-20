@@ -31,5 +31,14 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
+    }
+
     //endregion
 }

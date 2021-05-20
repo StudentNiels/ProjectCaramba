@@ -143,8 +143,7 @@ public class Application {
                     System.out.println("Order has been created.");
                 }
             }
-        }
-        catch(Exception e){
+        }catch(Exception e){
             System.out.println("Please use add order [productNum] [amount] [productNum] [amount] etc.");
         }
     }
