@@ -16,5 +16,7 @@ public class TimePeriodController {
         return result;
     }
 
-
+    public void addTimePeriod(String name, String startDate, String endDate){
+        timePeriods.add(new TimePeriod(name, startDate, endDate));
+    }
 }
