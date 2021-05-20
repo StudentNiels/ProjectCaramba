@@ -137,6 +137,7 @@ public class Application {
                     System.out.println("This product does not exist!");
                 }else if(amount < 0){
                     System.out.println("Negative amounts are not allowed!");
+                    throw new InvalidParameterException();
                 }else{
                     orderProducts.put(products.get(productNum), amount);
                     orders.addToOrderList(new Order(orderProducts));
