@@ -20,8 +20,6 @@ public class SoldProducts {
 
         fillsoldProductsPerMonthMap();
         printMap();
-        AvarageSellsTwoMonths();
-        System.out.println();
     }
 
 
@@ -33,7 +31,7 @@ public class SoldProducts {
 
         productsSold = new HashMap<Integer, String>();
         productsSold.put(25, "Antenneplakkers");
-        soldProdurctsPerMonth.put("Mei", productsSold);
+        soldProdurctsPerMonth.put("May", productsSold);
 
         productsSold = new HashMap<Integer, String>();
         productsSold.put(35, "Antenneplakkers");
@@ -53,7 +51,7 @@ public class SoldProducts {
 
         productsSold = new HashMap<Integer, String>();
         productsSold.put(14, "Antenneplakkers");
-        soldProdurctsPerMonth.put("Okt", productsSold);
+        soldProdurctsPerMonth.put("Oct", productsSold);
 
         productsSold = new HashMap<Integer, String>();
         productsSold.put(16, "Antenneplakkers");
@@ -84,62 +82,111 @@ public class SoldProducts {
         }
     }
 
-    public void AvarageSellsTwoMonths() {
+    public void AverageSellsTwoMonths() {
         cal.setTime(date);
         int month = cal.get(Calendar.MONTH);
         String thisMonth;
+        int average;
+        int sellsMonthOne;
+        int sellsMonthTwo;
 
         switch (month) {
             case 1:
                 thisMonth = "January";
-                soldProdurctsPerMonth.get(0);
+                sellsMonthOne = soldProdurctsPerMonth.get("Nov").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Dec").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 2:
                 thisMonth = "February";
-                soldProdurctsPerMonth.get(1);
+                sellsMonthOne = soldProdurctsPerMonth.get("Dec").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Jan").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 3:
                 thisMonth = "March";
-                soldProdurctsPerMonth.get(2);
+                sellsMonthOne = soldProdurctsPerMonth.get("Jan").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Feb").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 4:
                 thisMonth = "April";
-                soldProdurctsPerMonth.get(3);
+                sellsMonthOne = soldProdurctsPerMonth.get("Feb").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Mar").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 5:
-                thisMonth = "Mei";
-                soldProdurctsPerMonth.get(4);
+                thisMonth = "May";
+                sellsMonthOne = soldProdurctsPerMonth.get("Mar").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Apr").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 6:
                 thisMonth = "June";
-                soldProdurctsPerMonth.get(5);
+                sellsMonthOne = soldProdurctsPerMonth.get("Apr").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("May").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 7:
                 thisMonth = "Juli";
-                soldProdurctsPerMonth.get(6);
+                sellsMonthOne = soldProdurctsPerMonth.get("May").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Jun").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 8:
                 thisMonth = "Augustus";
-                soldProdurctsPerMonth.get(7);
+                sellsMonthOne = soldProdurctsPerMonth.get("Jun").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Jul").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 9:
                 thisMonth = "September";
-                soldProdurctsPerMonth.get(8);
+                sellsMonthOne = soldProdurctsPerMonth.get("Jul").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Aug").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 10:
                 thisMonth = "October";
-                soldProdurctsPerMonth.get(9);
+                sellsMonthOne = soldProdurctsPerMonth.get("Aug").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Sep").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 11:
                 thisMonth = "November";
-                soldProdurctsPerMonth.get(10);
+                sellsMonthOne = soldProdurctsPerMonth.get("Sep").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Oct").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
             case 12:
                 thisMonth = "December";
-                soldProdurctsPerMonth.get(11);
+                sellsMonthOne = soldProdurctsPerMonth.get("Oct").keySet().hashCode();
+                sellsMonthTwo = soldProdurctsPerMonth.get("Nov").keySet().hashCode();
+                average = (sellsMonthOne + sellsMonthTwo) / 2;
+
+                System.out.println("It is " + thisMonth + ". Average sells over two months is " + average);
                 break;
-
-
         }
 
     }
