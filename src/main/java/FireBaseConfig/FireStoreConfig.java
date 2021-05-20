@@ -39,38 +39,38 @@ public class FireStoreConfig {
         }
         FirebaseApp.initializeApp(options);
 
-        dbConnect();
-
+        //region Template interactions
         /*
-        Create product document
+        //Create product document
         Map setupP = setupProductDocument("Zomer", 10, "Naturado Onbemeste Tuinaarde 20 liter", "1234568", 60);
-        addProductDocument(db, "1234", setupP);
+        addProductDocument("Products", "1235", setupP);
 
-        Create sales document
+        //Create sales document
         Map setupS = setupSalesDocument("1234568", getTimeStamp());
-        addSalesDocument(db, "1234", setupS);
+        addSalesDocument("1234", setupS);
 
-        Create supplier document
+        //Create supplier document
         Map setupSup = setupSuppliersDocument(21, "Bremen");
-        addSuppliersDocument(db, "00002", setupSup);
+        addSuppliersDocument("00002", setupSup);
 
-        Read individual
-        readFromDB(db,"Products", "123456");
+        //Read individual
+        readFromDB("Products", "123456");
 
-        List all products or sales or suppliers
-        retrieveAllProducts(db);
-        retrieveAllSales(db);
-        retrieveAllSuppliers(db);
+        //List all products or sales or suppliers
+        retrieveAllProducts();
+        retrieveAllSales();
+        retrieveAllSuppliers();
 
-        Update a field of a product, sale, supplier
-        updateDocument(db, "Products", "1234", "Supply", 70);
+        //Update a field of a product, sale, supplier
+        updateDocument("Products", "1234", "Supply", 70);
 
-        Delete a document from a collection
-        deleteDocument(db, "Sales", "1234");
+        //Delete a document from a collection
+        deleteDocument("Sales", "1234");
 
-        Delete an entire collection in batches
-        deleteCollection(db,"test", 1);
+        //Delete an entire collection in batches
+        deleteCollection("test", 1);
         */
+        // endregion
     }
 
     /**
@@ -141,25 +141,27 @@ public class FireStoreConfig {
 
     /**
      * Adds a document of information about a product to the database
-     * @param db
      * @param productDocument
      * @param docData
      * @throws Exception
      */
-    public void addProductDocument(Firestore db, String collection, String productDocument, Map docData) throws Exception {
+    public void addProductDocument(String collection, String productDocument, Map docData) throws Exception {
+        dbConnect();
         ApiFuture<WriteResult> future = db.collection(collection).document(productDocument).set(docData);
         System.out.println("Update time : " + future.get().getUpdateTime());
+        db.close();
     }
 
     /**
      * Adds a document of information about a product to the database
-     * @param db
      * @param docData
      * @throws Exception
      */
-    public void addSalesDocument(Firestore db, String salesDocument, Map docData) throws Exception {
+    public void addSalesDocument(String salesDocument, Map docData) throws Exception {
+        dbConnect();
         ApiFuture<WriteResult> future = db.collection("Sales").document(salesDocument).set(docData);
         System.out.println("Update time : " + future.get().getUpdateTime());
+        db.close();
     }
 
     /**
@@ -167,17 +169,19 @@ public class FireStoreConfig {
      * @param suppliersDocument insert the supplier number
      * @throws Exception
      */
-    public void addSuppliersDocument(Firestore db, String suppliersDocument, Map docData) throws Exception {
+    public void addSuppliersDocument(String suppliersDocument, Map docData) throws Exception {
+        dbConnect();
         ApiFuture<WriteResult> future = db.collection("Suppliers").document(suppliersDocument).set(docData);
         System.out.println("Update time : " + future.get().getUpdateTime());
+        db.close();
     }
 
     /**
      * Make a list of all the products
-     * @param db
      * @return
      */
-    public Iterable<DocumentReference> retrieveAllProducts(Firestore db) {
+    public Iterable<DocumentReference> retrieveAllProducts() throws Exception {
+        dbConnect();
         Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
         int i = 0;
         for (DocumentReference collRef : collections) {
@@ -185,15 +189,16 @@ public class FireStoreConfig {
             System.out.println("Product ID: " + collRef.getId());
         }
         System.out.println(i);
+        db.close();
         return collections;
     }
 
     /**
      * Make a list of all the Sales
-     * @param db
      * @return
      */
-    public Iterable<DocumentReference> retrieveAllSales(Firestore db) {
+    public Iterable<DocumentReference> retrieveAllSales() throws Exception {
+        dbConnect();
         Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
         int i = 0;
         for (DocumentReference collRef : collections)
@@ -202,15 +207,16 @@ public class FireStoreConfig {
             System.out.println("Sale ID: " + collRef.getId());
         }
         System.out.println(i);
+        db.close();
         return collections;
     }
 
     /**
      * Make a list of all the suppliers
-     * @param db
      * @return
      */
-    public Iterable<DocumentReference> retrieveAllSuppliers(Firestore db) {
+    public Iterable<DocumentReference> retrieveAllSuppliers() throws Exception {
+        dbConnect();
         Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
         int i = 0;
         for (DocumentReference collRef : collections)
@@ -219,18 +225,19 @@ public class FireStoreConfig {
             System.out.println("Supplier ID: " + collRef.getId());
         }
         System.out.println(i);
+        db.close();
         return collections;
     }
 
     /**
      * Read out a specific product, product's sales date or supplier
-     * @param db
      * @param collection
      * @param documentNumber
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void readFromDB(Firestore db, String collection, String documentNumber) throws ExecutionException, InterruptedException {
+    public void readFromDB(String collection, String documentNumber) throws Exception {
+        dbConnect();
         DocumentReference docRef = db.collection(collection).document(documentNumber);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = future.get();
@@ -239,11 +246,11 @@ public class FireStoreConfig {
         } catch(Exception e) {
             System.out.println("No document found");
         }
+        db.close();
     }
 
     /**
      * Update a field inside a product or supplier or sales data
-     * @param db
      * @param collectionName
      * @param documentNumber
      * @param fieldType
@@ -251,38 +258,41 @@ public class FireStoreConfig {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void updateDocument(Firestore db, String collectionName, String documentNumber, String fieldType, Object value) throws ExecutionException, InterruptedException{
+    public void updateDocument(String collectionName, String documentNumber, String fieldType, Object value) throws Exception {
+    dbConnect();
     DocumentReference docRef = db.collection(collectionName).document(documentNumber);
     Map<String, Object> update = new HashMap<>();
     update.put(fieldType, value);
 
     ApiFuture<WriteResult> updateData = docRef.update(update);
         System.out.println("Update time : " + updateData.get().getUpdateTime());
+        db.close();
     }
 
     /**
      * Delete a document from one of the collections
-     * @param db
      * @param collection
      * @param documentNumber
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void deleteDocument(Firestore db, String collection, String documentNumber) throws ExecutionException, InterruptedException {
+    public void deleteDocument(String collection, String documentNumber) throws Exception {
+    dbConnect();
     ApiFuture<WriteResult> writeResult = db.collection(collection).document(documentNumber).delete();
         System.out.println("Update time : " + writeResult.get().getUpdateTime());
+        db.close();
     }
 
     /**
      * Delete a collection in batches to prevent out-of-memory errors
-     * @param db
      * @param collection
      * @param batchSize input how many of the collection should be deleted
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void deleteCollection(Firestore db, String collection, int batchSize) throws ExecutionException, InterruptedException {
+    public void deleteCollection(String collection, int batchSize) throws Exception {
         try {
+            dbConnect();
             CollectionReference colRef = db.collection(collection);
             // retrieve a small batch of documents to avoid out-of-memory errors
             ApiFuture<QuerySnapshot> future = colRef.limit(batchSize).get();
@@ -296,5 +306,6 @@ public class FireStoreConfig {
         } catch (Exception e) {
             System.err.println("Error deleting collection : " + e.getMessage());
         }
+        db.close();
     }
 }
