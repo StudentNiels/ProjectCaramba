@@ -6,46 +6,44 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class NotificationManager {
-    private final ArrayList<Notification> notifications = new ArrayList<>();
-
-    public NotificationManager(){}
+    private static final ArrayList<Notification> notifications = new ArrayList<>();
 
     //#region delegate methods
-    public int size() {
+    public static int size() {
         return notifications.size();
     }
 
-    public boolean isEmpty() {
+    public static boolean isEmpty() {
         return notifications.isEmpty();
     }
 
-    public boolean contains(Object o) {
+    public static boolean contains(Object o) {
         //noinspection SuspiciousMethodCalls
         return notifications.contains(o);
     }
 
-    public Notification get(int index) {
+    public static Notification get(int index) {
         return notifications.get(index);
     }
 
-    public Notification remove(int index) {
+    public static Notification remove(int index) {
         return notifications.remove(index);
     }
 
-    public void clear() {
+    public static void clear() {
         notifications.clear();
     }
 
-    public boolean containsAll(Collection<Notification> c) {
+    public static boolean containsAll(Collection<Notification> c) {
         return notifications.containsAll(c);
     }
     //#endregion
 
-    public Notification getLast(){
+    public static Notification getLast(){
         return get(size() - 1);
     }
 
-    public ArrayList<Notification> getByType(NotificationType type){
+    public static ArrayList<Notification> getByType(NotificationType type){
         ArrayList<Notification> result = new ArrayList<>();
         for (Notification n : notifications) {
             if(n.getType() == type){
@@ -55,12 +53,12 @@ public class NotificationManager {
         return result;
     }
 
-    public void add(Notification notification) {
+    public static void add(Notification notification) {
         notifications.add(notification);
         printLatest();
     }
 
-    public void Display(int index){
+    public static void Display(int index){
         try{
             Notification n = notifications.get(index);
             NotificationType t = n.getType();
@@ -72,12 +70,12 @@ public class NotificationManager {
          }
     }
 
-    public void addExceptionError(Exception e){
+    public static void addExceptionError(Exception e){
         e.printStackTrace();
         add(new Notification(NotificationType.ERROR, Arrays.toString(e.getStackTrace())));
     }
 
-    public void printToConsole(Notification n){
+    public static void printToConsole(Notification n){
         DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String s = "[" + n.getTimestamp().format(f) + "] " +
                 n.getType().toString() + ": " +
@@ -85,13 +83,13 @@ public class NotificationManager {
         System.out.println(s);
     }
 
-    public void printAllToConsole(){
+    public static void printAllToConsole(){
         for(Notification n : notifications){
             printToConsole(n);
         }
     }
 
-    public void printLatest(){
+    public static void printLatest(){
         printToConsole(getLast());
     }
 }
