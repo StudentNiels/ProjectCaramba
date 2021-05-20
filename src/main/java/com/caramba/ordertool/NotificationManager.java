@@ -59,31 +59,37 @@ public class NotificationManager {
         printLatest();
     }
 
+    public void Display(int index){
+        try{
+            Notification n = notifications.get(index);
+            NotificationType t = n.getType();
+            if(t.printToConsole){
+                printToConsole(n);
+            }
+        }catch (IndexOutOfBoundsException e){
+            addExceptionError(e);
+         }
+    }
+
     public void addExceptionError(Exception e){
         e.printStackTrace();
         add(new Notification(NotificationType.ERROR, Arrays.toString(e.getStackTrace())));
     }
 
-    public void printToConsole(int index){
-        StringBuilder s = new StringBuilder();
-        try{
-            Notification n = notifications.get(index);
-            s.append("[").append(n.getTimestamp().toString()).append("] ");
-            s.append(n.getType().toString()).append(": ");
-            s.append(n.getContents());
-            System.out.println(s);
-        }catch (IndexOutOfBoundsException e){
-            addExceptionError(e);
-        }
+    public void printToConsole(Notification n){
+        String s = "[" + n.getTimestamp().toString() + "] " +
+                n.getType().toString() + ": " +
+                n.getContents();
+        System.out.println(s);
     }
 
     public void printAllToConsole(){
-        for(int i = 0; i < size(); i++){
-            printToConsole(i);
+        for(Notification n : notifications){
+            printToConsole(n);
         }
     }
 
     public void printLatest(){
-        printToConsole(size() - 1);
+        printToConsole(getLast());
     }
 }
