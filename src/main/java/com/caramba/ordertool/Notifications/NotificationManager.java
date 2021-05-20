@@ -1,4 +1,4 @@
-package com.caramba.ordertool;
+package com.caramba.ordertool.Notifications;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

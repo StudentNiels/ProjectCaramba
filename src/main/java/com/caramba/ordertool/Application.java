@@ -1,5 +1,9 @@
 package com.caramba.ordertool;
 
+import com.caramba.ordertool.Notifications.Notification;
+import com.caramba.ordertool.Notifications.NotificationManager;
+import com.caramba.ordertool.Notifications.NotificationType;
+
 import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.Scanner;
