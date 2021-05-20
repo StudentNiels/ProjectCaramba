@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class NotifcationManager {
+public class NotificationManager {
     private final ArrayList<Notification> notifications = new ArrayList<>();
 
-    public NotifcationManager(){}
+    public NotificationManager(){}
 
     //#region delegate methods
     public int size() {
