@@ -11,11 +11,13 @@ public class Application {
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
 
+    private static final NotificationManager notifications = new NotificationManager();
+
     private static String[] cmdArguments;
 
     public static void main(String[] args){
         cmdArguments = args;
-        System.out.println("Caramba Order Tool started");
+        notifications.add(new Notification(NotificationType.INFO,("Caramba Order Tool started. Ready for commands.")));
         while(true){
             Scanner input = new Scanner(System.in);
             String[] command = input.nextLine().split("\\s+");
@@ -26,9 +28,13 @@ public class Application {
                 case "remove" -> remove(command);
                 case "link" -> link(command);
                 case "clear" -> clear(command);
-                default -> System.out.println("Unknown command " + command[0] + ". Use --help to see supported commands");
+                default -> notifications.add(new Notification(NotificationType.ERROR, "Unknown command " + command[0] + ". Use --help to see supported commands"));
             }
         }
+    }
+
+    private static void printNotifications(){
+
     }
 
     private static void display(String[] command){
@@ -39,28 +45,29 @@ public class Application {
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use 'display products' or 'display suppliers'");
+            notifications.add(new Notification(NotificationType.ERROR, "Invalid syntax. Please use 'display products' or 'display suppliers"));
         }
     }
 
     public static void displaySuppliers(){
         if(suppliers.size() == 0){
-            System.out.println("The supplier list is empty");
+            notifications.add(new Notification(NotificationType.INFO, "The supplier list is empty"));
         }else{
-            System.out.println("The following suppliers are registered:\n");
+            notifications.add(new Notification(NotificationType.INFO,("The following suppliers are registered:")));
+
             for (Map.Entry<UUID, Supplier> entry : suppliers.getSuppliers().entrySet()) {
                 UUID id = entry.getKey();
                 Supplier s = entry.getValue();
-                System.out.println("| id: " + id.toString() + " | Name: " + s.getName() + " | Estimated delivery time: " + s.getDeliveryTime() + " |");
+                notifications.add(new Notification(NotificationType.INFO, "| id: " + id.toString() + " | Name: " + s.getName() + " | Estimated delivery time: " + s.getDeliveryTime() + " |"));
             }
         }
     }
 
     public static void displayProducts(){
         if(products.size() == 0){
-            System.out.println("The product list is empty");
+            notifications.add(new Notification(NotificationType.INFO,("The product list is empty")));
         }else{
-            System.out.println("The following products are registered:\n");
+            notifications.add(new Notification(NotificationType.INFO,("The following products are registered:")));
             for (Map.Entry<UUID, Product> entry : products.getProducts().entrySet()) {
                 UUID id = entry.getKey();
                 Product p = entry.getValue();
@@ -69,7 +76,7 @@ public class Application {
                     Supplier s = supplierEntry.getValue();
                     suppliersString.append(" ").append(s.getName());
                 }
-                System.out.println("| id: " + id.toString() + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + suppliersString);
+                notifications.add(new Notification(NotificationType.INFO,("| id: " + id.toString() + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + suppliersString)));
             }
         }
     }
@@ -82,7 +89,7 @@ public class Application {
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use add [product/supplier] [arguments]");
+            notifications.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use add [product/supplier] [arguments]")));
         }
     }
 
@@ -91,13 +98,13 @@ public class Application {
                 String name = command[2];
                 int deliveryTime = Integer.parseInt(command[3]);
                 if(deliveryTime < 0){
-                    System.out.println("Delivery time can't be negative");
+                    notifications.add(new Notification(NotificationType.ERROR,("Delivery time can't be negative")));
                     throw new InvalidParameterException();
                 }
                 suppliers.add(new Supplier(name, deliveryTime));
-                System.out.println(name + " was added to the supplier list");
+                notifications.add(new Notification(NotificationType.INFO,(name + " was added to the supplier list")));
             }catch (IndexOutOfBoundsException | NumberFormatException | InvalidParameterException e){
-                System.out.println("Please use add supplier [name] [delivery time in days]");
+                notifications.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use add supplier [name] [delivery time in days]")));
             }
     }
 
@@ -106,9 +113,9 @@ public class Application {
             String productNumber = command[2];
             String description = command[3];
             products.add(new Product(productNumber, description));
-            System.out.println(description + " was added to the product list");
+            notifications.add(new Notification(NotificationType.INFO,(description + " was added to the product list")));
         }catch (IndexOutOfBoundsException | NumberFormatException e){
-            System.out.println("Please use add product [product number] [description]");
+            notifications.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use add product [product number] [description]")));
         }
     }
 
@@ -120,7 +127,7 @@ public class Application {
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use remove [product/supplier] [index]");
+            notifications.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use remove [product/supplier] [index]")));
         }
     }
 
@@ -130,13 +137,13 @@ public class Application {
             id = UUID.fromString(command[2]);
             Supplier v = suppliers.get(id);
             if(v == null){
-                System.out.println("that supplier does not exist");
+                notifications.add(new Notification(NotificationType.INFO,("that supplier does not exist")));
             }else{
-                System.out.println("'" + v.getName() + "' was removed");
+                notifications.add(new Notification(NotificationType.INFO,("'" + v.getName() + "' was removed")));
                 suppliers.remove(id);
             }
         }catch(IndexOutOfBoundsException | IllegalArgumentException e) {
-            System.out.println("'" + command[2] + "' is not a valid id");
+            notifications.add(new Notification(NotificationType.ERROR,("'" + command[2] + "' is not a valid id")));
         }
     }
 
@@ -146,13 +153,13 @@ public class Application {
             id = UUID.fromString(command[2]);
             Product p = products.get(id);
             if(p == null){
-                System.out.println("that product does not exist");
+                notifications.add(new Notification(NotificationType.INFO,("that product does not exist")));
             }else{
-                System.out.println("'" + p.getDescription() + "' was removed");
+                notifications.add(new Notification(NotificationType.INFO,("'" + p.getDescription() + "' was removed")));
                 products.remove(id);
             }
         }catch(IndexOutOfBoundsException | IllegalArgumentException e) {
-            System.out.println("'" + command[2] + "' is not a valid index");
+            notifications.add(new Notification(NotificationType.ERROR,("'" + command[2] + "' is not a valid index")));
         }
     }
 
@@ -164,9 +171,9 @@ public class Application {
             id = UUID.fromString(command[2]);
             Supplier v = suppliers.get(id);
             v.addProduct(p);
-            System.out.println("Created link between " + v.getName() + " and " + p.getDescription());
+            notifications.add(new Notification(NotificationType.INFO,("Created link between " + v.getName() + " and " + p.getDescription())));
         }catch(IndexOutOfBoundsException | IllegalArgumentException e) {
-            System.out.println("use [product index] [supplier index]");
+            notifications.add(new Notification(NotificationType.ERROR,("Invalid syntax. use [product index] [supplier index]")));
         }
     }
 
@@ -179,7 +186,7 @@ public class Application {
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
-            System.out.println("Please use clear [products/suppliers/all]");
+            notifications.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use clear [products/suppliers/all]")));
         }
     }
 
