@@ -4,7 +4,7 @@ public class Main
     {
         SoldProducts soldProducts = new SoldProducts();
 
-        soldProducts.AverageSellsTwoMonths();
+
 
     }
     }
