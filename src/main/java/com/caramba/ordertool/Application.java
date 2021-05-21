@@ -37,6 +37,7 @@ public class Application {
                 case "suppliers" -> displaySuppliers();
                 case "products" -> displayProducts();
                 case "orders" -> displayOrders();
+                case "seasonProducts" -> displayProductsBySeason(command);
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
@@ -86,6 +87,10 @@ public class Application {
                 selectedOrder.listShoppingCart();
             }
         }
+    }
+
+    public static void displayProductsBySeason(String[] command){
+        products.showProductBySeason(command[2]);
     }
 
     private static void add(String[] command){
