@@ -1,5 +1,6 @@
 package FireBaseConfig;
 
+import com.caramba.ordertool.Notifications.NotificationManager;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
@@ -7,7 +8,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 
-import javax.swing.text.Document;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -26,18 +26,15 @@ public class FireStoreConfig {
     /**
      * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
      */
-    public void fireStoreConfig() throws Exception {
-
-        FileInputStream serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
-
-        FirebaseOptions options = null;
+    public void fireStoreConfig(){
         try {
-            options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
+            FileInputStream serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
+            FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
+            FirebaseApp.initializeApp(options);
         }
         catch (IOException e) {
-            e.printStackTrace();
+            NotificationManager.addExceptionError(e);
         }
-        FirebaseApp.initializeApp(options);
 
         //region Template interactions
         /*
@@ -94,11 +91,6 @@ public class FireStoreConfig {
     /**
      * A method to setup a product to be added to the database
      * param attention required - starts out FALSE
-     * @param categorie_tag
-     * @param min_supply
-     * @param product_descript
-     * @param product_nr
-     * @param supply
      * @return the hashmap which can be added to the database with the correct method
      */
     public Map setupProductDocument(String categorie_tag, int min_supply, String product_descript, String product_nr, int supply) {
@@ -115,7 +107,6 @@ public class FireStoreConfig {
     /**
      * A method to setup a product to be added to the database
      * param attention required - starts out FALSE
-     * @param product_nr
      * @return the hashmap which can be added to the database with the correct method
      */
     public Map setupSalesDocument(String product_nr, String timeStamp) {
@@ -128,8 +119,6 @@ public class FireStoreConfig {
     /**
      * A method to setup a product to be added to the database
      * param attention required - starts out FALSE
-     * @param AVG_DeliveryTime
-     * @param Supplier_Name
      * @return the hashmap which can be added to the database with the correct method
      */
     public Map setupSuppliersDocument(int AVG_DeliveryTime, String Supplier_Name) {
@@ -143,44 +132,54 @@ public class FireStoreConfig {
      * Adds a document of information about a product to the database
      * @param productDocument
      * @param docData
-     * @throws Exception
+     * 
      */
-    public void addProductDocument(String collection, String productDocument, Map docData) throws Exception {
+    public void addProductDocument(String collection, String productDocument, Map docData){
         dbConnect();
         ApiFuture<WriteResult> future = db.collection(collection).document(productDocument).set(docData);
-        System.out.println("Update time : " + future.get().getUpdateTime());
-        db.close();
+        try{
+            System.out.println("Update time : " + future.get().getUpdateTime());
+        }catch (InterruptedException | ExecutionException e) {
+            NotificationManager.addExceptionError(e);
+        }
+        closeDb();
     }
 
     /**
      * Adds a document of information about a product to the database
-     * @param docData
-     * @throws Exception
+     * 
      */
-    public void addSalesDocument(String salesDocument, Map docData) throws Exception {
+    public void addSalesDocument(String salesDocument, Map docData) {
         dbConnect();
         ApiFuture<WriteResult> future = db.collection("Sales").document(salesDocument).set(docData);
-        System.out.println("Update time : " + future.get().getUpdateTime());
-        db.close();
+        try {
+            System.out.println("Update time : " + future.get().getUpdateTime());
+        }catch (InterruptedException | ExecutionException e) {
+            NotificationManager.addExceptionError(e);
+        }
+        closeDb();
     }
 
     /**
      * Adds a document of information about a product to the database
      * @param suppliersDocument insert the supplier number
-     * @throws Exception
+     * 
      */
-    public void addSuppliersDocument(String suppliersDocument, Map docData) throws Exception {
+    public void addSuppliersDocument(String suppliersDocument, Map docData){
         dbConnect();
         ApiFuture<WriteResult> future = db.collection("Suppliers").document(suppliersDocument).set(docData);
-        System.out.println("Update time : " + future.get().getUpdateTime());
-        db.close();
+        try{
+            System.out.println("Update time : " + future.get().getUpdateTime());
+        }catch (InterruptedException | ExecutionException e) {
+            NotificationManager.addExceptionError(e);
+        }
+        closeDb();
     }
 
     /**
      * Make a list of all the products
-     * @return
      */
-    public Iterable<DocumentReference> retrieveAllProducts() throws Exception {
+    public Iterable<DocumentReference> retrieveAllProducts(){
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
         int i = 0;
@@ -189,15 +188,14 @@ public class FireStoreConfig {
             System.out.println("Product ID: " + collRef.getId());
         }
         System.out.println(i);
-        db.close();
+        closeDb();
         return collections;
     }
 
     /**
      * Make a list of all the Sales
-     * @return
      */
-    public Iterable<DocumentReference> retrieveAllSales() throws Exception {
+    public Iterable<DocumentReference> retrieveAllSales(){
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
         int i = 0;
@@ -207,15 +205,14 @@ public class FireStoreConfig {
             System.out.println("Sale ID: " + collRef.getId());
         }
         System.out.println(i);
-        db.close();
+        closeDb();
         return collections;
     }
 
     /**
      * Make a list of all the suppliers
-     * @return
      */
-    public Iterable<DocumentReference> retrieveAllSuppliers() throws Exception {
+    public Iterable<DocumentReference> retrieveAllSuppliers(){
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
         int i = 0;
@@ -225,72 +222,67 @@ public class FireStoreConfig {
             System.out.println("Supplier ID: " + collRef.getId());
         }
         System.out.println(i);
-        db.close();
+        closeDb();
         return collections;
     }
 
     /**
      * Read out a specific product, product's sales date or supplier
-     * @param collection
-     * @param documentNumber
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
-    public void readFromDB(String collection, String documentNumber) throws Exception {
+    public void readFromDB(String collection, String documentNumber){
         dbConnect();
         DocumentReference docRef = db.collection(collection).document(documentNumber);
         ApiFuture<DocumentSnapshot> future = docRef.get();
-        DocumentSnapshot document = future.get();
+        DocumentSnapshot document = null;
+        try {
+            document = future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            NotificationManager.addExceptionError(e);
+        }
         try {
             System.out.println("Document: " + document.getData());
         } catch(Exception e) {
             System.out.println("No document found");
         }
-        db.close();
+        closeDb();
     }
 
     /**
      * Update a field inside a product or supplier or sales data
-     * @param collectionName
-     * @param documentNumber
-     * @param fieldType
-     * @param value
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
-    public void updateDocument(String collectionName, String documentNumber, String fieldType, Object value) throws Exception {
+    public void updateDocument(String collectionName, String documentNumber, String fieldType, Object value){
     dbConnect();
     DocumentReference docRef = db.collection(collectionName).document(documentNumber);
     Map<String, Object> update = new HashMap<>();
     update.put(fieldType, value);
 
     ApiFuture<WriteResult> updateData = docRef.update(update);
-        System.out.println("Update time : " + updateData.get().getUpdateTime());
-        db.close();
+        try {
+            System.out.println("Update time : " + updateData.get().getUpdateTime());
+        } catch (InterruptedException | ExecutionException e) {
+            NotificationManager.addExceptionError(e);
+        }
+        closeDb();
     }
 
     /**
      * Delete a document from one of the collections
-     * @param collection
-     * @param documentNumber
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
-    public void deleteDocument(String collection, String documentNumber) throws Exception {
+    public void deleteDocument(String collection, String documentNumber){
     dbConnect();
     ApiFuture<WriteResult> writeResult = db.collection(collection).document(documentNumber).delete();
-        System.out.println("Update time : " + writeResult.get().getUpdateTime());
-        db.close();
+        try {
+            System.out.println("Update time : " + writeResult.get().getUpdateTime());
+        } catch (InterruptedException | ExecutionException e) {
+            NotificationManager.addExceptionError(e);
+        }
+        closeDb();
     }
 
     /**
      * Delete a collection in batches to prevent out-of-memory errors
-     * @param collection
-     * @param batchSize input how many of the collection should be deleted
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
-    public void deleteCollection(String collection, int batchSize) throws Exception {
+    public void deleteCollection(String collection, int batchSize){
         try {
             dbConnect();
             CollectionReference colRef = db.collection(collection);
@@ -306,6 +298,14 @@ public class FireStoreConfig {
         } catch (Exception e) {
             System.err.println("Error deleting collection : " + e.getMessage());
         }
-        db.close();
+        closeDb();
+    }
+
+    private void closeDb(){
+        try{
+            db.close();
+        }catch(Exception e){
+            NotificationManager.addExceptionError(e);
+        }
     }
 }
