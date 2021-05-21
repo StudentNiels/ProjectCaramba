@@ -1,5 +1,6 @@
 package com.caramba.ordertool;
 
+import FireBaseConfig.FireStoreConfig;
 import com.caramba.ordertool.Notifications.Notification;
 import com.caramba.ordertool.Notifications.NotificationManager;
 import com.caramba.ordertool.Notifications.NotificationType;
@@ -14,13 +15,14 @@ public class Application {
     private static final ProductList products = new ProductList();
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
-
     private static final TimePeriodController timePeriods = new TimePeriodController();
+    private static final FireStoreConfig config = new FireStoreConfig();
 
     private static String[] cmdArguments;
 
     public static void main(String[] args){
         cmdArguments = args;
+        config.fireStoreConfig();
         NotificationManager.add(new Notification(NotificationType.INFO,("Caramba Order Tool started. Ready for commands.")));
         while(true){
             Scanner input = new Scanner(System.in);
