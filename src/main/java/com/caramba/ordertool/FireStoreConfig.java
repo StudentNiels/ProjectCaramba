@@ -1,4 +1,4 @@
-package FireBaseConfig;
+package com.caramba.ordertool;
 
 import com.caramba.ordertool.Notifications.NotificationManager;
 import com.google.api.core.ApiFuture;

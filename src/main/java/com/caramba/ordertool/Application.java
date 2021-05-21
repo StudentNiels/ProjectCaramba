@@ -1,6 +1,5 @@
 package com.caramba.ordertool;
 
-import FireBaseConfig.FireStoreConfig;
 import com.caramba.ordertool.Notifications.Notification;
 import com.caramba.ordertool.Notifications.NotificationManager;
 import com.caramba.ordertool.Notifications.NotificationType;
