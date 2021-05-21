@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class FireStoreConfig {
@@ -39,15 +38,15 @@ public class FireStoreConfig {
         //region Template interactions
         /*
         //Create product document
-        Map setupP = setupProductDocument("Zomer", 10, "Naturado Onbemeste Tuinaarde 20 liter", "1234568", 60);
-        addProductDocument("Products", "1235", setupP);
+        HashMap<String, Object> setupP = setupProductDocument("Zomer", 10, "Naturado Onbemeste Tuinaarde 20 liter", "1234568", 60);
+        addProductDocument("Products", "1236", setupP);
 
         //Create sales document
-        Map setupS = setupSalesDocument("1234568", getTimeStamp());
+        HashMap<String, Object> setupS = setupSalesDocument("1234568", getTimeStamp());
         addSalesDocument("1234", setupS);
 
         //Create supplier document
-        Map setupSup = setupSuppliersDocument(21, "Bremen");
+        HashMap<String, Object> setupSup = setupSuppliersDocument(21, "Bremen");
         addSuppliersDocument("00002", setupSup);
 
         //Read individual
@@ -93,8 +92,8 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public Map setupProductDocument(String categorie_tag, int min_supply, String product_descript, String product_nr, int supply) {
-        Map<String, Object> docData = new HashMap<>();
+    public HashMap setupProductDocument(String categorie_tag, int min_supply, String product_descript, String product_nr, int supply) {
+        HashMap<String, Object> docData = new HashMap<>();
         docData.put("Attention_Required", false);
         docData.put("Categorie_Tag", categorie_tag);
         docData.put("Min_Supply", min_supply);
@@ -109,8 +108,8 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public Map setupSalesDocument(String product_nr, String timeStamp) {
-        Map<String, Object> docData = new HashMap<>();
+    public HashMap<String, Object> setupSalesDocument(String product_nr, String timeStamp) {
+        HashMap<String, Object> docData = new HashMap<>();
         docData.put("Product_NR", product_nr);
         docData.put("Sell_Date", timeStamp);
         return docData;
@@ -121,8 +120,8 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public Map setupSuppliersDocument(int AVG_DeliveryTime, String Supplier_Name) {
-        Map<String, Object> docData = new HashMap<>();
+    public HashMap setupSuppliersDocument(int AVG_DeliveryTime, String Supplier_Name) {
+        HashMap<String, Object> docData = new HashMap<>();
         docData.put("AVG_DeliveryTime", AVG_DeliveryTime);
         docData.put("Supplier_Name", Supplier_Name);
         return docData;
@@ -134,7 +133,7 @@ public class FireStoreConfig {
      * @param docData
      * 
      */
-    public void addProductDocument(String collection, String productDocument, Map docData){
+    public void addProductDocument(String collection, String productDocument, HashMap docData){
         dbConnect();
         ApiFuture<WriteResult> future = db.collection(collection).document(productDocument).set(docData);
         try{
@@ -149,7 +148,7 @@ public class FireStoreConfig {
      * Adds a document of information about a product to the database
      * 
      */
-    public void addSalesDocument(String salesDocument, Map docData) {
+    public void addSalesDocument(String salesDocument, HashMap docData) {
         dbConnect();
         ApiFuture<WriteResult> future = db.collection("Sales").document(salesDocument).set(docData);
         try {
@@ -165,7 +164,7 @@ public class FireStoreConfig {
      * @param suppliersDocument insert the supplier number
      * 
      */
-    public void addSuppliersDocument(String suppliersDocument, Map docData){
+    public void addSuppliersDocument(String suppliersDocument, HashMap docData){
         dbConnect();
         ApiFuture<WriteResult> future = db.collection("Suppliers").document(suppliersDocument).set(docData);
         try{
@@ -253,7 +252,7 @@ public class FireStoreConfig {
     public void updateDocument(String collectionName, String documentNumber, String fieldType, Object value){
     dbConnect();
     DocumentReference docRef = db.collection(collectionName).document(documentNumber);
-    Map<String, Object> update = new HashMap<>();
+    HashMap<String, Object> update = new HashMap<>();
     update.put(fieldType, value);
 
     ApiFuture<WriteResult> updateData = docRef.update(update);
