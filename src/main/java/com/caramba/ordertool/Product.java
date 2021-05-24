@@ -8,7 +8,7 @@ public class Product {
     public Product(String productNum, String description, Season season) {
         this.productNum = productNum;
         this.description = description;
-        this.season = season;
+        this.season = Season.SUMMER;
     }
 
     public Product(String productNum, String description) {
