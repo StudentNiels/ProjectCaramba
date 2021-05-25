@@ -20,9 +20,9 @@ public class TimePeriodController {
 
     private void load(){
         timePeriods.add(new TimePeriod("Winter", "--12-01", "--02-29"));
-        timePeriods.add(new TimePeriod("Spring", "--03-01", "--05-31"));
-        timePeriods.add(new TimePeriod("summer", "--06-01", "--08-31"));
-        timePeriods.add(new TimePeriod("summer", "--09-01", "--11-30"));
+        timePeriods.add(new TimePeriod("Lente", "--03-01", "--05-31"));
+        timePeriods.add(new TimePeriod("Zomer", "--06-01", "--08-31"));
+        timePeriods.add(new TimePeriod("Herfst", "--09-01", "--11-30"));
     }
 
     public ArrayList<TimePeriod> getActiveTimePeriods(){
@@ -35,7 +35,7 @@ public class TimePeriodController {
         return result;
     }
 
-    public ArrayList<TimePeriod> getStaredToday(){
+    public ArrayList<TimePeriod> getStartedToday(){
         ArrayList<TimePeriod> result = new ArrayList<>();
         MonthDay current = MonthDay.now();
         for(TimePeriod period: timePeriods) {
@@ -62,7 +62,7 @@ public class TimePeriodController {
     }
 
     public void notifyStartedToday(){
-        ArrayList<TimePeriod> n = getStaredToday();
+        ArrayList<TimePeriod> n = getStartedToday();
         if(n.size() > 0){
             StringBuilder s = new StringBuilder();
             for(TimePeriod period : n){

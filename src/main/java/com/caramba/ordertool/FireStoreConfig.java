@@ -3,6 +3,7 @@ package com.caramba.ordertool;
 import com.caramba.ordertool.Notifications.NotificationManager;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
+
 import com.google.cloud.firestore.*;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -12,9 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class FireStoreConfig {
@@ -42,7 +41,7 @@ public class FireStoreConfig {
         addProductDocument("Products", "1236", setupP);
 
         //Create sales document
-        HashMap<String, Object> setupS = setupSalesDocument("1234568", getTimeStamp());
+        HashMap<String, Object> setupS = setupSalesDocument("1234568", getTimeStamp(), 1);
         addSalesDocument("1234", setupS);
 
         //Create supplier document
@@ -92,10 +91,10 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public HashMap setupProductDocument(String categorie_tag, int min_supply, String product_descript, String product_nr, int supply) {
+    public HashMap setupProductDocument(String product_descript, TimePeriod timePeriod, String product_nr, int min_supply, int supply) {
         HashMap<String, Object> docData = new HashMap<>();
         docData.put("Attention_Required", false);
-        docData.put("Categorie_Tag", categorie_tag);
+        docData.put("Time period", timePeriod);
         docData.put("Min_Supply", min_supply);
         docData.put("Product_Descript", product_descript);
         docData.put("Product_NR", product_nr);
@@ -108,10 +107,11 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public HashMap<String, Object> setupSalesDocument(String product_nr, String timeStamp) {
+    public HashMap<String, Object> setupSalesDocument(String product_nr, String timeStamp, int amount) {
         HashMap<String, Object> docData = new HashMap<>();
         docData.put("Product_NR", product_nr);
         docData.put("Sell_Date", timeStamp);
+        docData.put("Amount", amount);
         return docData;
     }
 
@@ -129,12 +129,13 @@ public class FireStoreConfig {
 
     /**
      * Adds a document of information about a product to the database
-     * @param productDocument
      * @param docData
      * 
      */
-    public void addProductDocument(String collection, String productDocument, HashMap docData){
+    public void addProductDocument(HashMap docData){
         dbConnect();
+        String collection = "Products";
+        String productDocument = "productDocument";
         ApiFuture<WriteResult> future = db.collection(collection).document(productDocument).set(docData);
         try{
             System.out.println("Update time : " + future.get().getUpdateTime());
@@ -142,6 +143,16 @@ public class FireStoreConfig {
             NotificationManager.addExceptionError(e);
         }
         closeDb();
+    }
+
+    public void addProductListToDB(HashMap products)
+    {
+        HashMap docData = null;
+        products.entrySet();
+        for (Object product : products.entrySet())
+        {
+            //addProductDocument(product.docData);
+        }
     }
 
     /**

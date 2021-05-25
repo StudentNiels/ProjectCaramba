@@ -9,12 +9,14 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
+import static java.lang.Integer.parseInt;
+
 public class Application {
     //keeps track of all known products
     private static final ProductList products = new ProductList();
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
-    private static final TimePeriodController timePeriods = new TimePeriodController();
+    private static final TimePeriodController timePeriodController = new TimePeriodController();
     private static final FireStoreConfig config = new FireStoreConfig();
 
     private static String[] cmdArguments;
@@ -81,7 +83,7 @@ public class Application {
                     Supplier s = supplierEntry.getValue();
                     suppliersString.append(" ").append(s.getName());
                 }
-                NotificationManager.add(new Notification(NotificationType.INFO,("| id: " + id.toString() + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + suppliersString)));
+                NotificationManager.add(new Notification(NotificationType.INFO,("| id: " + id.toString() + " | Product number: " + p.getProduct_num() + " | Description: " + p.getProduct_descript() + " | " + suppliersString)));
             }
         }
     }
@@ -101,7 +103,7 @@ public class Application {
     public static void addSupplier(String[] command) {
             try{
                 String name = command[2];
-                int deliveryTime = Integer.parseInt(command[3]);
+                int deliveryTime = parseInt(command[3]);
                 if(deliveryTime < 0){
                     NotificationManager.add(new Notification(NotificationType.ERROR,("Delivery time can't be negative")));
                     throw new InvalidParameterException();
@@ -115,10 +117,13 @@ public class Application {
 
     public static void addProduct(String[] command) {
         try{
-            String productNumber = command[2];
-            String description = command[3];
-            products.add(new Product(productNumber, description));
-            NotificationManager.add(new Notification(NotificationType.INFO,(description + " was added to the product list")));
+            String product_descript = command[2];
+            String product_num = command[3];
+            String min_supply = command[4];
+            String supply = command[5];
+
+            products.add(new Product(product_descript, product_num, parseInt(min_supply), parseInt(supply)));
+            NotificationManager.add(new Notification(NotificationType.INFO,("Product description: " + product_descript + "\r\nProduct number: " + product_num + "\r\nA minimum supply limit:" + min_supply + "\r\nThe current supply: " + supply + "\r\nWas added to the product list")));
         }catch (IndexOutOfBoundsException | NumberFormatException e){
             NotificationManager.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use add product [product number] [description]")));
         }
@@ -160,7 +165,7 @@ public class Application {
             if(p == null){
                 NotificationManager.add(new Notification(NotificationType.INFO,("that product does not exist")));
             }else{
-                NotificationManager.add(new Notification(NotificationType.INFO,("'" + p.getDescription() + "' was removed")));
+                NotificationManager.add(new Notification(NotificationType.INFO,("'" + p.getProduct_descript() + "' was removed")));
                 products.remove(id);
             }
         }catch(IndexOutOfBoundsException | IllegalArgumentException e) {
@@ -176,7 +181,7 @@ public class Application {
             id = UUID.fromString(command[2]);
             Supplier v = suppliers.get(id);
             v.addProduct(p);
-            NotificationManager.add(new Notification(NotificationType.INFO,("Created link between " + v.getName() + " and " + p.getDescription())));
+            NotificationManager.add(new Notification(NotificationType.INFO,("Created link between " + v.getName() + " and " + p.getProduct_descript())));
         }catch(IndexOutOfBoundsException | IllegalArgumentException e) {
             NotificationManager.add(new Notification(NotificationType.ERROR,("Invalid syntax. use [product index] [supplier index]")));
         }
