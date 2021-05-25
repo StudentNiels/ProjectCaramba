@@ -82,7 +82,10 @@ public class Application {
                     Supplier s = supplierEntry.getValue();
                     suppliersString.append(" ").append(s.getName());
                 }
-                NotificationManager.add(new Notification(NotificationType.INFO,("| id: " + id.toString() + " | Product number: " + p.getProductNum() + " | Description: " + p.getDescription() + " | " + suppliersString)));
+                NotificationManager.add(new Notification(NotificationType.INFO,(
+                        "| id: " + id.toString() + " | Product number: " + p.getProductNum()
+                        + " | Description: " + p.getDescription() + " | Amount in storage: "
+                        + p.getQuantity() +" | Minimum for storage: " + p.getMinQuantity() + " | " + suppliersString)));
             }
         }
     }
@@ -118,10 +121,11 @@ public class Application {
         try{
             String productNumber = command[2];
             String description = command[3];
-            products.add(new Product(productNumber, description));
+            int minStorage = Integer.parseInt(command[4]);
+            products.add(new Product(productNumber, description, minStorage));
             NotificationManager.add(new Notification(NotificationType.INFO,(description + " was added to the product list")));
         }catch (IndexOutOfBoundsException | NumberFormatException e){
-            NotificationManager.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use add product [product number] [description]")));
+            NotificationManager.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use add product [product number] [description] [minimum for storage]")));
         }
     }
 
