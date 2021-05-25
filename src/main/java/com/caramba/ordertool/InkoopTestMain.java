@@ -10,15 +10,15 @@ public class InkoopTestMain {
         supplier2 = new Supplier("Leeuwarden");
         supplier3 = new Supplier("Groningen");
 
-        Product product1 = new Product("asd123","Anti-insecten Autowasmiddel", Season.SUMMER);
-        Product product2 = new Product("asd124","Anti-insecten Autowasmiddel", Season.SUMMER);
-        Product product3 = new Product("asd122","Anti-insecten Autowasmiddel", Season.SUMMER);
+        Product product1 = new Product("asd123","Anti-insecten Autowasmiddel", "zomer");
+        Product product2 = new Product("asd124","Anti-insecten Autowasmiddel", "zomer");
+        Product product3 = new Product("asd122","Anti-insecten Autowasmiddel", "zomer");
         Product product4 = new Product("asd523","Autowasmiddel Glans");
         Product product5 = new Product("asd524","Autowasmiddel Glans");
         Product product6 = new Product("asd522","Autowasmiddel Glans");
-        Product product7 = new Product("asd823","Anti-vries Autowasmiddel", Season.WINTER);
-        Product product8 = new Product("asd824","Anti-vries Autowasmiddel", Season.WINTER);
-        Product product9 = new Product("asd822","Anti-vries Autowasmiddel", Season.WINTER);
+        Product product7 = new Product("asd823","Anti-vries Autowasmiddel", "winter");
+        Product product8 = new Product("asd824","Anti-vries Autowasmiddel", "winter");
+        Product product9 = new Product("asd822","Anti-vries Autowasmiddel", "winter");
 
         // Supplier test, commented out in order to make adding order works
         /*

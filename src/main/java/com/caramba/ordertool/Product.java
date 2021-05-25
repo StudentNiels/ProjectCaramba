@@ -5,14 +5,16 @@ public class Product {
     private String description;
     private Season season;
 
-    public Product(String productNum, String description, Season season) {
+    public Product(String productNum, String description) {
         this.productNum = productNum;
         this.description = description;
-        this.season = Season.SUMMER;
+        this.season = Season.UNDEFINED;
     }
 
-    public Product(String productNum, String description) {
-        this(productNum, description, Season.UNDEFINED);
+    public Product(String productNum, String description, String season) {
+        this.productNum = productNum;
+        this.description = description;
+        this.season = setSeason(season);
     }
 
     //region Getters and Setters
@@ -36,8 +38,24 @@ public class Product {
         return season;
     }
 
-    public void setSeason(Season season) {
-        this.season = season;
+    public Season setSeason(String season) {
+        Season returnValue = null;
+        if(season.equals("zomer")){
+            returnValue = Season.SUMMER;
+        }
+        if(season.equals("winter")){
+            returnValue = Season.WINTER;
+        }
+        if(season.equals("herfst")){
+            returnValue = Season.FALL;
+        }
+        if(season.equals("lente")){
+            returnValue = Season.SPRING;
+        }
+        if(season.equals("allround")){
+            returnValue = Season.ALLROUND;
+        }
+        return returnValue;
     }
 
     //endregion

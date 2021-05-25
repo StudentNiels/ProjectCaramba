@@ -125,6 +125,11 @@ public class Application {
         try{
             String productNumber = command[2];
             String description = command[3];
+            String season = "";
+            if(!season.equals("")){
+                season = command[4];
+                products.add(new Product(productNumber, description, season));
+            }
             products.add(new Product(productNumber, description));
             System.out.println(description + " was added to the product list");
         }catch (IndexOutOfBoundsException | NumberFormatException e){
