@@ -54,6 +54,10 @@ public class Supplier {
     public boolean containsProductWithKey(UUID k){
         return products.containsKey(k);
     }
+
+    public boolean containsProduct(Product p){
+        return products.contains(p);
+    }
 //endregion
 
     /**
