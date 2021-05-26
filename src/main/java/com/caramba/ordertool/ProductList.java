@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public class ProductList {
     private final HashMap<UUID, Product> products = new HashMap<>();
+    private TimePeriodController tpc = new TimePeriodController();
 
     public HashMap<UUID, Product> getProducts() {
         return products;
@@ -45,39 +46,14 @@ public class ProductList {
     //#endregion
 
     public void showProductBySeason(String season){
+        season = season.toLowerCase();
         ArrayList<Product> returnedProducts = new ArrayList<>();
-        switch (season){
-            case "zomer":
-                for (Map.Entry<UUID, Product> productEntry : products.entrySet()) {
-                    if(productEntry.getValue().getSeason().equals(Season.SUMMER))
-                    returnedProducts.add(productEntry.getValue());
-                }
-                break;
-            case "herfst":
-                for (Map.Entry<UUID, Product> productEntry : products.entrySet()) {
-                    if(productEntry.getValue().getSeason().equals(Season.FALL))
-                        returnedProducts.add(productEntry.getValue());
-                }
-                break;
-            case "winter":
-                for (Map.Entry<UUID, Product> productEntry : products.entrySet()) {
-                    if(productEntry.getValue().getSeason().equals(Season.WINTER))
-                        returnedProducts.add(productEntry.getValue());
-                }
-                break;
-            case "lente":
-                for (Map.Entry<UUID, Product> productEntry : products.entrySet()) {
-                    if(productEntry.getValue().getSeason().equals(Season.SPRING))
-                        returnedProducts.add(productEntry.getValue());
-                }
-                break;
-            case "allround":
-                for (Map.Entry<UUID, Product> productEntry : products.entrySet()) {
-                    if(productEntry.getValue().getSeason().equals(Season.ALLROUND))
-                        returnedProducts.add(productEntry.getValue());
-                }
-                break;
+
+        for (Map.Entry<UUID, Product> productEntry : products.entrySet()) {
+            if(productEntry.getValue().getSeason().equals(tpc.getTimePeriodByString(season)))
+            returnedProducts.add(productEntry.getValue());
         }
+
         if(returnedProducts.size() == 0){
             System.out.println("No items have been found");
         }else{
