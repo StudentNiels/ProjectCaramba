@@ -1,7 +1,7 @@
 package com.caramba.ordertool;
 
 import com.caramba.ordertool.Notifications.NotificationManager;
-import com.caramba.ordertool.views.ProductOverviewViewController;
+import com.caramba.ordertool.scenes.ProductOverviewViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.InvalidParameterException;
 
 public class OrderToolGui extends Application {
     private Stage stage;

@@ -1,10 +1,8 @@
-package com.caramba.ordertool.views;
+package com.caramba.ordertool.scenes;
 
 import com.caramba.ordertool.Product;
 import com.caramba.ordertool.ProductList;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
