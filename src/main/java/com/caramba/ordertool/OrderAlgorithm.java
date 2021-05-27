@@ -7,13 +7,8 @@ import java.util.UUID;
 
 public class OrderAlgorithm {
     TimePeriodController tpc = new TimePeriodController();
-    ArrayList<TimePeriod> currentPeriod;
-    TimePeriod nextPeriod;
-
-    public OrderAlgorithm(){
-        currentPeriod = tpc.getActiveTimePeriods();
-        nextPeriod = null;
-    }
+    ArrayList<TimePeriod> currentPeriod = tpc.getActiveTimePeriods();
+    TimePeriod nextPeriod = null;
 
     /**
      * This method is the algorithm that will return a suggestion list with amounts
