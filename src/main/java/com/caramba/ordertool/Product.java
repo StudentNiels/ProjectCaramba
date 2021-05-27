@@ -3,19 +3,19 @@ package com.caramba.ordertool;
 public class Product {
     private String productNum;
     private String description;
-    private TimePeriod season;
+    private TimePeriod period;
     private TimePeriodController tpc = new TimePeriodController();
 
     public Product(String productNum, String description) {
         this.productNum = productNum;
         this.description = description;
-        this.season = null;
+        this.period = null;
     }
 
     public Product(String productNum, String description, String season) {
         this.productNum = productNum;
         this.description = description;
-        this.season = tpc.getTimePeriodByString(season);
+        this.period = tpc.getTimePeriodByString(season);
     }
 
     //region Getters and Setters
@@ -36,28 +36,11 @@ public class Product {
     }
 
     public TimePeriod getSeason() {
-        return season;
+        return period;
     }
 
-    public Season setSeason(String season) {
-        Season returnValue = null;
-        if(season.equals("zomer")){
-            returnValue = Season.SUMMER;
-        }
-        if(season.equals("winter")){
-            returnValue = Season.WINTER;
-        }
-        if(season.equals("herfst")){
-            returnValue = Season.FALL;
-        }
-        if(season.equals("lente")){
-            returnValue = Season.SPRING;
-        }
-        if(season.equals("allround")){
-            returnValue = Season.ALLROUND;
-        }
-        return returnValue;
+    public void setSeason(String season) {
+        period = tpc.getTimePeriodByString(season);
     }
-
     //endregion
 }
