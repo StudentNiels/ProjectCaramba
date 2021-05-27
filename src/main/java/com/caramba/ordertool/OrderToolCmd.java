@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class Application {
+public class OrderToolCmd {
     //keeps track of all known products
     private static final ProductList products = new ProductList();
     //Keeps track of all known suppliers
@@ -22,20 +22,25 @@ public class Application {
     public static void main(String[] args){
         cmdArguments = args;
         config.fireStoreConfig();
-        NotificationManager.add(new Notification(NotificationType.INFO,("Caramba Order Tool started. Ready for commands.")));
-        while(true){
-            Scanner input = new Scanner(System.in);
-            String[] command = input.nextLine().split("\\s+");
-            switch (command[0]) {
-                case "exit" -> System.exit(0);
-                case "display" -> display(command);
-                case "add" -> add(command);
-                case "remove" -> remove(command);
-                case "link" -> link(command);
-                case "clear" -> clear(command);
-                case "pdf" -> createOrderlistPDF(command);
-                case "loadtest" -> loadTestData();
-                default -> NotificationManager.add(new Notification(NotificationType.ERROR, "Unknown command " + command[0] + ". Use --help to see supported commands"));
+        if(/*args.length >= 1 && args[0] == "gui"*/true){
+            NotificationManager.add(new Notification(NotificationType.INFO,("Starting Order Tool with gui.")));
+            OrderToolGui.main(args);
+        }else {
+            NotificationManager.add(new Notification(NotificationType.INFO, ("Caramba Order Tool started. Ready for commands.")));
+            while (true) {
+                Scanner input = new Scanner(System.in);
+                String[] command = input.nextLine().split("\\s+");
+                switch (command[0]) {
+                    case "exit" -> System.exit(0);
+                    case "display" -> display(command);
+                    case "add" -> add(command);
+                    case "remove" -> remove(command);
+                    case "link" -> link(command);
+                    case "clear" -> clear(command);
+                    case "pdf" -> createOrderlistPDF(command);
+                    case "loadtest" -> loadTestData();
+                    default -> NotificationManager.add(new Notification(NotificationType.ERROR, "Unknown command " + command[0] + ". Use --help to see supported commands"));
+                }
             }
         }
     }
