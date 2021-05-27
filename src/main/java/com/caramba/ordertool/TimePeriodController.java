@@ -57,6 +57,26 @@ public class TimePeriodController {
         return result;
     }
 
+    public TimePeriod getTimePeriodByString(String season){
+        TimePeriod timePeriod = null;
+        season = season.toLowerCase();
+        switch (season){
+            case "zomer":
+                timePeriod = timePeriods.get(2);
+                break;
+            case "lente":
+                timePeriod = timePeriods.get(1);
+                break;
+            case "winter":
+                timePeriod = timePeriods.get(0);
+                break;
+            case "herfst":
+                timePeriod = timePeriods.get(3);
+                break;
+        }
+        return timePeriod;
+    }
+
     public void addTimePeriod(String name, String startDate, String endDate){
         timePeriods.add(new TimePeriod(name, startDate, endDate));
     }

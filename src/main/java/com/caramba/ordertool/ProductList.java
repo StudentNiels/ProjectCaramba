@@ -11,17 +11,18 @@ import java.util.concurrent.ExecutionException;
 public class ProductList {
     private final HashMap<UUID, Product> products = new HashMap<>();
 
-    public HashMap<UUID, Product> getProducts() throws ExecutionException, InterruptedException {
-        FireStoreConfig fireStoreConfig = new FireStoreConfig();
-        for(DocumentSnapshot document : fireStoreConfig.retrieveAllProducts())
-        {
-            UUID uuid = UUID.fromString(document.getId());
-            // = document.getData();
-            //for (HashSet : document.getData().entrySet().{
-            //    products.put(uuid, document.getData();
-            //}
-        }
+    public HashMap<UUID, Product> getProducts() {
         return products;
+    }
+
+    public void fillMapFromDB() throws ExecutionException, InterruptedException {
+        FireStoreConfig fireStoreConfig = new FireStoreConfig();
+        for(Map.Entry<UUID, Product> entry : fireStoreConfig.retrieveAllProducts().entrySet())
+        {
+            UUID uuid = entry.getKey();
+            Product product = entry.getValue();
+            products.put(uuid,product);
+        }
     }
 
     //#region delegate functions

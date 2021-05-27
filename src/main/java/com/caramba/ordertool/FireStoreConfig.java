@@ -197,17 +197,20 @@ public class FireStoreConfig {
      * Make a list of all the products
      * @return
      */
-    public List<QueryDocumentSnapshot> retrieveAllProducts() throws ExecutionException, InterruptedException {
+    public HashMap<UUID, Product> retrieveAllProducts() throws ExecutionException, InterruptedException {
         dbConnect();
         ApiFuture<QuerySnapshot> future = db.collection("Products").get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-        //int i = 0;
-        //for (DocumentSnapshot document : documents) {
-        //    i++;
-        //    System.out.println((i) + ". Product ID: " + document.getId() + document.toObject(Product.class));
-        //}
-        closeDb();
-        return documents;
+        HashMap<UUID, Product> products = new HashMap<>();
+        int i = 0;
+        for (DocumentSnapshot document : documents) {
+            i++;
+            UUID uuid = UUID.fromString(document.getId());
+            //String product_num, String product_descript, String timePeriod, int min_supply, int supply
+            Product product = new Product(document.get("product_num").toString(),document.get("product_descript").toString(),document.get("timePeriod").toString(),Integer.parseInt(document.get("min_supply").toString()),Integer.parseInt(document.get("supply").toString()));
+            products.put(uuid, product);
+        }
+        return products;
     }
 
     /**

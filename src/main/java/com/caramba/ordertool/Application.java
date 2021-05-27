@@ -14,7 +14,7 @@ import static java.lang.Integer.parseInt;
 
 public class Application {
     //keeps track of all known products
-    private static ProductList products = new ProductList();
+    private static final ProductList products = new ProductList();
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
     private static final TimePeriodController timePeriodController = new TimePeriodController();
@@ -25,6 +25,7 @@ public class Application {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         cmdArguments = args;
         config.fireStoreConfig();
+        products.fillMapFromDB();
         NotificationManager.add(new Notification(NotificationType.INFO,("Caramba Order Tool started. Ready for commands.")));
         while(true){
             Scanner input = new Scanner(System.in);
@@ -72,7 +73,6 @@ public class Application {
     }
 
     public static void displayProducts() throws ExecutionException, InterruptedException {
-        products.getProducts();
         if(products.size() == 0){
             NotificationManager.add(new Notification(NotificationType.INFO,("The product list is empty")));
         }else{
