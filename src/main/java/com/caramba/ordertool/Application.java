@@ -8,12 +8,13 @@ import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import static java.lang.Integer.parseInt;
 
 public class Application {
     //keeps track of all known products
-    private static final ProductList products = new ProductList();
+    private static ProductList products = new ProductList();
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
     private static final TimePeriodController timePeriodController = new TimePeriodController();
@@ -21,7 +22,7 @@ public class Application {
 
     private static String[] cmdArguments;
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         cmdArguments = args;
         config.fireStoreConfig();
         NotificationManager.add(new Notification(NotificationType.INFO,("Caramba Order Tool started. Ready for commands.")));
@@ -51,7 +52,7 @@ public class Application {
                 case "products" -> displayProducts();
                 default -> throw new InvalidParameterException();
             }
-        }catch(IndexOutOfBoundsException | InvalidParameterException e){
+        }catch(IndexOutOfBoundsException | InvalidParameterException | ExecutionException | InterruptedException e){
             NotificationManager.add(new Notification(NotificationType.ERROR, "Invalid syntax. Please use 'display products' or 'display suppliers"));
         }
     }
@@ -70,11 +71,13 @@ public class Application {
         }
     }
 
-    public static void displayProducts(){
+    public static void displayProducts() throws ExecutionException, InterruptedException {
+        products.getProducts();
         if(products.size() == 0){
             NotificationManager.add(new Notification(NotificationType.INFO,("The product list is empty")));
         }else{
             NotificationManager.add(new Notification(NotificationType.INFO,("The following products are registered:")));
+            config.retrieveAllProducts();
             for (Map.Entry<UUID, Product> entry : products.getProducts().entrySet()) {
                 UUID id = entry.getKey();
                 Product p = entry.getValue();
@@ -212,7 +215,6 @@ public class Application {
     public static void clearSuppliers() {
         suppliers.clear();
     }
-
 
     //#region getters and setters
     public static ProductList getMainProductList() {

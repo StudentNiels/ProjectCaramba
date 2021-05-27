@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+import static com.caramba.ordertool.Application.getMainProductList;
+
 public class FireStoreConfig {
 
     private Firestore db;
@@ -24,7 +26,7 @@ public class FireStoreConfig {
     /**
      * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
      */
-    public void fireStoreConfig(){
+    public void fireStoreConfig() throws ExecutionException, InterruptedException {
         try {
             FileInputStream serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
             FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
@@ -33,7 +35,6 @@ public class FireStoreConfig {
         catch (IOException e) {
             NotificationManager.addExceptionError(e);
         }
-
         //region Template interactions
         /*
         //Create product document
@@ -55,6 +56,9 @@ public class FireStoreConfig {
         retrieveAllProducts();
         retrieveAllSales();
         retrieveAllSuppliers();
+
+        //Retrieve specific data from a collectiot_documentList
+        retrieveSpecificProducts("Sales","Product_NR", "1234567");
 
         //Update a field of a product, sale, supplier
         updateDocument("Products", "1234", "Supply", 70);
@@ -145,14 +149,17 @@ public class FireStoreConfig {
         closeDb();
     }
 
-    public void addProductListToDB(HashMap products)
+    /**
+     * TODO: Write method to add a productList to the DB
+     */
+    public void addProductListToDB()
     {
-        HashMap docData = null;
-        products.entrySet();
-        for (Object product : products.entrySet())
-        {
-            //addProductDocument(product.docData);
-        }
+        //
+        getMainProductList();
+        //for (Map.Entry<UUID, Product> set : products.entrySet())
+        //{
+        //    addProductDocument(product.docData);
+        //}
     }
 
     /**
@@ -188,52 +195,66 @@ public class FireStoreConfig {
 
     /**
      * Make a list of all the products
+     * @return
      */
-    public Iterable<DocumentReference> retrieveAllProducts(){
+    public List<QueryDocumentSnapshot> retrieveAllProducts() throws ExecutionException, InterruptedException {
         dbConnect();
-        Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
-        int i = 0;
-        for (DocumentReference collRef : collections) {
-            i++;
-            System.out.println("Product ID: " + collRef.getId());
-        }
-        System.out.println(i);
+        ApiFuture<QuerySnapshot> future = db.collection("Products").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        //int i = 0;
+        //for (DocumentSnapshot document : documents) {
+        //    i++;
+        //    System.out.println((i) + ". Product ID: " + document.getId() + document.toObject(Product.class));
+        //}
         closeDb();
-        return collections;
+        return documents;
+    }
+
+    /**
+     * Make a list of all the products
+     */
+    public void retrieveSpecificProducts(String selection, String selection2) throws ExecutionException, InterruptedException {
+        dbConnect();
+        CollectionReference products = db.collection("Products");
+        Query query = products.whereEqualTo(selection, selection2);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        int i = 0;
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            i++;
+            System.out.println((i) + " " + document.getData());
+        }
+        System.out.println("Results : "+ i + " " + getTimeStamp());
+        closeDb();
     }
 
     /**
      * Make a list of all the Sales
      */
-    public Iterable<DocumentReference> retrieveAllSales(){
+    public void retrieveAllSales() throws ExecutionException, InterruptedException {
         dbConnect();
-        Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
+        ApiFuture<QuerySnapshot> future = db.collection("Sales").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         int i = 0;
-        for (DocumentReference collRef : collections)
-        {
+        for (DocumentSnapshot document : documents) {
             i++;
-            System.out.println("Sale ID: " + collRef.getId());
+            System.out.println((i) + ". Sales ID: " + document.getId());
         }
-        System.out.println(i);
         closeDb();
-        return collections;
     }
 
     /**
      * Make a list of all the suppliers
      */
-    public Iterable<DocumentReference> retrieveAllSuppliers(){
+    public void retrieveAllSuppliers() throws ExecutionException, InterruptedException {
         dbConnect();
-        Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
+        ApiFuture<QuerySnapshot> future = db.collection("Suppliers").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         int i = 0;
-        for (DocumentReference collRef : collections)
-        {
+        for (DocumentSnapshot document : documents) {
             i++;
-            System.out.println("Supplier ID: " + collRef.getId());
+            System.out.println((i) + ". Supplier ID: " + document.getId());
         }
-        System.out.println(i);
         closeDb();
-        return collections;
     }
 
     /**
