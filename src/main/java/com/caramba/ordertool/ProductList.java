@@ -50,7 +50,7 @@ public class ProductList {
         ArrayList<Product> returnedProducts = new ArrayList<>();
 
         for (Map.Entry<UUID, Product> productEntry : products.entrySet()) {
-            if(productEntry.getValue().getSeason().equals(tpc.getTimePeriodByString(season)))
+            if(productEntry.getValue().getPeriod().equals(tpc.getTimePeriodByString(season)))
             returnedProducts.add(productEntry.getValue());
         }
 

@@ -8,7 +8,7 @@ public class Product {
     private int quantity;
     private int minQuantity;
 
-    public Product(String productNum, String description) {
+    public Product(String productNum, String description, int minQuantity) {
         this.productNum = productNum;
         this.description = description;
         this.period = null;
@@ -41,11 +41,11 @@ public class Product {
         this.description = description;
     }
 
-    public TimePeriod getSeason() {
+    public TimePeriod getPeriod() {
         return period;
     }
 
-    public void setSeason(String season) {
+    public void setPeriod(String season) {
         period = tpc.getTimePeriodByString(season);
     }
 
