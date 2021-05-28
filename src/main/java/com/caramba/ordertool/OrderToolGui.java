@@ -2,6 +2,7 @@ package com.caramba.ordertool;
 
 import com.caramba.ordertool.Notifications.NotificationManager;
 import com.caramba.ordertool.scenes.ProductOverviewViewController;
+import com.caramba.ordertool.scenes.ViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,6 +20,7 @@ public class OrderToolGui extends Application {
     private static final SupplierList suppliers = new SupplierList();
     private static final TimePeriodController timePeriods = new TimePeriodController();
     private static final FireStoreConfig config = new FireStoreConfig();
+    private static ViewController activeController = null;
 
     public static void main(String[] args) {
         launch(args);
@@ -40,29 +42,30 @@ public class OrderToolGui extends Application {
 
         //todo replace this with loading from database
         loadTestData();
-        showProductOverview();
+        switchScene(SceneType.PRODUCT_OVERVIEW);
     }
 
-    public void showProductOverview(){
-        try{
-            ProductOverviewViewController controller = (ProductOverviewViewController) switchScene("/scenes/productOverview.fxml");
-            controller.setProductList(products);
-        }catch (IOException e){
-            NotificationManager.addExceptionError(e);
-        }
+    public static ProductList getProducts() {
+        return products;
     }
 
-    private Object switchScene(String path) throws IOException{
-        URL res = getClass().getResource(path);
+    public static SupplierList getSuppliers() {
+        return suppliers;
+    }
+
+
+    private void switchScene(SceneType sceneType) throws IOException{
+        URL res = getClass().getResource(sceneType.FXMLPath);
         if(res == null){
             throw new IOException("invalid resource path");
         }
         FXMLLoader loader = new FXMLLoader(res);
         Parent sceneParent = loader.load();
-        Scene subScene = new Scene(sceneParent);
-        stage.setScene(subScene);
+        Scene newScene = new Scene(sceneParent);
+        stage.setScene(newScene);
         stage.show();
-        return loader.getController();
+        activeController =  (ViewController) loader.getController();
+        activeController.update();
     }
 
     /**
@@ -91,6 +94,15 @@ public class OrderToolGui extends Application {
         products.add(p6);
         suppliers.add(s1);
         suppliers.add(s2);
+    }
+
+    public enum SceneType{
+        PRODUCT_OVERVIEW("/scenes/productOverview.fxml");
+
+        public final String FXMLPath;
+        SceneType(String FXMLPath) {
+            this.FXMLPath = FXMLPath;
+        }
     }
 
 }
