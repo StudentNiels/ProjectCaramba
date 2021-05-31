@@ -4,7 +4,7 @@ public class InkoopTestMain {
     public static void main(String[] args){
         Supplier supplier1, supplier2, supplier3;
         Orderlist orderlist = new Orderlist();
-        Order order1 = new Order();
+        //Order order1 = new Order();
 
         supplier1 = new Supplier("Bremen");
         supplier2 = new Supplier("Leeuwarden");
@@ -42,7 +42,7 @@ public class InkoopTestMain {
 
         System.out.println("Supplier3 products");
         supplier3.listProducts();
-        */
+
 
         order1.addToShoppingCart(product1,50);
         order1.addToShoppingCart(product2,75);
@@ -53,8 +53,8 @@ public class InkoopTestMain {
         order1.addToShoppingCart(product7,5);
         order1.addToShoppingCart(product8,30);
         order1.addToShoppingCart(product9,99);
-
-        orderlist.addToOrderList(order1);
+           */
+        //orderlist.addToOrderList(order1);
 
         orderlist.listOrders();
     }

@@ -1,44 +1,36 @@
 package com.caramba.ordertool;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Order {
 
-    private Date bestelDatum;
-    private Date factuurDatum;
+    private String order_date;
+    private String order_nr;
     private HashMap<Product, Integer> shoppingCart;
     // TODO: Leverancier opvangen voor de inkopen
 
-    public Order(){
-        this.bestelDatum = null;
-        this.factuurDatum = null;
-        this.shoppingCart = new HashMap<>();
+    public Order(String order_nr, HashMap<String, Product> shoppingCart){
+        FireStoreConfig fireStoreConfig = new FireStoreConfig();
+        fireStoreConfig.dbConnect();
+        fireStoreConfig.setupOrderDocument(this.order_nr = order_nr, this.order_date = fireStoreConfig.getTimeStamp());
     }
 
-    public Order(Date bestelDatum, Date factuurDatum, HashMap<Product, Integer> shoppingCart) {
-        this.bestelDatum = bestelDatum;
-        this.factuurDatum = factuurDatum;
+    public Order(String order_date, String order_nr, HashMap<Product, Integer> shoppingCart) {
+        this.order_date = order_date;
+        this.order_nr = order_nr;
         this.shoppingCart = shoppingCart;
     }
 
     //region Getters and Setters
-    public Date getBestelDatum() {
-        return bestelDatum;
+    public String getOrderDate() {
+        return order_date;
     }
 
-    public void setBestelDatum(Date bestelDatum) {
-        this.bestelDatum = bestelDatum;
+    public void setOrderDate(String orderDate) {
+        this.order_date = orderDate;
     }
 
-    public Date getFactuurDatum() {
-        return factuurDatum;
-    }
-
-    public void setFactuurDatum(Date factuurDatum) {
-        this.factuurDatum = factuurDatum;
-    }
 
     public HashMap<Product, Integer> getShoppingCart() {
         return shoppingCart;

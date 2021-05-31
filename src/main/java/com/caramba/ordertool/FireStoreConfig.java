@@ -84,7 +84,7 @@ public class FireStoreConfig {
     /**
      * Get timestamp in a fitting format
      */
-    private String getTimeStamp(){
+    public String getTimeStamp(){
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         return dateFormat.format(timestamp);
@@ -111,11 +111,11 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public HashMap<String, Object> setupSalesDocument(String product_nr, String timeStamp, int amount) {
+    public HashMap<String, Object> setupOrderDocument(String order_nr, String order_date) {
         HashMap<String, Object> docData = new HashMap<>();
-        docData.put("Product_NR", product_nr);
-        docData.put("Sell_Date", timeStamp);
-        docData.put("Amount", amount);
+        docData.put("order_nr", order_nr);
+        docData.put("order_date", order_date);
+        new HashMap<String, Object>();
         return docData;
     }
 
@@ -202,11 +202,8 @@ public class FireStoreConfig {
         ApiFuture<QuerySnapshot> future = db.collection("Products").get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         HashMap<UUID, Product> products = new HashMap<>();
-        int i = 0;
         for (DocumentSnapshot document : documents) {
-            i++;
             UUID uuid = UUID.fromString(document.getId());
-            //String product_num, String product_descript, String timePeriod, int min_supply, int supply
             Product product = new Product(document.get("product_num").toString(),document.get("product_descript").toString(),document.get("timePeriod").toString(),Integer.parseInt(document.get("min_supply").toString()),Integer.parseInt(document.get("supply").toString()));
             products.put(uuid, product);
         }
@@ -233,14 +230,26 @@ public class FireStoreConfig {
     /**
      * Make a list of all the Sales
      */
-    public void retrieveAllSales() throws ExecutionException, InterruptedException {
+    public void retrieveAllOrders() throws ExecutionException, InterruptedException {
         dbConnect();
-        ApiFuture<QuerySnapshot> future = db.collection("Sales").get();
+        ApiFuture<QuerySnapshot> future = db.collection("Order").get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-        int i = 0;
+        HashMap<UUID, Order> orders = new HashMap<>();
         for (DocumentSnapshot document : documents) {
-            i++;
-            System.out.println((i) + ". Sales ID: " + document.getId());
+            UUID uuid = UUID.fromString(document.getId());
+            String date = getTimeStamp();
+            Order order = new Order(date, (HashMap<String, Product>) document.get("order_nr"));
+            orders.put(uuid, order);
+
+            ApiFuture<QuerySnapshot> futureB = db.collection("OrderList").get();
+            List<QueryDocumentSnapshot> documentsB = futureB.get().getDocuments();
+            for (DocumentSnapshot documentB : documentsB)
+            {
+                //TODO: finish this method. uncomment below to start
+                //Order order = new Order(documentB.get("orderDate").toString(),document.get("invoiceDate").toString(),Integer.parseInt(document.get("amount").toString()),document.get("product_nr").toString(),document.get("sell_date").toString(),Integer.parseInt(document.get("min_supply").toString()),Integer.parseInt(document.get("supply").toString()));
+
+                orders.put(uuid, order);
+            }
         }
         closeDb();
     }
