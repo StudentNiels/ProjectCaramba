@@ -16,8 +16,8 @@ public class ProductList {
     }
 
     public void fillMapFromDB() throws ExecutionException, InterruptedException {
-        FireStoreConfig fireStoreConfig = new FireStoreConfig();
-        for(Map.Entry<UUID, Product> entry : fireStoreConfig.retrieveAllProducts().entrySet())
+        FireStoreConfig config = new FireStoreConfig();
+        for(Map.Entry<UUID, Product> entry : config.retrieveAllProducts().entrySet())
         {
             UUID uuid = entry.getKey();
             Product product = entry.getValue();

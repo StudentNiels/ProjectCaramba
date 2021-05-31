@@ -70,6 +70,7 @@ public class FireStoreConfig {
         deleteCollection("test", 1);
         */
         // endregion
+        retrieveSpecificProducts("product_num", "4245857");
     }
 
     /**
@@ -218,12 +219,25 @@ public class FireStoreConfig {
         CollectionReference products = db.collection("Products");
         Query query = products.whereEqualTo(selection, selection2);
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
-        int i = 0;
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            i++;
-            System.out.println((i) + " " + document.getData());
+                System.out.println(document.getData());
         }
-        System.out.println("Results : "+ i + " " + getTimeStamp());
+        closeDb();
+    }
+
+    /**
+     * Make a list of all the products
+     */
+    public void retrieveSupplyOfProduct(String selection, String selection2) throws ExecutionException, InterruptedException {
+        dbConnect();
+        CollectionReference products = db.collection("Products");
+        Query query = products.whereEqualTo(selection, selection2);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            if(document.getData().containsKey("supply")){
+                System.out.println(document.getData().get("supply"));
+            }
+        }
         closeDb();
     }
 

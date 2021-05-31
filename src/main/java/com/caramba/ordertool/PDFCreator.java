@@ -92,8 +92,8 @@ public class PDFCreator {
                 for (Product p : productListEntry.getValue().getProducts().values()) {
                     row = table.createRow(12);
                     cell = row.createCell(4, Integer.toString(productCount));
-                    cell = row.createCell(32, p.getProductNum());
-                    cell = row.createCell(32, p.getDescription());
+                    cell = row.createCell(32, p.getProduct_num());
+                    cell = row.createCell(32, p.getProduct_descript());
                     //todo quantity should be tracked by productList (or orderlist?). hardcoded to one for now
                     cell = row.createCell(32, "1");
                     productCount = productCount +  1;
