@@ -14,16 +14,20 @@ public class OrderAlgorithm {
      * This method is the algorithm that will return a suggestion list with amounts
      * NOTE: this is only a suggestion, sales user will still have to either confirm the amount or enter their own
      *
+     * magazijn capaciteit vragen
+     * Kijken of inkoop mogelijkheid verminderd kan worden voor meer winst
+     * mooie auto, maar geen motor, dus dat werkt niet
+     *
      * Period - done
-     * Beschikbare voorraad - done
+     * Beschikbare voorraad - done (staat in product)
      * Geschatte levertijd
      * verkoop trend
      *
      * @param productList A list containing the products that are to be filtered
      * @return suggestionList with products and amounts
      * */
-    public HashMap<UUID, Product> createSuggestionList(HashMap<UUID, Product> productList){
-        HashMap<UUID, Product> suggestionList = new HashMap<>();
+    public HashMap<Product, Integer> createSuggestionList(HashMap<UUID, Product> productList){
+        HashMap<Product, Integer> suggestionList = new HashMap<>();
 
         //Loop through all TimePeriods in TimePeriodController
         for (int i = 0; i < tpc.getTimePeriods().size(); i++) {
@@ -39,6 +43,10 @@ public class OrderAlgorithm {
                             //If product has extremely low quantity remaining, add more to the order suggestion
                             if(product.getQuantity() <= (product.getMinQuantity() * 0.20)){
                                 //TODO: appropriate functionality
+                                /*
+                                * 
+                                *
+                                * */
                             }// if product has low quantity remaining, suggest to minimumQuantity
                             else if(product.getQuantity() <= (product.getMinQuantity() * 0.40)){
                                 //TODO: appropriate functionality
@@ -46,6 +54,8 @@ public class OrderAlgorithm {
                             else if(product.getQuantity() == 0){
                                 //TODO: appropriate functionality
                             }
+                        }else{
+                            //TODO: appropriate functionality (outside current period)
                         }
                     }
                 }
