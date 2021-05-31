@@ -22,7 +22,7 @@ public class TimePeriod {
         MonthDay current = MonthDay.now();
         if(current.compareTo(startDate) >= 0 && current.compareTo(endDate) <= 0){
             return true;
-        }else{
+        } else {
             return false;
         }
     }

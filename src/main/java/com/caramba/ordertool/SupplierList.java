@@ -1,6 +1,8 @@
 package com.caramba.ordertool;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class SupplierList {
     private final HashMap<UUID, Supplier> suppliers = new HashMap<>();

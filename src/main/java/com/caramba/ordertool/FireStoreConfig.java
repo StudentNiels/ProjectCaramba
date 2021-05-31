@@ -3,6 +3,7 @@ package com.caramba.ordertool;
 import com.caramba.ordertool.Notifications.NotificationManager;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
+
 import com.google.cloud.firestore.*;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -12,10 +13,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+
+import static com.caramba.ordertool.Application.getMainProductList;
 
 public class FireStoreConfig {
 
@@ -25,7 +26,7 @@ public class FireStoreConfig {
     /**
      * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
      */
-    public void fireStoreConfig(){
+    public void fireStoreConfig() throws ExecutionException, InterruptedException {
         try {
             FileInputStream serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
             FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
@@ -34,7 +35,6 @@ public class FireStoreConfig {
         catch (IOException e) {
             NotificationManager.addExceptionError(e);
         }
-
         //region Template interactions
         /*
         //Create product document
@@ -42,7 +42,7 @@ public class FireStoreConfig {
         addProductDocument("Products", "1236", setupP);
 
         //Create sales document
-        HashMap<String, Object> setupS = setupSalesDocument("1234568", getTimeStamp());
+        HashMap<String, Object> setupS = setupSalesDocument("1234568", getTimeStamp(), 1);
         addSalesDocument("1234", setupS);
 
         //Create supplier document
@@ -56,6 +56,9 @@ public class FireStoreConfig {
         retrieveAllProducts();
         retrieveAllSales();
         retrieveAllSuppliers();
+
+        //Retrieve specific data from a collectiot_documentList
+        retrieveSpecificProducts("Sales","Product_NR", "1234567");
 
         //Update a field of a product, sale, supplier
         updateDocument("Products", "1234", "Supply", 70);
@@ -81,7 +84,7 @@ public class FireStoreConfig {
     /**
      * Get timestamp in a fitting format
      */
-    private String getTimeStamp(){
+    public String getTimeStamp(){
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         return dateFormat.format(timestamp);
@@ -92,10 +95,10 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public HashMap setupProductDocument(String categorie_tag, int min_supply, String product_descript, String product_nr, int supply) {
+    public HashMap setupProductDocument(String product_descript, TimePeriod timePeriod, String product_nr, int min_supply, int supply) {
         HashMap<String, Object> docData = new HashMap<>();
         docData.put("Attention_Required", false);
-        docData.put("Categorie_Tag", categorie_tag);
+        docData.put("Time period", timePeriod);
         docData.put("Min_Supply", min_supply);
         docData.put("Product_Descript", product_descript);
         docData.put("Product_NR", product_nr);
@@ -108,10 +111,11 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public HashMap<String, Object> setupSalesDocument(String product_nr, String timeStamp) {
+    public HashMap<String, Object> setupOrderDocument(String order_nr, String order_date) {
         HashMap<String, Object> docData = new HashMap<>();
-        docData.put("Product_NR", product_nr);
-        docData.put("Sell_Date", timeStamp);
+        docData.put("order_nr", order_nr);
+        docData.put("order_date", order_date);
+        new HashMap<String, Object>();
         return docData;
     }
 
@@ -129,12 +133,13 @@ public class FireStoreConfig {
 
     /**
      * Adds a document of information about a product to the database
-     * @param productDocument
      * @param docData
      * 
      */
-    public void addProductDocument(String collection, String productDocument, HashMap docData){
+    public void addProductDocument(HashMap docData){
         dbConnect();
+        String collection = "Products";
+        String productDocument = "productDocument";
         ApiFuture<WriteResult> future = db.collection(collection).document(productDocument).set(docData);
         try{
             System.out.println("Update time : " + future.get().getUpdateTime());
@@ -142,6 +147,19 @@ public class FireStoreConfig {
             NotificationManager.addExceptionError(e);
         }
         closeDb();
+    }
+
+    /**
+     * TODO: Write method to add a productList to the DB
+     */
+    public void addProductListToDB()
+    {
+        //
+        getMainProductList();
+        //for (Map.Entry<UUID, Product> set : products.entrySet())
+        //{
+        //    addProductDocument(product.docData);
+        //}
     }
 
     /**
@@ -177,52 +195,78 @@ public class FireStoreConfig {
 
     /**
      * Make a list of all the products
+     * @return
      */
-    public Iterable<DocumentReference> retrieveAllProducts(){
+    public HashMap<UUID, Product> retrieveAllProducts() throws ExecutionException, InterruptedException {
         dbConnect();
-        Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
-        int i = 0;
-        for (DocumentReference collRef : collections) {
-            i++;
-            System.out.println("Product ID: " + collRef.getId());
+        ApiFuture<QuerySnapshot> future = db.collection("Products").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        HashMap<UUID, Product> products = new HashMap<>();
+        for (DocumentSnapshot document : documents) {
+            UUID uuid = UUID.fromString(document.getId());
+            Product product = new Product(document.get("product_num").toString(),document.get("product_descript").toString(),document.get("timePeriod").toString(),Integer.parseInt(document.get("min_supply").toString()),Integer.parseInt(document.get("supply").toString()));
+            products.put(uuid, product);
         }
-        System.out.println(i);
+        return products;
+    }
+
+    /**
+     * Make a list of all the products
+     */
+    public void retrieveSpecificProducts(String selection, String selection2) throws ExecutionException, InterruptedException {
+        dbConnect();
+        CollectionReference products = db.collection("Products");
+        Query query = products.whereEqualTo(selection, selection2);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        int i = 0;
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            i++;
+            System.out.println((i) + " " + document.getData());
+        }
+        System.out.println("Results : "+ i + " " + getTimeStamp());
         closeDb();
-        return collections;
     }
 
     /**
      * Make a list of all the Sales
      */
-    public Iterable<DocumentReference> retrieveAllSales(){
+    public void retrieveAllOrders() throws ExecutionException, InterruptedException {
         dbConnect();
-        Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
-        int i = 0;
-        for (DocumentReference collRef : collections)
-        {
-            i++;
-            System.out.println("Sale ID: " + collRef.getId());
+        ApiFuture<QuerySnapshot> future = db.collection("Order").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        HashMap<UUID, Order> orders = new HashMap<>();
+        for (DocumentSnapshot document : documents) {
+            UUID uuid = UUID.fromString(document.getId());
+            String date = getTimeStamp();
+            Order order = new Order(date, (HashMap<String, Product>) document.get("order_nr"));
+            orders.put(uuid, order);
+
+            ApiFuture<QuerySnapshot> futureB = db.collection("OrderList").get();
+            List<QueryDocumentSnapshot> documentsB = futureB.get().getDocuments();
+            for (DocumentSnapshot documentB : documentsB)
+            {
+                //TODO: finish this method. uncomment below to start
+                //Order order = new Order(documentB.get("orderDate").toString(),document.get("invoiceDate").toString(),Integer.parseInt(document.get("amount").toString()),document.get("product_nr").toString(),document.get("sell_date").toString(),Integer.parseInt(document.get("min_supply").toString()),Integer.parseInt(document.get("supply").toString()));
+
+                orders.put(uuid, order);
+            }
         }
-        System.out.println(i);
         closeDb();
-        return collections;
     }
 
     /**
      * Make a list of all the suppliers
      */
-    public Iterable<DocumentReference> retrieveAllSuppliers(){
+    public void retrieveAllSuppliers() throws ExecutionException, InterruptedException {
         dbConnect();
-        Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
+        ApiFuture<QuerySnapshot> future = db.collection("Suppliers").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         int i = 0;
-        for (DocumentReference collRef : collections)
-        {
+        for (DocumentSnapshot document : documents) {
             i++;
-            System.out.println("Supplier ID: " + collRef.getId());
+            System.out.println((i) + ". Supplier ID: " + document.getId());
         }
-        System.out.println(i);
         closeDb();
-        return collections;
     }
 
     /**

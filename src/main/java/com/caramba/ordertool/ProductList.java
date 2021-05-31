@@ -1,14 +1,28 @@
 package com.caramba.ordertool;
 
+import com.google.cloud.firestore.DocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class ProductList {
     private final HashMap<UUID, Product> products = new HashMap<>();
 
     public HashMap<UUID, Product> getProducts() {
         return products;
+    }
+
+    public void fillMapFromDB() throws ExecutionException, InterruptedException {
+        FireStoreConfig fireStoreConfig = new FireStoreConfig();
+        for(Map.Entry<UUID, Product> entry : fireStoreConfig.retrieveAllProducts().entrySet())
+        {
+            UUID uuid = entry.getKey();
+            Product product = entry.getValue();
+            products.put(uuid,product);
+        }
     }
 
     //#region delegate functions

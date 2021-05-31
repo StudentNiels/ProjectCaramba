@@ -1,79 +1,68 @@
 package com.caramba.ordertool;
 
-public class Product {
-    private String productNum;
-    private String description;
-    private Season season;
-    private int quantity;
-    private int minQuantity;
+import java.util.List;
 
-    public Product(String productNum, String description, Season season, int minQuantity) {
-        this.productNum = productNum;
-        this.description = description;
-        this.season = season;
-        this.quantity = 0;
-        this.minQuantity = minQuantity;
+public class Product {
+    private String product_descript;
+    private TimePeriod timePeriod;
+    private TimePeriodController tpc = new TimePeriodController();
+    private String product_num;
+    private int min_supply;
+    private int supply;
+
+    public Product(String product_descript, String product_num, int min_supply, int supply) {
+        FireStoreConfig fireStoreConfig = new FireStoreConfig();
+        fireStoreConfig.dbConnect();
+        fireStoreConfig.setupProductDocument(this.product_descript = product_descript, this.timePeriod = null, this.product_num = product_num, this.min_supply = min_supply,this.supply = supply);
     }
 
-    public Product(String productNum, String description, int minQuantity) {
-        this.productNum = productNum;
-        this.description = description;
-        this.season = Season.UNDEFINED;
-        this.quantity = 0;
-        this.minQuantity = minQuantity;
+    public Product(String product_num, String product_descript, String timePeriod, int min_supply, int supply) {
+        this.product_num = product_num;
+        this.product_descript = product_descript;
+        this.timePeriod = tpc.getTimePeriodByString(timePeriod);
+        this.supply = supply;
+        this.min_supply = min_supply;
     }
 
     //region Getters and Setters
-    public String getProductNum() {
-        return productNum;
+    public String getProduct_num() {
+        return product_num;
     }
 
-    public void setProductNum(String productNum) {
-        this.productNum = productNum;
+    public void setProduct_num(String product_num) {
+        this.product_num = product_num;
     }
 
-    public String getDescription() {
-        return description;
+    public String getProduct_descript() {
+        return product_descript;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setProduct_descript(String product_descript) {
+        this.product_descript = product_descript;
     }
 
-    public Season getSeason() {
-        return season;
+    public TimePeriod getTimePeriod() {
+        return timePeriod;
     }
 
-    public void setSeason(Season season) {
-        this.season = season;
+    public void setTimePeriod(TimePeriod timePeriod) {
+        this.timePeriod = timePeriod;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getMin_supply() {
+        return min_supply;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setMin_supply(int min_supply) {
+        this.min_supply = min_supply;
     }
 
-    public int getMinQuantity() {
-        return minQuantity;
+    public int getSupply() {
+        return supply;
     }
 
-    public void setMinQuantity(int minQuantity) {
-        this.minQuantity = minQuantity;
+    public void setSupply(int supply) {
+        this.supply = supply;
     }
     //endregion
-
-    public void decrease(){
-        this.quantity--;
-    }
-
-    public void decrease(int amount){
-        this.quantity -= amount;
-    }
-
-    public void increase(int amount){
-        this.quantity =+ amount;
-    }
 }
