@@ -43,7 +43,13 @@ public class OrderAlgorithm {
         return 0;
     }
 
-    public int[] getMedian(HashMap<LocalDate, Integer> dateAmountList){
+    /**
+     * Analyzes the sales of the product in previous years to calculate a 'median year'.
+     * The median year includes the median of products sold in a certain month and the median of the total sold per year
+     * @param dateAmountList
+     * @return
+     */
+    public int[] getMedianYear(HashMap<LocalDate, Integer> dateAmountList){
         int[] median = new int[13];
         HashMap<Integer, Integer> yearTotal = new HashMap<>();
 
@@ -107,7 +113,6 @@ public class OrderAlgorithm {
 
     public int getMedianFromArrayList(ArrayList<Integer> arrayList){
         Collections.sort(arrayList);
-
         if(arrayList.size() == 0){
             return 0;
         }else if(arrayList.size() == 1){
