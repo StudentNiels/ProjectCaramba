@@ -8,8 +8,10 @@ Wil ik: op basis van het seizoen, verkoop trends, geschatte levertijd en beschik
 Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 */
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
 public class Saleslist {
 
@@ -20,7 +22,7 @@ public class Saleslist {
     }
 
     public void addToSalesList(Sale sale){
-        sale.setDate(Calendar.getInstance().getTime());
+        sale.setDate(LocalDate.now());
 
         this.sales.add(sale);
     }
@@ -39,6 +41,20 @@ public class Saleslist {
 
     public Sale getSaleByID(int index){
         return sales.get(index);
+    }
+
+    public Saleslist getSalesByProduct(UUID productID){
+        Saleslist soldProducts = new Saleslist();
+
+        for (Sale sale : this.sales) {
+            if(sale.getProducts().containsKey(productID)){
+                Sale newSale = new Sale();
+                newSale.addToProducts(productID, sale.getAmountByID(productID));
+                newSale.setDate(sale.getDate());
+                soldProducts.addToSalesList(newSale);
+            }
+        }
+        return soldProducts;
     }
 
     public void listSales(){

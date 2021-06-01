@@ -1,60 +1,80 @@
 package com.caramba.ordertool;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.security.InvalidParameterException;
+import java.time.LocalDate;
+import java.util.*;
 
 public class Sale {
 
-    private Date date;
-    private HashMap<Product, Integer> products;
-    // TODO: Leverancier opvangen voor de inkopen
+    private String order_nr;
+    private LocalDate date;
+    private HashMap<UUID, Integer> products;
 
     public Sale(){
         this.date = null;
         this.products = new HashMap<>();
     }
 
-    public Sale(HashMap<Product, Integer> products) {
+    public Sale(HashMap<UUID, Integer> products) {
         this.date = null;
         this.products = products;
     }
 
+    public Sale(HashMap<UUID, Integer> products, LocalDate date) {
+        this.date = date;
+        this.products = products;
+    }
+
     //region Getters and Setters
-    public Date getDate() {
+    public int getAmountByID(UUID uuid) throws InvalidParameterException{
+        for (Map.Entry<UUID, Integer> entry : products.entrySet()) {
+            if(entry.getKey().equals(uuid)){
+                return entry.getValue();
+            }
+        }
+        throw new InvalidParameterException("This is not a valid UUID");
+    }
+
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public HashMap<Product, Integer> getProducts() {
+    public HashMap<UUID, Integer> getProducts() {
         return products;
     }
 
-    public void setProducts(HashMap<Product, Integer> products) {
+    public void setProducts(HashMap<UUID, Integer> products) {
         this.products = products;
     }
     //endregion
 
-    public void addToProducts(Product product, int amount){
-        if(products.containsKey(product)){
-            products.replace(product,(products.get(product) + amount));
+    public void addToProducts(UUID uuid, int amount){
+        if(products.containsKey(uuid)){
+            products.replace(uuid,(products.get(uuid) + amount));
         }
         else{
-            products.put(product, amount);
+            products.put(uuid, amount);
         }
     }
 
     public void listProducts(){
         System.out.println("Saleslist items:");
-        for(Map.Entry<Product, Integer> product : this.products.entrySet()){
-            Product item = product.getKey();
+        HashMap<UUID, Product> allProducts = Application.getMainProductList().getProducts();
+        Product selectedProduct = null;
+
+        for(Map.Entry<UUID, Integer> product : this.products.entrySet()){
+            UUID productUUID = product.getKey();
             int amount = product.getValue();
 
-            System.out.println(item.getProductNum() + " " + item.getDescription() + "/" + amount);
+            if(allProducts.containsKey(productUUID)){
+                selectedProduct = allProducts.get(productUUID);
+            }
+
+            System.out.println(selectedProduct.getProductNum() + " " + selectedProduct.getDescription() + "/" + amount);
         }
     }
 }

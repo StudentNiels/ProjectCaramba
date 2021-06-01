@@ -145,17 +145,17 @@ public class Application {
 
     public static void addSale(String[] command){
         try{
-            HashMap<Product, Integer> saleProducts = new HashMap<>();
+            HashMap<UUID, Integer> saleProducts = new HashMap<>();
             for (int i = 2; i < command.length; i += 2) {
-                UUID productNum = UUID.fromString(command[i]);
+                UUID productUUID = UUID.fromString(command[i]);
                 int amount = Integer.parseInt(command[(i+1)]);
-                if(productNum == null){
+                if(productUUID == null){
                     System.out.println("This product does not exist!");
                 }else if(amount < 0){
                     System.out.println("Negative amounts are not allowed!");
                     throw new InvalidParameterException();
                 }else{
-                    saleProducts.put(products.get(productNum), amount);
+                    saleProducts.put(productUUID, amount);
                     saleslist.addToSalesList(new Sale(saleProducts));
                     System.out.println("Sale has been created.");
                 }
