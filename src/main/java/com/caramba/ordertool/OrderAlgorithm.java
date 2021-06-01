@@ -45,14 +45,13 @@ public class OrderAlgorithm {
 
     /**
      * Analyzes the sales of the product in previous years to calculate a 'median year'.
-     * The median year includes the median of products sold in a certain month and the median of the total sold per year
+     * The median year includes the median of products sold in per month of the year.
      * @param dateAmountList
      * @return
      */
     public int[] getMedianYear(HashMap<LocalDate, Integer> dateAmountList){
-        int[] median = new int[13];
+        int[] median = new int[12];
         HashMap<Integer, Integer> yearTotal = new HashMap<>();
-
         ArrayList<Integer> januaryAmount    = new ArrayList<>();
         ArrayList<Integer> februaryAmount   = new ArrayList<>();
         ArrayList<Integer> marchAmount      = new ArrayList<>();
@@ -65,8 +64,6 @@ public class OrderAlgorithm {
         ArrayList<Integer> octoberAmount    = new ArrayList<>();
         ArrayList<Integer> novemberAmount   = new ArrayList<>();
         ArrayList<Integer> decemberAmount   = new ArrayList<>();
-        ArrayList<Integer> totalAmount      = new ArrayList<>();
-
         for (Map.Entry<LocalDate, Integer> entry : dateAmountList.entrySet()) {
             switch (entry.getKey().getMonth()){
                 case JANUARY    -> januaryAmount    .add(entry.getValue());
@@ -82,18 +79,7 @@ public class OrderAlgorithm {
                 case NOVEMBER   -> novemberAmount   .add(entry.getValue());
                 case DECEMBER   -> decemberAmount   .add(entry.getValue());
             }
-            if(yearTotal.containsKey(entry.getKey().getYear())){
-                yearTotal.replace(entry.getKey().getYear(),(entry.getValue() + yearTotal.get(entry.getKey().getYear())));
-            }
-            else{
-                yearTotal.put(entry.getKey().getYear(), entry.getValue());
-            }
         }
-
-        for (Map.Entry<Integer, Integer> entry : yearTotal.entrySet()) {
-            totalAmount.add(entry.getValue());
-        }
-
         median[0] = getMedianFromArrayList(januaryAmount);
         median[1] = getMedianFromArrayList(februaryAmount);
         median[2] = getMedianFromArrayList(marchAmount);
@@ -106,8 +92,6 @@ public class OrderAlgorithm {
         median[9] = getMedianFromArrayList(octoberAmount);
         median[10] = getMedianFromArrayList(novemberAmount);
         median[11] = getMedianFromArrayList(decemberAmount);
-        median[12] = getMedianFromArrayList(totalAmount);
-
         return median;
     }
 
