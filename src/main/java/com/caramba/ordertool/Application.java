@@ -15,8 +15,8 @@ public class Application {
     private static final ProductList products = new ProductList();
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
-    //Keeps track of all known orders
-    private static final Saleslist orders = new Saleslist();
+    //Keeps track of all known sales
+    private static final Saleslist saleslist = new Saleslist();
     private static final TimePeriodController timePeriods = new TimePeriodController();
     private static final FireStoreConfig config = new FireStoreConfig();
 
@@ -48,7 +48,7 @@ public class Application {
             switch(command[1]) {
                 case "suppliers" -> displaySuppliers();
                 case "products" -> displayProducts();
-                case "orders" -> displayOrders();
+                case "sales" -> displaySales();
                 case "seasonProducts" -> displayProductsBySeason(command);
                 default -> throw new InvalidParameterException();
             }
@@ -92,15 +92,15 @@ public class Application {
         }
     }
 
-    public static void displayOrders(){
-        if(orders.size() == 0){
-            System.out.println("The order list is empty");
+    public static void displaySales(){
+        if(saleslist.size() == 0){
+            System.out.println("The sales list is empty");
         }else{
-            System.out.println("The following orders are registered:\n");
-            for (int i = 0; i < orders.size(); i++) {
-                Sale selectedOrder = orders.getOrderByID(i);
-                System.out.println(selectedOrder.getDate());
-                selectedOrder.listProducts();
+            System.out.println("The following sales are registered:\n");
+            for (int i = 0; i < saleslist.size(); i++) {
+                Sale selectedSale = saleslist.getSaleByID(i);
+                System.out.println(selectedSale.getDate());
+                selectedSale.listProducts();
             }
         }
     }
@@ -114,7 +114,7 @@ public class Application {
             switch(command[1]) {
                 case "supplier" -> addSupplier(command);
                 case "product" -> addProduct(command);
-                case "order" -> addOrder(command);
+                case "sale" -> addSale(command);
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
@@ -149,9 +149,9 @@ public class Application {
         }
     }
 
-    public static void addOrder(String[] command){
+    public static void addSale(String[] command){
         try{
-            HashMap<Product, Integer> orderProducts = new HashMap<>();
+            HashMap<Product, Integer> saleProducts = new HashMap<>();
             for (int i = 2; i < command.length; i += 2) {
                 UUID productNum = UUID.fromString(command[i]);
                 int amount = Integer.parseInt(command[(i+1)]);
@@ -161,8 +161,8 @@ public class Application {
                     System.out.println("Negative amounts are not allowed!");
                     throw new InvalidParameterException();
                 }else{
-                    orderProducts.put(products.get(productNum), amount);
-                    orders.addToOrderList(new Sale(orderProducts));
+                    saleProducts.put(products.get(productNum), amount);
+                    saleslist.addToSalesList(new Sale(saleProducts));
                     System.out.println("Order has been created.");
                 }
             }
@@ -318,7 +318,7 @@ public class Application {
         return suppliers;
     }
 
-    public static Saleslist getMainOrderList(){return orders;}
+    public static Saleslist getMainSalesList(){return saleslist;}
 
     public static String[] getCmdArguments() {
         return cmdArguments;

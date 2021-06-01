@@ -19,7 +19,7 @@ public class Saleslist {
         this.sales = new ArrayList<>();
     }
 
-    public void addToOrderList(Sale sale){
+    public void addToSalesList(Sale sale){
         sale.setDate(Calendar.getInstance().getTime());
 
         this.sales.add(sale);
@@ -29,19 +29,19 @@ public class Saleslist {
         return sales.size();
     }
 
-    public ArrayList<Sale> getOrders() {
+    public ArrayList<Sale> getSales() {
         return sales;
     }
 
-    public void setOrders(ArrayList<Sale> orders) {
-        this.sales = orders;
+    public void setSales(ArrayList<Sale> sales) {
+        this.sales = sales;
     }
 
-    public Sale getOrderByID(int index){
+    public Sale getSaleByID(int index){
         return sales.get(index);
     }
 
-    public void listOrders(){
+    public void listsales(){
         for(Sale sale : this.sales){
             System.out.println(sale.getDate());
             sale.listProducts();
