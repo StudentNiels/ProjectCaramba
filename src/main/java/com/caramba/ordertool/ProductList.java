@@ -7,7 +7,6 @@ import java.util.UUID;
 
 public class ProductList {
     private final HashMap<UUID, Product> products = new HashMap<>();
-    private TimePeriodController tpc = new TimePeriodController();
 
     public HashMap<UUID, Product> getProducts() {
         return products;
@@ -44,24 +43,6 @@ public class ProductList {
         return products.containsKey(id);
     }
     //#endregion
-
-    public void showProductBySeason(String season){
-        season = season.toLowerCase();
-        ArrayList<Product> returnedProducts = new ArrayList<>();
-
-        for (Map.Entry<UUID, Product> productEntry : products.entrySet()) {
-            if(productEntry.getValue().getPeriod().equals(tpc.getTimePeriodByString(season)))
-            returnedProducts.add(productEntry.getValue());
-        }
-
-        if(returnedProducts.size() == 0){
-            System.out.println("No items have been found");
-        }else{
-            for (int i = 0; i < returnedProducts.size(); i++) {
-                System.out.println(returnedProducts.get(i).getProductNum() + "/" + returnedProducts.get(i).getDescription());
-            }
-        }
-    }
 
     public void add(Product product) {
         //add with auto generated id
