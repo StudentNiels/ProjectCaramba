@@ -23,8 +23,8 @@ class SupplierListTest {
         suppliers.add(supplierID1, new Supplier("Supplier1", 10));
         suppliers.add(supplierID2, new Supplier("CoolSupplier2", 10));
         suppliers.add(supplierID3, new Supplier("SupplierNumber3", 10));
-        products.add(productID1, new Product("abc", "testPoduct"));
-        products.add(productID2, new Product("123456789", "testme"));
+        products.add(productID1, new Product("abc", "testPoduct",100));
+        products.add(productID2, new Product("123456789", "testme",100));
         //the first supplier has one product
         suppliers.get(supplierID1).addProduct(products.get(productID1));
         //the second supplier has both products

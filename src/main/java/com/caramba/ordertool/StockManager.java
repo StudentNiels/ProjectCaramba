@@ -1,15 +1,15 @@
-package com.caramba;
+package com.caramba.ordertool;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Notification {
+public class StockManager {
     private HashMap<String, Integer> products;
     private HashMap<String, Integer> minimumStock;
     private HashMap<String, Integer> soldProducts;
     private HashMap<String, Integer> orderList;
 
-    public Notification(){
+    public StockManager(){
 
         products = new HashMap<>();
         minimumStock = new HashMap<>();
@@ -153,31 +153,31 @@ public class Notification {
     // Main method used for testing
     public static void main(String[] args){
 
-        Notification notification = new Notification();
+        StockManager stockManager = new StockManager();
 
         System.out.println("---------------------------------------------------");
         System.out.println("Start product listing");
-        notification.listProducts();
+        stockManager.listProducts();
         System.out.println("End product listing");
         System.out.println("---------------------------------------------------");
 
-        notification.sellProduct("Item-1",10);
-        notification.sellProduct("Item-5",50);
-        notification.sellProduct("Item-8",80);
-        notification.sellProduct("Item-10",150);
+        stockManager.sellProduct("Item-1",10);
+        stockManager.sellProduct("Item-5",50);
+        stockManager.sellProduct("Item-8",80);
+        stockManager.sellProduct("Item-10",150);
 
         System.out.println("---------------------------------------------------");
         System.out.println("Start product listing after order");
-        notification.listProducts();
+        stockManager.listProducts();
         System.out.println("End product listing after order");
         System.out.println("---------------------------------------------------");
 
         System.out.println("---------------------------------------------------");
         System.out.println("Start testing notification on low stock");
-        notification.notifyLowStock();
+        stockManager.notifyLowStock();
         System.out.println("Raising Item-5 minimumStock");
-        notification.setMinimumStock("Item-5", 500);
-        notification.notifyLowStock();
+        stockManager.setMinimumStock("Item-5", 500);
+        stockManager.notifyLowStock();
         System.out.println("End testing notification on low stock");
         System.out.println("---------------------------------------------------");
 /*
