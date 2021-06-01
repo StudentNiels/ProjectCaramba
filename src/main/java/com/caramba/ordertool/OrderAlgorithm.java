@@ -47,7 +47,7 @@ public class OrderAlgorithm {
         int[] median = new int[13];
         HashMap<Integer, Integer> yearTotal = new HashMap<>();
 
-        ArrayList<Integer> januariAmount    = new ArrayList<>();
+        ArrayList<Integer> januaryAmount    = new ArrayList<>();
         ArrayList<Integer> februaryAmount   = new ArrayList<>();
         ArrayList<Integer> marchAmount      = new ArrayList<>();
         ArrayList<Integer> aprilAmount      = new ArrayList<>();
@@ -63,7 +63,7 @@ public class OrderAlgorithm {
 
         for (Map.Entry<LocalDate, Integer> entry : dateAmountList.entrySet()) {
             switch (entry.getKey().getMonth()){
-                case JANUARY    -> januariAmount    .add(entry.getValue());
+                case JANUARY    -> januaryAmount    .add(entry.getValue());
                 case FEBRUARY   -> februaryAmount   .add(entry.getValue());
                 case MARCH      -> marchAmount      .add(entry.getValue());
                 case APRIL      -> aprilAmount      .add(entry.getValue());
@@ -88,7 +88,7 @@ public class OrderAlgorithm {
             totalAmount.add(entry.getValue());
         }
 
-        median[0] = getMedianFromArrayList(januariAmount);
+        median[0] = getMedianFromArrayList(januaryAmount);
         median[1] = getMedianFromArrayList(februaryAmount);
         median[2] = getMedianFromArrayList(marchAmount);
         median[3] = getMedianFromArrayList(aprilAmount);
