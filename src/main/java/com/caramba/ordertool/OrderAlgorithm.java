@@ -1,43 +1,16 @@
 package com.caramba.ordertool;
 
-import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
 
 public class OrderAlgorithm {
-    //TODO: make this stuff efficient code
-    /**
-     * This method is the algorithm that will return a suggestion list with amounts
-     * NOTE: this is only a suggestion, sales user will still have to either confirm the amount or enter their own
-     *
-     * magazijn capaciteit vragen
-     * Kijken of inkoop mogelijkheid verminderd kan worden voor meer winst
-     * mooie auto, maar geen motor, dus dat werkt niet
-     *
-     * Period
-     * Beschikbare voorraad
-     * Geschatte levertijd
-     * verkoop trend
-     *
-     * @param productList A list containing the products that are to be filtered
-     * @return suggestionList with products and amounts
-     * */
-    public HashMap<Product, Integer> createSuggestionList(HashMap<UUID, Product> productList){
-        HashMap<Product, Integer> suggestionList = new HashMap<>();
-
-        // UUID matchen van Product en Saleslist
-
-
-        return suggestionList;
-    }
-
     /**
      * Calculates how many units of a certain product is expected to be sold in the given month
      * based on the median of sales per month on record.
      * @param productID The uuid of the product to check
-     * @param date The yearmonth to get the projected sales for. Must be in the future. todo not implemented yet
+     * @param date The yearMonth to get the projected sales for. Must be in the future.
      * @return The amount to order
      */
     public int getProjectedSales(UUID productID, YearMonth date){
@@ -59,9 +32,22 @@ public class OrderAlgorithm {
                 totalSoldThisYear = totalSoldThisYear + amount;
             }
         }
-        float[] medianPercentages = calculatePercentages(getMedianYear(dateAmountList));
+        //this is what we think an average year looks like in terms of sales.
+        //e.g.: in january we typically sell 10 units, in february we typically sell 5, ect.
+        //the current year is not taken into account for a reason mentioned below
+        int[] medianYear = getMedianYear(dateAmountList);
+
+        //The median year is calculated as percentages so we can show seasonal trends:
+        //e.g.: 50% of our sales for this product typically happen in month of january, 25% in february, ect.
+        float[] medianPercentages = calculatePercentages(medianYear);
+
+        //If we have sold this product before in the current year, we extrapolate the future sales of this year based on the seasonal trends
+        //We assume this is more accurate then simply using median directly, as the sales of the current year
+        //will probably be better at reflecting the growth/shrinkage of sales in general and the median year is mostly meant to show seasonal trends.
+        //This is also why the current year is not used in calculating the median year.
         float percentageSoldThisYear = 0;
         for(int i = 0; i < LocalDate.now().getMonth().getValue(); i++){
+            //in a typical year, this many % of the units would be sold at this point in time. We will assume that this year will be the same.
             percentageSoldThisYear = percentageSoldThisYear + medianPercentages[i];
         }if(percentageSoldThisYear != 0){
             //Finally we calculate the amount we expect to sell based on the percentage and the amount of units actually sold.
@@ -94,12 +80,12 @@ public class OrderAlgorithm {
     /**
      * Analyzes the sales of the product in previous years to calculate a 'median year'.
      * The median year includes the median of products sold in per month of the year.
-     * @param dateAmountList
-     * @return
+     * NOTE: does NOT use the sales during the current year, only previous years.
+     * @param dateAmountList hashmap with quantity sold in a certain YearMonth
+     * @return array with the median of amount sold where i = the month of the year
      */
     public int[] getMedianYear(HashMap<YearMonth, Integer> dateAmountList){
         int[] median = new int[12];
-        HashMap<Integer, Integer> yearTotal = new HashMap<>();
         ArrayList<Integer> januaryAmount    = new ArrayList<>();
         ArrayList<Integer> februaryAmount   = new ArrayList<>();
         ArrayList<Integer> marchAmount      = new ArrayList<>();
@@ -157,7 +143,7 @@ public class OrderAlgorithm {
             return (arrayList.get(centerIndex) + arrayList.get(centerIndex + 1)) / 2;
         }else{
             //odd
-            return arrayList.get((int)Math.ceil(arrayList.size() / 2) - 1);
+            return arrayList.get((int)Math.ceil((float) arrayList.size() / 2) - 1);
         }
     }
 
@@ -165,7 +151,7 @@ public class OrderAlgorithm {
      * Calculates the distribution of values in percentages.
      * EXAMPLE
      * int[3, 5, 4] would return  int[36(%), 60(%), 48(%)]
-     * @param array
+     * @param array array to calculate of
      * @return array with percentages
      */
     private float[] calculatePercentages(int[] array){
