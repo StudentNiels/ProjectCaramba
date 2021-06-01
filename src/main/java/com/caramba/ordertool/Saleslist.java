@@ -20,7 +20,7 @@ public class Saleslist {
     }
 
     public void addToOrderList(Sale order){
-        order.setBestelDatum(Calendar.getInstance().getTime());
+        order.setDate(Calendar.getInstance().getTime());
 
         this.orders.add(order);
     }
@@ -43,7 +43,7 @@ public class Saleslist {
 
     public void listOrders(){
         for(Sale order : this.orders){
-            System.out.println(order.getBestelDatum());
+            System.out.println(order.getDate());
             order.listProducts();
         }
     }

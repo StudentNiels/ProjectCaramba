@@ -99,7 +99,7 @@ public class Application {
             System.out.println("The following orders are registered:\n");
             for (int i = 0; i < orders.size(); i++) {
                 Sale selectedOrder = orders.getOrderByID(i);
-                System.out.println(selectedOrder.getBestelDatum());
+                System.out.println(selectedOrder.getDate());
                 selectedOrder.listProducts();
             }
         }

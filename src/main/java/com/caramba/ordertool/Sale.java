@@ -16,26 +16,26 @@ public class Sale {
         this.products = new HashMap<>();
     }
 
-    public Sale(HashMap<Product, Integer> shoppingCart) {
+    public Sale(HashMap<Product, Integer> products) {
         this.date = null;
-        this.products = shoppingCart;
+        this.products = products;
     }
 
     //region Getters and Setters
-    public Date getBestelDatum() {
+    public Date getDate() {
         return date;
     }
 
-    public void setBestelDatum(Date bestelDatum) {
-        this.date = bestelDatum;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public HashMap<Product, Integer> getShoppingCart() {
+    public HashMap<Product, Integer> getProducts() {
         return products;
     }
 
-    public void setShoppingCart(HashMap<Product, Integer> shoppingCart) {
-        this.products = shoppingCart;
+    public void setProducts(HashMap<Product, Integer> products) {
+        this.products = products;
     }
     //endregion
 
