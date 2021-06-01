@@ -15,6 +15,11 @@ public class Sale {
         this.products = new HashMap<>();
     }
 
+    public Sale(LocalDate date) {
+        this.date = LocalDate.now();
+        this.products = new HashMap<>();
+    }
+
     public Sale(HashMap<UUID, Integer> products) {
         this.date = LocalDate.now();
         this.products = products;
