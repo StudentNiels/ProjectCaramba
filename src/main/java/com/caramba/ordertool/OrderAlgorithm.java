@@ -1,7 +1,9 @@
 package com.caramba.ordertool;
 
 import java.lang.reflect.Array;
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 
 public class OrderAlgorithm {
@@ -32,11 +34,16 @@ public class OrderAlgorithm {
     }
 
     /**
-     * Calculates a recommended amount of the given product should be ordered for next month
+     * Calculates how many units of a certain product is expected to be sold in the given month
+     * based on the median of sales per month on record.
      * @param productID The uuid of the product to check
+     * @param date The yearmonth to get the projected sales for. Must be in the future. todo not implemented yet
      * @return The amount to order
      */
-    public int getProductRecommendation(UUID productID){
+    public int getProjectedSales(UUID productID, YearMonth date){
+        if(!date.isAfter(YearMonth.now())){
+            throw new InvalidParameterException("The given date is not in the future");
+        }
         Saleslist salesList = Application.getMainSalesList().getSalesByProduct(productID);
         HashMap<LocalDate, Integer> dateAmountList = new HashMap<>();
         int totalSoldThisYear = 0;
