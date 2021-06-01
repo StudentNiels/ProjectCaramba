@@ -70,7 +70,8 @@ public class FireStoreConfig {
         deleteCollection("test", 1);
         */
         // endregion
-        retrieveSpecificProducts("product_num", "4245857");
+        //retrieveSpecificProducts("product_num", "4245857");
+        retrieveSupplyOfProduct("product_num", "4245857");
     }
 
     /**
