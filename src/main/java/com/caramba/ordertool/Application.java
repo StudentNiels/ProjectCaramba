@@ -17,7 +17,6 @@ public class Application {
     private static final SupplierList suppliers = new SupplierList();
     //Keeps track of all known sales
     private static final Saleslist saleslist = new Saleslist();
-    private static final TimePeriodController timePeriods = new TimePeriodController();
     private static final FireStoreConfig config = new FireStoreConfig();
 
     private static String[] cmdArguments;
@@ -49,7 +48,6 @@ public class Application {
                 case "suppliers" -> displaySuppliers();
                 case "products" -> displayProducts();
                 case "sales" -> displaySales();
-                case "seasonProducts" -> displayProductsBySeason(command);
                 default -> throw new InvalidParameterException();
             }
         }catch(IndexOutOfBoundsException | InvalidParameterException e){
@@ -103,10 +101,6 @@ public class Application {
                 selectedSale.listProducts();
             }
         }
-    }
-
-    public static void displayProductsBySeason(String[] command){
-        products.showProductBySeason(command[2]);
     }
 
     private static void add(String[] command){
