@@ -126,4 +126,20 @@ public class OrderAlgorithm {
             return arrayList.get((int)Math.ceil(arrayList.size() / 2));
         }
     }
+
+    /**
+     * Calculates the distribution of values in percentages.
+     * EXAMPLE
+     * int[3, 5, 4] would return  int[36(%), 60(%), 48(%)]
+     * @param array
+     * @return array with percentages
+     */
+    private float[] calculatePercentages(int[] array){
+        float[] result = new float[array.length];
+        int total = Arrays.stream(array).sum();
+        for(int i = 0; i < array.length; i++){
+            result[i] = (float) array[i] / total;
+        }
+        return result;
+    }
 }
