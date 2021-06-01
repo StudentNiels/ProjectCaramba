@@ -13,38 +13,38 @@ import java.util.Calendar;
 
 public class Saleslist {
 
-    private ArrayList<Sale> orders;
+    private ArrayList<Sale> sales;
 
     public Saleslist(){
-        this.orders = new ArrayList<>();
+        this.sales = new ArrayList<>();
     }
 
-    public void addToOrderList(Sale order){
-        order.setDate(Calendar.getInstance().getTime());
+    public void addToOrderList(Sale sale){
+        sale.setDate(Calendar.getInstance().getTime());
 
-        this.orders.add(order);
+        this.sales.add(sale);
     }
 
     public int size(){
-        return orders.size();
+        return sales.size();
     }
 
     public ArrayList<Sale> getOrders() {
-        return orders;
+        return sales;
     }
 
     public void setOrders(ArrayList<Sale> orders) {
-        this.orders = orders;
+        this.sales = orders;
     }
 
     public Sale getOrderByID(int index){
-        return orders.get(index);
+        return sales.get(index);
     }
 
     public void listOrders(){
-        for(Sale order : this.orders){
-            System.out.println(order.getDate());
-            order.listProducts();
+        for(Sale sale : this.sales){
+            System.out.println(sale.getDate());
+            sale.listProducts();
         }
     }
 }
