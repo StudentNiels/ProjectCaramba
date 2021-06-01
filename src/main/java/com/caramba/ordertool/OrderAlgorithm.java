@@ -63,9 +63,15 @@ public class OrderAlgorithm {
         float percentageSoldThisYear = 0;
         for(int i = 0; i < LocalDate.now().getMonth().getValue(); i++){
             percentageSoldThisYear = percentageSoldThisYear + medianPercentages[i];
+        }if(percentageSoldThisYear != 0){
+            //Finally we calculate the amount we expect to sell based on the percentage and the amount of units actually sold.
+            int totalExpectedToSellThisYear = Math.round(totalSoldThisYear / percentageSoldThisYear);
+            return Math.round(totalExpectedToSellThisYear * medianPercentages[date.getMonth().getValue() - 1]);
+        }else{
+            //If we sold 0 so far then we don't have any data to extrapolate on, so we assume the amount sold will be equal to that of the median year.
+            return medianYear[date.getMonth().getValue()];
         }
-        int totalExpectedToSellThisYear = Math.round(totalSoldThisYear / percentageSoldThisYear);
-        return Math.round(totalExpectedToSellThisYear * medianPercentages[LocalDate.now().plusMonths(1).getMonth().getValue()]);
+
     }
 
     /**
