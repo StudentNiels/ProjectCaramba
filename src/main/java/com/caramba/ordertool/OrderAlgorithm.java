@@ -45,11 +45,16 @@ public class OrderAlgorithm {
             throw new InvalidParameterException("The given date is not in the future");
         }
         Saleslist salesList = Application.getMainSalesList().getSalesByProduct(productID);
-        HashMap<LocalDate, Integer> dateAmountList = new HashMap<>();
+        HashMap<YearMonth, Integer> dateAmountList = new HashMap<>();
         int totalSoldThisYear = 0;
         for(Sale sale : salesList.getSales()){
             int amount = sale.getAmountByID(productID);
-            dateAmountList.put(sale.getDate(), amount);
+            YearMonth yearMonth = YearMonth.from(sale.getDate());
+            if(dateAmountList.containsKey(yearMonth)){
+                dateAmountList.put(yearMonth, amount + dateAmountList.get(yearMonth));
+            }else{
+                dateAmountList.put(yearMonth, amount);
+            }
             if(sale.getDate().getYear() == LocalDate.now().getYear()){
                 totalSoldThisYear = totalSoldThisYear + amount;
             }
@@ -86,7 +91,7 @@ public class OrderAlgorithm {
      * @param dateAmountList
      * @return
      */
-    public int[] getMedianYear(HashMap<LocalDate, Integer> dateAmountList){
+    public int[] getMedianYear(HashMap<YearMonth, Integer> dateAmountList){
         int[] median = new int[12];
         HashMap<Integer, Integer> yearTotal = new HashMap<>();
         ArrayList<Integer> januaryAmount    = new ArrayList<>();
@@ -101,20 +106,22 @@ public class OrderAlgorithm {
         ArrayList<Integer> octoberAmount    = new ArrayList<>();
         ArrayList<Integer> novemberAmount   = new ArrayList<>();
         ArrayList<Integer> decemberAmount   = new ArrayList<>();
-        for (Map.Entry<LocalDate, Integer> entry : dateAmountList.entrySet()) {
-            switch (entry.getKey().getMonth()){
-                case JANUARY    -> januaryAmount    .add(entry.getValue());
-                case FEBRUARY   -> februaryAmount   .add(entry.getValue());
-                case MARCH      -> marchAmount      .add(entry.getValue());
-                case APRIL      -> aprilAmount      .add(entry.getValue());
-                case MAY        -> mayAmount        .add(entry.getValue());
-                case JUNE       -> juneAmount       .add(entry.getValue());
-                case JULY       -> julyAmount       .add(entry.getValue());
-                case AUGUST     -> augustAmount     .add(entry.getValue());
-                case SEPTEMBER  -> septemberAmount  .add(entry.getValue());
-                case OCTOBER    -> octoberAmount    .add(entry.getValue());
-                case NOVEMBER   -> novemberAmount   .add(entry.getValue());
-                case DECEMBER   -> decemberAmount   .add(entry.getValue());
+        for (Map.Entry<YearMonth, Integer> entry : dateAmountList.entrySet()) {
+            if(entry.getKey().getYear() != LocalDate.now().getYear()) {
+                switch (entry.getKey().getMonth()) {
+                    case JANUARY -> januaryAmount.add(entry.getValue());
+                    case FEBRUARY -> februaryAmount.add(entry.getValue());
+                    case MARCH -> marchAmount.add(entry.getValue());
+                    case APRIL -> aprilAmount.add(entry.getValue());
+                    case MAY -> mayAmount.add(entry.getValue());
+                    case JUNE -> juneAmount.add(entry.getValue());
+                    case JULY -> julyAmount.add(entry.getValue());
+                    case AUGUST -> augustAmount.add(entry.getValue());
+                    case SEPTEMBER -> septemberAmount.add(entry.getValue());
+                    case OCTOBER -> octoberAmount.add(entry.getValue());
+                    case NOVEMBER -> novemberAmount.add(entry.getValue());
+                    case DECEMBER -> decemberAmount.add(entry.getValue());
+                }
             }
         }
         median[0] = getMedianFromArrayList(januaryAmount);
