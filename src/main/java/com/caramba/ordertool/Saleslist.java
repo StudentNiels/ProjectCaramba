@@ -41,7 +41,7 @@ public class Saleslist {
         return sales.get(index);
     }
 
-    public void listsales(){
+    public void listSales(){
         for(Sale sale : this.sales){
             System.out.println(sale.getDate());
             sale.listProducts();

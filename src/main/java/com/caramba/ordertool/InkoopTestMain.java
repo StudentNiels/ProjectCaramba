@@ -25,8 +25,8 @@ public class InkoopTestMain {
         order1.addToProducts(product8,30);
         order1.addToProducts(product9,99);
 
-        saleslist.addToOrderList(order1);
+        saleslist.addToSalesList(order1);
 
-        saleslist.listOrders();
+        saleslist.listSales();
     }
 }

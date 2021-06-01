@@ -163,11 +163,11 @@ public class Application {
                 }else{
                     saleProducts.put(products.get(productNum), amount);
                     saleslist.addToSalesList(new Sale(saleProducts));
-                    System.out.println("Order has been created.");
+                    System.out.println("Sale has been created.");
                 }
             }
         }catch(Exception e){
-            System.out.println("Please use add order [productNum] [amount] [productNum] [amount] etc.");
+            System.out.println("Please use add sale [productNum] [amount] [productNum] [amount] etc.");
         }
     }
 
