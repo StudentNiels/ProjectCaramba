@@ -5,6 +5,7 @@ import com.caramba.ordertool.Notifications.NotificationManager;
 import com.caramba.ordertool.Notifications.NotificationType;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -18,6 +19,7 @@ public class Application {
     //Keeps track of all known sales
     private static final Saleslist saleslist = new Saleslist();
     private static final FireStoreConfig config = new FireStoreConfig();
+    private static final OrderAlgorithm orderAlgo = new OrderAlgorithm();
 
     private static String[] cmdArguments;
 
@@ -37,10 +39,12 @@ public class Application {
                 case "clear" -> clear(command);
                 case "pdf" -> createOrderlistPDF(command);
                 case "loadtest" -> loadTestData();
+                case "project" -> displayProjectedSales(command);
                 default -> NotificationManager.add(new Notification(NotificationType.ERROR, "Unknown command " + command[0] + ". Use --help to see supported commands"));
             }
         }
     }
+
 
     private static void display(String[] command){
         try{
@@ -378,6 +382,23 @@ public class Application {
         saleslist.addToSalesList(sl18);
         saleslist.addToSalesList(sl19);
         saleslist.addToSalesList(sl20);
+    }
+
+    /**
+     * Shows projected sales of given product for the next month
+     */
+    private static void displayProjectedSales(String[] command) {
+        UUID id;
+        try {
+            if(command.length < 2){
+                throw new IllegalArgumentException();
+            }
+            id = UUID.fromString(command[1]);
+            Product p = products.get(id);
+            NotificationManager.add(new Notification(NotificationType.INFO, "The expected number of sales in the next month of this product is: " + orderAlgo.getProjectedSalesNextMonth(id)));
+        }catch (IllegalArgumentException e){
+            NotificationManager.add(new Notification(NotificationType.ERROR, "Invalid syntax use: project [product id]"));
+        }
     }
 
 
