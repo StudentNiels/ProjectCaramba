@@ -64,6 +64,23 @@ public class OrderAlgorithm {
     }
 
     /**
+     * @param productID product to get sales projection of.
+     * @param amountOfMonths The amount of months to check
+     * @return Array with the projected sales of the next x months
+     */
+    public int[] getProjectedSalesInComingMonths(UUID productID, int amountOfMonths){
+        int[] result = new int[amountOfMonths];
+        for(int i = 0; i < amountOfMonths; i++){
+            result[i] = getProjectedSales(productID, YearMonth.now().plusMonths(1 + i));
+        }
+        return result;
+    }
+
+    public int getProjectedSalesNextMonth(UUID productID){
+        return getProjectedSalesInComingMonths(productID, 1)[0];
+    }
+
+    /**
      * Analyzes the sales of the product in previous years to calculate a 'median year'.
      * The median year includes the median of products sold in per month of the year.
      * @param dateAmountList
