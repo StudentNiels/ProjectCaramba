@@ -22,8 +22,6 @@ public class Saleslist {
     }
 
     public void addToSalesList(Sale sale){
-        sale.setDate(LocalDate.now());
-
         this.sales.add(sale);
     }
 
