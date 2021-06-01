@@ -23,7 +23,6 @@ public class Orderlist {
 
     public void addToOrderList(Order order){
         order.setBestelDatum(Calendar.getInstance().getTime());
-        order.setFactuurDatum(Calendar.getInstance().getTime());
 
         this.orders.add(order);
     }
@@ -46,7 +45,7 @@ public class Orderlist {
 
     public void listOrders(){
         for(Order order : this.orders){
-            System.out.println(order.getBestelDatum() + "/" + order.getFactuurDatum());
+            System.out.println(order.getBestelDatum());
             order.listShoppingCart();
         }
     }

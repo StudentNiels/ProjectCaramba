@@ -2,7 +2,7 @@ import com.caramba.ordertool.Application;
 import com.caramba.ordertool.FireStoreConfig;
 
 public class BuyProducts {
-
+/*
     SoldProducts soldProducts;
     Application application;
 
@@ -16,5 +16,5 @@ public class BuyProducts {
     public void retrieveSupply() {
         config.ret
     }
-
+*/
 }

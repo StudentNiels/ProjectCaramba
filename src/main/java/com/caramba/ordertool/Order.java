@@ -8,19 +8,16 @@ import java.util.Map;
 public class Order {
 
     private Date bestelDatum;
-    private Date factuurDatum;
     private HashMap<Product, Integer> shoppingCart;
     // TODO: Leverancier opvangen voor de inkopen
 
     public Order(){
         this.bestelDatum = null;
-        this.factuurDatum = null;
         this.shoppingCart = new HashMap<>();
     }
 
     public Order(HashMap<Product, Integer> shoppingCart) {
         this.bestelDatum = null;
-        this.factuurDatum = null;
         this.shoppingCart = shoppingCart;
     }
 
@@ -31,14 +28,6 @@ public class Order {
 
     public void setBestelDatum(Date bestelDatum) {
         this.bestelDatum = bestelDatum;
-    }
-
-    public Date getFactuurDatum() {
-        return factuurDatum;
-    }
-
-    public void setFactuurDatum(Date factuurDatum) {
-        this.factuurDatum = factuurDatum;
     }
 
     public HashMap<Product, Integer> getShoppingCart() {
