@@ -67,7 +67,12 @@ public class FireStoreConfig {
         deleteCollection("test", 1);
         */
         // endregion
+
+        //Read individual
+        readFromDB("Products", "c1dd2174-c207-11eb-8529-0242ac130003");
     }
+
+
 
     /**
      * A connection method to create an often used variable to prevent duplicate code

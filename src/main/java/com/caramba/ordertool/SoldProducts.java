@@ -20,13 +20,13 @@ public class SoldProducts {
         date = new Date();
         cal = Calendar.getInstance();
 
-        fillsoldProductsPerMonthMap();
+        fillSoldProductsPerMonthMap();
         printMap();
         AverageSellsTwoMonths();
     }
 
 
-    public void fillsoldProductsPerMonthMap() {
+    public void fillSoldProductsPerMonthMap() {
 
         productsSold = new HashMap<Integer, String>();
         productsSold.put(19, "Antenneplakkers");
