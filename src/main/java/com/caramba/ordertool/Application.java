@@ -16,7 +16,7 @@ public class Application {
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
     //Keeps track of all known orders
-    private static final Orderlist orders = new Orderlist();
+    private static final Saleslist orders = new Saleslist();
     private static final TimePeriodController timePeriods = new TimePeriodController();
     private static final FireStoreConfig config = new FireStoreConfig();
 
@@ -98,9 +98,9 @@ public class Application {
         }else{
             System.out.println("The following orders are registered:\n");
             for (int i = 0; i < orders.size(); i++) {
-                Order selectedOrder = orders.getOrderByID(i);
-                System.out.println(selectedOrder.getBestelDatum() +"/"+ selectedOrder.getFactuurDatum());
-                selectedOrder.listShoppingCart();
+                Sale selectedOrder = orders.getOrderByID(i);
+                System.out.println(selectedOrder.getBestelDatum());
+                selectedOrder.listProducts();
             }
         }
     }
@@ -162,7 +162,7 @@ public class Application {
                     throw new InvalidParameterException();
                 }else{
                     orderProducts.put(products.get(productNum), amount);
-                    orders.addToOrderList(new Order(orderProducts));
+                    orders.addToOrderList(new Sale(orderProducts));
                     System.out.println("Order has been created.");
                 }
             }
@@ -318,7 +318,7 @@ public class Application {
         return suppliers;
     }
 
-    public static Orderlist getMainOrderList(){return orders;}
+    public static Saleslist getMainOrderList(){return orders;}
 
     public static String[] getCmdArguments() {
         return cmdArguments;

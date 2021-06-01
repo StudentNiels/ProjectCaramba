@@ -2,8 +2,8 @@ package com.caramba.ordertool;
 
 public class InkoopTestMain {
     public static void main(String[] args){
-        Orderlist orderlist = new Orderlist();
-        Order order1 = new Order();
+        Saleslist saleslist = new Saleslist();
+        Sale order1 = new Sale();
 
         Product product1 = new Product("asd123","Anti-insecten Autowasmiddel", 100);
         Product product2 = new Product("asd124","Anti-insecten Autowasmiddel", 100);
@@ -15,18 +15,18 @@ public class InkoopTestMain {
         Product product8 = new Product("asd824","Anti-vries Autowasmiddel", 100);
         Product product9 = new Product("asd822","Anti-vries Autowasmiddel", 100);
 
-        order1.addToShoppingCart(product1,50);
-        order1.addToShoppingCart(product2,75);
-        order1.addToShoppingCart(product3,125);
-        order1.addToShoppingCart(product4,555);
-        order1.addToShoppingCart(product5,123);
-        order1.addToShoppingCart(product6,20);
-        order1.addToShoppingCart(product7,5);
-        order1.addToShoppingCart(product8,30);
-        order1.addToShoppingCart(product9,99);
+        order1.addToProducts(product1,50);
+        order1.addToProducts(product2,75);
+        order1.addToProducts(product3,125);
+        order1.addToProducts(product4,555);
+        order1.addToProducts(product5,123);
+        order1.addToProducts(product6,20);
+        order1.addToProducts(product7,5);
+        order1.addToProducts(product8,30);
+        order1.addToProducts(product9,99);
 
-        orderlist.addToOrderList(order1);
+        saleslist.addToOrderList(order1);
 
-        orderlist.listOrders();
+        saleslist.listOrders();
     }
 }

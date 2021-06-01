@@ -8,20 +8,18 @@ Wil ik: op basis van het seizoen, verkoop trends, geschatte levertijd en beschik
 Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 */
 
-import com.caramba.ordertool.Order;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Orderlist {
+public class Saleslist {
 
-    private ArrayList<Order> orders;
+    private ArrayList<Sale> orders;
 
-    public Orderlist(){
+    public Saleslist(){
         this.orders = new ArrayList<>();
     }
 
-    public void addToOrderList(Order order){
+    public void addToOrderList(Sale order){
         order.setBestelDatum(Calendar.getInstance().getTime());
 
         this.orders.add(order);
@@ -31,22 +29,22 @@ public class Orderlist {
         return orders.size();
     }
 
-    public ArrayList<Order> getOrders() {
+    public ArrayList<Sale> getOrders() {
         return orders;
     }
 
-    public void setOrders(ArrayList<Order> orders) {
+    public void setOrders(ArrayList<Sale> orders) {
         this.orders = orders;
     }
 
-    public Order getOrderByID(int index){
+    public Sale getOrderByID(int index){
         return orders.get(index);
     }
 
     public void listOrders(){
-        for(Order order : this.orders){
+        for(Sale order : this.orders){
             System.out.println(order.getBestelDatum());
-            order.listShoppingCart();
+            order.listProducts();
         }
     }
 }
