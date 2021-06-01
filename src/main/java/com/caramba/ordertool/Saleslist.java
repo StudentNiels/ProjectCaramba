@@ -43,6 +43,10 @@ public class Saleslist {
         return sales.get(index);
     }
 
+    /**
+     * @param productID
+     * @return A new sales list that only includes sales with the given product. Unrelated products are removed from the sale entry
+     */
     public Saleslist getSalesByProduct(UUID productID){
         Saleslist soldProducts = new Saleslist();
 
@@ -55,6 +59,21 @@ public class Saleslist {
             }
         }
         return soldProducts;
+    }
+
+    /**
+     *
+     * @param year
+     * @return A new salelist with all the sales in the given year
+     */
+    public Saleslist getSalesByYear(int year){
+        Saleslist result = new Saleslist();
+        for (Sale sale : this.sales) {
+            if(sale.getDate().getYear() == year){
+                result.addToSalesList(sale);
+            }
+        }
+        return result;
     }
 
     public void listSales(){
