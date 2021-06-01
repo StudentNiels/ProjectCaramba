@@ -31,16 +31,29 @@ public class OrderAlgorithm {
         return suggestionList;
     }
 
-    // Hoeveel producten er besteld moeten worden
+    /**
+     * Calculates a recommended amount of the given product should be ordered for next month
+     * @param productID The uuid of the product to check
+     * @return The amount to order
+     */
     public int getProductRecommendation(UUID productID){
         Saleslist salesList = Application.getMainSalesList().getSalesByProduct(productID);
         HashMap<LocalDate, Integer> dateAmountList = new HashMap<>();
-
+        int totalSoldThisYear = 0;
         for(Sale sale : salesList.getSales()){
-            dateAmountList.put(sale.getDate(), sale.getAmountByID(productID));
+            int amount = sale.getAmountByID(productID);
+            dateAmountList.put(sale.getDate(), amount);
+            if(sale.getDate().getYear() == LocalDate.now().getYear()){
+                totalSoldThisYear = totalSoldThisYear + amount;
+            }
         }
-
-        return 0;
+        float[] medianPercentages = calculatePercentages(getMedianYear(dateAmountList));
+        float percentageSoldThisYear = 0;
+        for(int i = 0; i < LocalDate.now().getMonth().getValue(); i++){
+            percentageSoldThisYear = percentageSoldThisYear + medianPercentages[i];
+        }
+        int totalExpectedToSellThisYear = Math.round(totalSoldThisYear / percentageSoldThisYear);
+        return Math.round(totalExpectedToSellThisYear * medianPercentages[LocalDate.now().plusMonths(1).getMonth().getValue()]);
     }
 
     /**
