@@ -156,7 +156,7 @@ public class Application {
                     throw new InvalidParameterException();
                 }else{
                     saleProducts.put(productUUID, amount);
-                    saleslist.addToSalesList(new Sale(saleProducts));
+                    saleslist.addToSalesList(new Sale(saleProducts, LocalDate.now()));
                     System.out.println("Sale has been created.");
                 }
             }

@@ -2,8 +2,8 @@ package com.caramba.ordertool;
 
 public class InkoopTestMain {
     public static void main(String[] args){
-        Saleslist saleslist = new Saleslist();
-        Sale order1 = new Sale();
+        //Saleslist saleslist = new Saleslist();
+        //Sale order1 = new Sale();
 /*
         Product product1 = new Product("asd123","Anti-insecten Autowasmiddel", 100);
         Product product2 = new Product("asd124","Anti-insecten Autowasmiddel", 100);
@@ -25,8 +25,8 @@ public class InkoopTestMain {
         order1.addToProducts(product8,30);
         order1.addToProducts(product9,99);
 */
-        saleslist.addToSalesList(order1);
+        //saleslist.addToSalesList(order1);
 
-        saleslist.listSales();
+        //saleslist.listSales();
     }
 }

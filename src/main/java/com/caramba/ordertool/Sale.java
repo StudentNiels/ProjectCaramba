@@ -10,19 +10,9 @@ public class Sale {
     private LocalDate date;
     private HashMap<UUID, Integer> products;
 
-    public Sale(){
-        this.date = LocalDate.now();
-        this.products = new HashMap<>();
-    }
-
     public Sale(LocalDate date) {
         this.date = LocalDate.now();
         this.products = new HashMap<>();
-    }
-
-    public Sale(HashMap<UUID, Integer> products) {
-        this.date = LocalDate.now();
-        this.products = products;
     }
 
     public Sale(HashMap<UUID, Integer> products, LocalDate date) {

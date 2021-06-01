@@ -52,9 +52,8 @@ public class Saleslist {
 
         for (Sale sale : this.sales) {
             if(sale.getProducts().containsKey(productID)){
-                Sale newSale = new Sale();
+                Sale newSale = new Sale(sale.getDate());
                 newSale.addToProducts(productID, sale.getAmountByID(productID));
-                newSale.setDate(sale.getDate());
                 soldProducts.addToSalesList(newSale);
             }
         }
