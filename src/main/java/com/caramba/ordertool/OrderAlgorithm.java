@@ -140,11 +140,11 @@ public class OrderAlgorithm {
             return arrayList.get(0);
         }else if((arrayList.size() % 2) == 0){
             //even
-            int centerIndex = arrayList.size() / 2;
+            int centerIndex = (arrayList.size() / 2) - 1;
             return (arrayList.get(centerIndex) + arrayList.get(centerIndex + 1)) / 2;
         }else{
             //odd
-            return arrayList.get((int)Math.ceil(arrayList.size() / 2));
+            return arrayList.get((int)Math.ceil(arrayList.size() / 2) - 1);
         }
     }
 
