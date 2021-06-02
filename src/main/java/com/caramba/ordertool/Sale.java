@@ -1,13 +1,11 @@
 package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class Sale {
 
-    private String order_nr;
     private LocalDateTime date;
     private HashMap<String, Integer> products;
 
@@ -68,9 +66,10 @@ public class Sale {
 
             if(allProducts.containsKey(productID)){
                 selectedProduct = allProducts.get(productID);
+                System.out.println(selectedProduct.getProductNum() + " " + selectedProduct.getDescription() + "/" + amount);
+            }else{
+                System.out.println("invalid product id");
             }
-
-            System.out.println(selectedProduct.getProductNum() + " " + selectedProduct.getDescription() + "/" + amount);
         }
     }
 }
