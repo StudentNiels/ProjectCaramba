@@ -222,18 +222,25 @@ public class FireStoreConfig {
     /**
      * Make a list of all the suppliers
      */
-    public Iterable<DocumentReference> retrieveAllSuppliers(){
+    public SupplierList retrieveAllSuppliers(){
+        SupplierList result = new SupplierList();
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
-        int i = 0;
         for (DocumentReference collRef : collections)
         {
-            i++;
-            System.out.println("Supplier ID: " + collRef.getId());
+            ApiFuture<DocumentSnapshot> promise = collRef.get();
+            try {
+                DocumentSnapshot documentSnapshot = promise.get();
+                if(documentSnapshot.exists()){
+                    Supplier s = documentSnapshot.toObject(Supplier.class);
+                    result.add(collRef.getId(), s);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println(i);
         closeDb();
-        return collections;
+        return result;
     }
 
     /**

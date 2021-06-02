@@ -14,7 +14,7 @@ public class Application {
     //keeps track of all known products
     private static ProductList products = new ProductList();
     //Keeps track of all known suppliers
-    private static final SupplierList suppliers = new SupplierList();
+    private static SupplierList suppliers = new SupplierList();
     //Keeps track of all known sales
     private static Saleslist saleslist = new Saleslist();
     private static final FireStoreConfig config = new FireStoreConfig();
@@ -28,7 +28,8 @@ public class Application {
         //load from db
         config.fireStoreConfig();
         //saleslist = config.retrieveAllSales();
-        products = config.retrieveAllProducts();
+        suppliers = config.retrieveAllSuppliers();
+        //products = config.retrieveAllProducts();
 
         NotificationManager.add(new Notification(NotificationType.INFO,("Caramba Order Tool started. Ready for commands.")));
         while(true){
@@ -72,7 +73,7 @@ public class Application {
             for (Map.Entry<String, Supplier> entry : suppliers.getSuppliers().entrySet()) {
                 String id = entry.getKey();
                 Supplier s = entry.getValue();
-                NotificationManager.add(new Notification(NotificationType.INFO, "| id: " + id.toString() + " | Name: " + s.getName() + " | Estimated delivery time: " + s.getDeliveryTime() + " |"));
+                NotificationManager.add(new Notification(NotificationType.INFO, "| id: " + id + " | Name: " + s.getName() + " | Estimated delivery time: " + s.getAvgDeliveryTime() + " |"));
             }
         }
     }
