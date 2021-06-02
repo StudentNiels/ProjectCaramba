@@ -2,6 +2,7 @@ package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class OrderAlgorithm {
         for(int i = 0; i < LocalDate.now().getMonth().getValue(); i++){
             //in a typical year, this many % of the units would be sold at this point in time. We will assume that this year will be the same.
             percentageSoldThisYear = percentageSoldThisYear + medianPercentages[i];
-        }if(percentageSoldThisYear != 0){
+        }if(percentageSoldThisYear != 0 || date.getYear() != Year.now().getValue()){
             //Finally we calculate the amount we expect to sell based on the percentage and the amount of units actually sold.
             int totalExpectedToSellThisYear = Math.round(totalSoldThisYear / percentageSoldThisYear);
             return Math.round(totalExpectedToSellThisYear * medianPercentages[date.getMonth().getValue() - 1]);
