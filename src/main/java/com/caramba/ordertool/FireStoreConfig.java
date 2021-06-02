@@ -69,9 +69,8 @@ public class FireStoreConfig {
         // endregion
 
         //Read individual
-        readFromDB("Products", "c1dd2174-c207-11eb-8529-0242ac130003");
+        //readFromDB("Products", "c1dd2174-c207-11eb-8529-0242ac130003");
     }
-
 
 
     /**
@@ -183,17 +182,24 @@ public class FireStoreConfig {
     /**
      * Make a list of all the products
      */
-    public Iterable<DocumentReference> retrieveAllProducts(){
+    public ProductList retrieveAllProducts(){
+        ProductList result = new ProductList();
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
-        int i = 0;
         for (DocumentReference collRef : collections) {
-            i++;
-            System.out.println("Product ID: " + collRef.getId());
+            ApiFuture<DocumentSnapshot> promise = collRef.get();
+            try {
+                DocumentSnapshot docSnapshot = promise.get();
+                if(docSnapshot.exists()){
+                    Product p = docSnapshot.toObject(Product.class);
+                    result.add(collRef.getId(), p);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println(i);
         closeDb();
-        return collections;
+        return result;
     }
 
     /**

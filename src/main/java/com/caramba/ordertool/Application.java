@@ -12,11 +12,11 @@ import java.util.Scanner;
 
 public class Application {
     //keeps track of all known products
-    private static final ProductList products = new ProductList();
+    private static ProductList products = new ProductList();
     //Keeps track of all known suppliers
     private static final SupplierList suppliers = new SupplierList();
     //Keeps track of all known sales
-    private static final Saleslist saleslist = new Saleslist();
+    private static Saleslist saleslist = new Saleslist();
     private static final FireStoreConfig config = new FireStoreConfig();
     private static final OrderAlgorithm orderAlgo = new OrderAlgorithm();
 
@@ -24,7 +24,12 @@ public class Application {
 
     public static void main(String[] args){
         cmdArguments = args;
+
+        //load from db
         config.fireStoreConfig();
+        //saleslist = config.retrieveAllSales();
+        products = config.retrieveAllProducts();
+
         NotificationManager.add(new Notification(NotificationType.INFO,("Caramba Order Tool started. Ready for commands.")));
         while(true){
             Scanner input = new Scanner(System.in);

@@ -11,6 +11,10 @@ public class Product {
         this.quantity = 0;
     }
 
+    public Product(){
+
+    }
+
     //region Getters and Setters
     public String getProductNum() {
         return productNum;
