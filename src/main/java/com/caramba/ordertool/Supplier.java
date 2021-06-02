@@ -12,31 +12,32 @@ public class Supplier {
     /**
      * Estimated delivery time in days
      */
-    private int DeliveryTime;
-
+    private Integer avgDeliveryTime;
     /**
      * Products sold by this supplier
      */
     private final ProductList products = new ProductList();
 
-    public Supplier(String name, int DeliveryTime){
-        setDeliveryTime(DeliveryTime);
+
+    public Supplier(String name, int avgDeliveryTime){
         this.name = name;
+        this.avgDeliveryTime = avgDeliveryTime;
     }
 
-    public Supplier(String name){
-        this(name, 0);
+    public Supplier(){
+
     }
+
 //region Getters and Setters
-    public int getDeliveryTime() {
-        return DeliveryTime;
+    public int getAvgDeliveryTime() {
+        return avgDeliveryTime;
     }
 
-    public void setDeliveryTime(int deliveryTime) {
-        if(deliveryTime < 0){
+    public void setAvgDeliveryTime(int avgDeliveryTime) {
+        if(avgDeliveryTime < 0){
             throw new InvalidParameterException();
         }
-        DeliveryTime = deliveryTime;
+        this.avgDeliveryTime = avgDeliveryTime;
     }
 
     public String getName() {
