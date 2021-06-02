@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -205,18 +206,42 @@ public class FireStoreConfig {
     /**
      * Make a list of all the Sales
      */
-    public Iterable<DocumentReference> retrieveAllSales(){
+    public Saleslist retrieveAllSales(){
+        Saleslist result = new Saleslist();
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
-        int i = 0;
         for (DocumentReference collRef : collections)
         {
-            i++;
-            System.out.println("Sale ID: " + collRef.getId());
+            //add subcollection to hashmap
+            HashMap<String, Integer> products = new HashMap<>();
+            Iterable<DocumentReference> subCollections = collRef.collection("SalesList").listDocuments();
+            for(DocumentReference subRef : subCollections){
+                ApiFuture<DocumentSnapshot> promise = subRef.get();
+                try{
+                    DocumentSnapshot docSnapshot = promise.get();
+                    if(docSnapshot.exists()){
+                        products.put(subRef.getId(), docSnapshot.getLong("amount").intValue());
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //add date from main collection
+            ApiFuture<DocumentSnapshot> promise = collRef.get();
+            try {
+                DocumentSnapshot docSnapshot = promise.get();
+                if(docSnapshot.exists()){
+                    Date d = docSnapshot.getDate("date");
+                    Sale s = new Sale(products, d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                    result.addToSalesList(s);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println(i);
         closeDb();
-        return collections;
+        return result;
     }
 
     /**
@@ -313,7 +338,7 @@ public class FireStoreConfig {
 
     private void closeDb(){
         try{
-            db.close();
+            //db.close();
         }catch(Exception e){
             NotificationManager.addExceptionError(e);
         }
