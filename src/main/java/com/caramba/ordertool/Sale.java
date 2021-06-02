@@ -8,26 +8,26 @@ public class Sale {
 
     private String order_nr;
     private LocalDate date;
-    private HashMap<UUID, Integer> products;
+    private HashMap<String, Integer> products;
 
     public Sale(LocalDate date) {
         this.date = date;
         this.products = new HashMap<>();
     }
 
-    public Sale(HashMap<UUID, Integer> products, LocalDate date) {
+    public Sale(HashMap<String, Integer> products, LocalDate date) {
         this.date = date;
         this.products = products;
     }
 
     //region Getters and Setters
-    public int getAmountByID(UUID uuid) throws InvalidParameterException{
-        for (Map.Entry<UUID, Integer> entry : products.entrySet()) {
+    public int getAmountByID(String uuid) throws InvalidParameterException{
+        for (Map.Entry<String, Integer> entry : products.entrySet()) {
             if(entry.getKey().equals(uuid)){
                 return entry.getValue();
             }
         }
-        throw new InvalidParameterException("This is not a valid UUID");
+        throw new InvalidParameterException("This is not a valid id");
     }
 
     public LocalDate getDate() {
@@ -38,16 +38,16 @@ public class Sale {
         this.date = date;
     }
 
-    public HashMap<UUID, Integer> getProducts() {
+    public HashMap<String, Integer> getProducts() {
         return products;
     }
 
-    public void setProducts(HashMap<UUID, Integer> products) {
+    public void setProducts(HashMap<String, Integer> products) {
         this.products = products;
     }
     //endregion
 
-    public void addToProducts(UUID uuid, int amount){
+    public void addToProducts(String uuid, int amount){
         if(products.containsKey(uuid)){
             products.replace(uuid,(products.get(uuid) + amount));
         }
@@ -58,15 +58,15 @@ public class Sale {
 
     public void listProducts(){
         System.out.println("Saleslist items:");
-        HashMap<UUID, Product> allProducts = Application.getMainProductList().getProducts();
+        HashMap<String, Product> allProducts = Application.getMainProductList().getProducts();
         Product selectedProduct = null;
 
-        for(Map.Entry<UUID, Integer> product : this.products.entrySet()){
-            UUID productUUID = product.getKey();
+        for(Map.Entry<String, Integer> product : this.products.entrySet()){
+            String productID = product.getKey();
             int amount = product.getValue();
 
-            if(allProducts.containsKey(productUUID)){
-                selectedProduct = allProducts.get(productUUID);
+            if(allProducts.containsKey(productID)){
+                selectedProduct = allProducts.get(productID);
             }
 
             System.out.println(selectedProduct.getProductNum() + " " + selectedProduct.getDescription() + "/" + amount);

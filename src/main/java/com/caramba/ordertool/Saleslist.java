@@ -11,7 +11,6 @@ Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.UUID;
 
 public class Saleslist {
 
@@ -45,7 +44,7 @@ public class Saleslist {
      * @param productID
      * @return A new sales list that only includes sales with the given product. Unrelated products are removed from the sale entry
      */
-    public Saleslist getSalesByProduct(UUID productID){
+    public Saleslist getSalesByProduct(String productID){
         Saleslist soldProducts = new Saleslist();
 
         for (Sale sale : this.sales) {

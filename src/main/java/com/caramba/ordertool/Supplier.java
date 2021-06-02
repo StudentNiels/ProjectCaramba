@@ -51,7 +51,7 @@ public class Supplier {
         return products;
     }
 
-    public boolean containsProductWithKey(UUID k){
+    public boolean containsProductWithKey(String k){
         return products.containsKey(k);
     }
 
@@ -64,26 +64,26 @@ public class Supplier {
      * @param id of product to get
      * @return the product or null if the index is invalid
      */
-    public Product getProduct(UUID id){
+    public Product getProduct(String id){
         return products.get(id);
     }
 
-    public void addProduct(UUID id, Product product){
+    public void addProduct(String id, Product product){
         products.add(id, product);
     }
 
     public void addProduct(Product product){
-        UUID id = null;
+        String id = null;
         while(id == null || containsProductWithKey(id)){
             //reroll key if there is a collision
-            id = UUID.randomUUID();
+            id = UUID.randomUUID().toString();
         }
         products.add(id, product);
     }
 
     public void listProducts(){
-        for(Map.Entry<UUID, Product> product : products.getProducts().entrySet()){
-            UUID ID = product.getKey();
+        for(Map.Entry<String, Product> product : products.getProducts().entrySet()){
+            String ID = product.getKey();
             Product selectedProduct = product.getValue();
 
             System.out.println("ProductID = " + ID + "/" + selectedProduct.getProductNum() + " " + selectedProduct.getDescription());
