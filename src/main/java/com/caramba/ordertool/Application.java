@@ -88,7 +88,7 @@ public class Application {
                 NotificationManager.add(new Notification(NotificationType.INFO,(
                         "| id: " + id.toString() + " | Product number: " + p.getProductNum()
                         + " | Description: " + p.getDescription() + " | Amount in storage: "
-                        + p.getQuantity() +" | Minimum for storage: " + p.getMinQuantity() + " | " + suppliersString)));
+                        + p.getQuantity()  + " | " + suppliersString)));
             }
         }
     }
@@ -138,8 +138,7 @@ public class Application {
         try{
             String productNumber = command[2];
             String description = command[3];
-            int minStorage = Integer.parseInt(command[4]);
-            products.add(new Product(productNumber, description, minStorage));
+            products.add(new Product(productNumber, description));
             NotificationManager.add(new Notification(NotificationType.INFO,(description + " was added to the product list")));
         }catch (IndexOutOfBoundsException | NumberFormatException e){
             NotificationManager.add(new Notification(NotificationType.ERROR,("Invalid syntax. Please use add product [product number] [description] [minimum for storage]")));
@@ -181,9 +180,9 @@ public class Application {
     }
 
     public static void removeSupplier(String[] command){
-        UUID id;
+        String id;
         try{
-            id = UUID.fromString(command[2]);
+            id = command[2];
             Supplier v = suppliers.get(id);
             if(v == null){
                 NotificationManager.add(new Notification(NotificationType.INFO,("that supplier does not exist")));
@@ -281,12 +280,12 @@ public class Application {
      * Loads a hardcoded set of test data for preview proposes.
      */
     private static void loadTestData(){
-        Product p1 = new Product("12345678", "Wax-Polish", 10);
-        Product p2 = new Product("0010-AA", "Antenneplakkers, zak 100 stuks", 10);
-        Product p3 = new Product("1230", "Insectenschrik", 10);
-        Product p4 = new Product("183247", "Schuim", 10);
-        Product p5 = new Product("2393", "Spray", 10);
-        Product p6 = new Product("3423875", "Voorreiniger", 10);
+        Product p1 = new Product("12345678", "Wax-Polish");
+        Product p2 = new Product("0010-AA", "Antenneplakkers, zak 100 stuks");
+        Product p3 = new Product("1230", "Insectenschrik");
+        Product p4 = new Product("183247", "Schuim");
+        Product p5 = new Product("2393", "Spray");
+        Product p6 = new Product("3423875", "Voorreiniger");
         Supplier s1 = new Supplier("Bremen", 7);
         Supplier s2 = new Supplier("VoorbeeldLeverancier", 14);
 

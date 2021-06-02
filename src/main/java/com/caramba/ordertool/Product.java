@@ -4,9 +4,8 @@ public class Product {
     private String productNum;
     private String description;
     private int quantity;
-    private int minQuantity;
 
-    public Product(String productNum, String description, int minQuantity) {
+    public Product(String productNum, String description) {
         this.productNum = productNum;
         this.description = description;
         this.quantity = 0;
@@ -38,13 +37,6 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public int getMinQuantity() {
-        return minQuantity;
-    }
-
-    public void setMinQuantity(int minQuantity) {
-        this.minQuantity = minQuantity;
-    }
     //endregion
 
     public void decrease(){
