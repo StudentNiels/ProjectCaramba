@@ -14,7 +14,7 @@ public class OrderAlgorithm {
      * @param date The yearMonth to get the projected sales for. Must be in the future.
      * @return The amount to order
      */
-    public int getProjectedSaleAmount(UUID productID, YearMonth date){
+    public int getProjectedSaleAmount(String productID, YearMonth date){
         if(!date.isAfter(YearMonth.now())){
             throw new InvalidParameterException("The given date is not in the future");
         }
@@ -66,7 +66,7 @@ public class OrderAlgorithm {
      * @param amountOfMonths The amount of months to check
      * @return Array with the projected sales of the next x months
      */
-    public int[] getProjectedSalesInComingMonths(UUID productID, int amountOfMonths){
+    public int[] getProjectedSalesInComingMonths(String productID, int amountOfMonths){
         int[] result = new int[amountOfMonths];
         for(int i = 0; i < amountOfMonths; i++){
             result[i] = getProjectedSaleAmount(productID, YearMonth.now().plusMonths(1 + i));
@@ -74,7 +74,7 @@ public class OrderAlgorithm {
         return result;
     }
 
-    public int getProjectedSalesNextMonth(UUID productID){
+    public int getProjectedSalesNextMonth(String productID){
         return getProjectedSalesInComingMonths(productID, 1)[0];
     }
 

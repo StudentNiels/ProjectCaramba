@@ -12,11 +12,11 @@ class SupplierListTest {
     SupplierList suppliers = new SupplierList();
     ProductList products = new ProductList();
 
-    UUID supplierID1 = UUID.randomUUID();
-    UUID supplierID2 = UUID.randomUUID();
-    UUID supplierID3 = UUID.randomUUID();
-    UUID productID1 = UUID.randomUUID();
-    UUID productID2 = UUID.randomUUID();
+    String supplierID1 = UUID.randomUUID().toString();
+    String supplierID2 = UUID.randomUUID().toString();
+    String supplierID3 = UUID.randomUUID().toString();
+    String productID1 = UUID.randomUUID().toString();
+    String productID2 = UUID.randomUUID().toString();
     @BeforeEach
     void setUp() {
 

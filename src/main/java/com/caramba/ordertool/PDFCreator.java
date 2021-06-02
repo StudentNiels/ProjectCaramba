@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 public class PDFCreator {
     private final String path;
@@ -112,13 +111,13 @@ public class PDFCreator {
 
     private HashMap<String, ProductList> separateProductListPerSupplier(ProductList productlist){
         HashMap<String, ProductList> result = new HashMap<>();
-        HashMap<UUID, Product> productsToCheck = productlist.getProducts();
+        HashMap<String, Product> productsToCheck = productlist.getProducts();
         //check all known suppliers
-        for (Map.Entry<UUID, Supplier> sEntry : suppliers.getSuppliers().entrySet()) {
+        for (Map.Entry<String, Supplier> sEntry : suppliers.getSuppliers().entrySet()) {
             ProductList supplierProductList = new ProductList();
-            Iterator<Map.Entry<UUID, Product>> itP = productsToCheck.entrySet().iterator();
+            Iterator<Map.Entry<String, Product>> itP = productsToCheck.entrySet().iterator();
             while (itP.hasNext()) {
-                Map.Entry<UUID, Product> pEntry = itP.next();
+                Map.Entry<String, Product> pEntry = itP.next();
                 if (sEntry.getValue().containsProduct(pEntry.getValue())) {
                     supplierProductList.add(pEntry.getValue());
                     itP.remove();

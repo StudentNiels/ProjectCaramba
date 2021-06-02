@@ -3,18 +3,18 @@ package com.caramba.ordertool;
 import java.util.*;
 
 public class SupplierList {
-    private final HashMap<UUID, Supplier> suppliers = new HashMap<>();
+    private final HashMap<String, Supplier> suppliers = new HashMap<>();
 
-    public HashMap<UUID, Supplier> getSuppliers() {
+    public HashMap<String, Supplier> getSuppliers() {
         return suppliers;
     }
 
 //#region delegate functions
-    public Supplier get(UUID id){
+    public Supplier get(String id){
         return suppliers.get(id);
     }
 
-    public void remove(UUID id){
+    public void remove(String id){
         suppliers.remove(id);
     }
 
@@ -22,16 +22,16 @@ public class SupplierList {
         suppliers.clear();
     }
 
-    public void add(UUID id, Supplier supplier){
+    public void add(String id, Supplier supplier){
         suppliers.put(id, supplier);
     }
 
     public void add(Supplier supplier){
         //add with auto generated id
-        UUID id = null;
+        String id = null;
         while(id == null || containsKey(id)){
             //reroll key if there is a collision
-            id = UUID.randomUUID();
+            id = UUID.randomUUID().toString();
         }
         add(id, supplier);
     }
@@ -45,7 +45,7 @@ public class SupplierList {
         return suppliers.containsValue(o);
     }
 
-    public boolean containsKey(UUID k) {
+    public boolean containsKey(String k) {
         return suppliers.containsKey(k);
     }
 
@@ -57,7 +57,7 @@ public class SupplierList {
      */
     public SupplierList getSuppliersSellingProduct(Product product){
         SupplierList result = new SupplierList();
-        for (Map.Entry<UUID, Supplier> entry : suppliers.entrySet()) {
+        for (Map.Entry<String, Supplier> entry : suppliers.entrySet()) {
             Supplier s = entry.getValue();
             if(s.getProducts().contains(product)){
                 result.add(s);

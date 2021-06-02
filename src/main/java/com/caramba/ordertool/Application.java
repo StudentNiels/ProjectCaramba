@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
 
 public class Application {
     //keeps track of all known products
@@ -65,8 +64,8 @@ public class Application {
         }else{
             NotificationManager.add(new Notification(NotificationType.INFO,("The following suppliers are registered:")));
 
-            for (Map.Entry<UUID, Supplier> entry : suppliers.getSuppliers().entrySet()) {
-                UUID id = entry.getKey();
+            for (Map.Entry<String, Supplier> entry : suppliers.getSuppliers().entrySet()) {
+                String id = entry.getKey();
                 Supplier s = entry.getValue();
                 NotificationManager.add(new Notification(NotificationType.INFO, "| id: " + id.toString() + " | Name: " + s.getName() + " | Estimated delivery time: " + s.getDeliveryTime() + " |"));
             }
@@ -78,11 +77,11 @@ public class Application {
             NotificationManager.add(new Notification(NotificationType.INFO,("The product list is empty")));
         }else{
             NotificationManager.add(new Notification(NotificationType.INFO,("The following products are registered:")));
-            for (Map.Entry<UUID, Product> entry : products.getProducts().entrySet()) {
-                UUID id = entry.getKey();
+            for (Map.Entry<String, Product> entry : products.getProducts().entrySet()) {
+                String id = entry.getKey();
                 Product p = entry.getValue();
                 StringBuilder suppliersString = new StringBuilder("suppliers that sell this product:");
-                for (Map.Entry<UUID, Supplier> supplierEntry : suppliers.getSuppliersSellingProduct(p).getSuppliers().entrySet()) {
+                for (Map.Entry<String, Supplier> supplierEntry : suppliers.getSuppliersSellingProduct(p).getSuppliers().entrySet()) {
                     Supplier s = supplierEntry.getValue();
                     suppliersString.append(" ").append(s.getName());
                 }
@@ -149,17 +148,17 @@ public class Application {
 
     public static void addSale(String[] command){
         try{
-            HashMap<UUID, Integer> saleProducts = new HashMap<>();
+            HashMap<String, Integer> saleProducts = new HashMap<>();
             for (int i = 2; i < command.length; i += 2) {
-                UUID productUUID = UUID.fromString(command[i]);
+                String id = command[i];
                 int amount = Integer.parseInt(command[(i+1)]);
-                if(productUUID == null){
+                if(id == null){
                     System.out.println("This product does not exist!");
                 }else if(amount < 0){
                     System.out.println("Negative amounts are not allowed!");
                     throw new InvalidParameterException();
                 }else{
-                    saleProducts.put(productUUID, amount);
+                    saleProducts.put(id, amount);
                     saleslist.addToSalesList(new Sale(saleProducts, LocalDate.now()));
                     System.out.println("Sale has been created.");
                 }
@@ -198,9 +197,9 @@ public class Application {
     }
 
     public static void removeProduct(String[] command){
-        UUID id;
+        String id;
         try{
-            id = UUID.fromString(command[2]);
+            id = command[2];
             Product p = products.get(id);
             if(p == null){
                 NotificationManager.add(new Notification(NotificationType.INFO,("that product does not exist")));
@@ -214,11 +213,11 @@ public class Application {
     }
 
     public static void link(String[] command){
-        UUID id;
+        String id;
         try{
-            id = UUID.fromString(command[1]);
+            id = command[1];
             Product p = products.get(id);
-            id = UUID.fromString(command[2]);
+            id = command[2];
             Supplier v = suppliers.get(id);
             v.addProduct(p);
             NotificationManager.add(new Notification(NotificationType.INFO,("Created link between " + v.getName() + " and " + p.getDescription())));
@@ -262,7 +261,7 @@ public class Application {
             ProductList pl = new ProductList();
             for (int i = 1; i < command.length; i++) {
                 try {
-                    UUID id = UUID.fromString(command[i]);
+                    String id = command[i];
                     pl.add(products.get(id));
                 } catch (IllegalArgumentException e) {
                     NotificationManager.add(new Notification(NotificationType.ERROR, command[i] + " is not a valid product id and was not added."));
@@ -327,8 +326,8 @@ public class Application {
         Sale sl19 = new Sale(LocalDate.parse("2021-05-01"));
         Sale sl20 = new Sale(LocalDate.parse("2021-06-01"));
 
-        //todo this is dumb and we need to fix this. ID should be stored in product.
-        for (Map.Entry<UUID, Product> entry : products.getProducts().entrySet()) {
+
+        for (Map.Entry<String, Product> entry : products.getProducts().entrySet()) {
             if(entry.getValue() == p1){
                 //sold in jan 2020
                 sl1.addToProducts(entry.getKey(), 2);
@@ -388,12 +387,12 @@ public class Application {
      * Shows projected sales of given product for the next month
      */
     private static void displayProjectedSales(String[] command) {
-        UUID id;
+        String id;
         try {
             if(command.length < 2){
                 throw new IllegalArgumentException();
             }
-            id = UUID.fromString(command[1]);
+            id = command[1];
             Product p = products.get(id);
             NotificationManager.add(new Notification(NotificationType.INFO, "The expected number of sales in the next month of this product is: " + orderAlgo.getProjectedSalesNextMonth(id)));
         }catch (IllegalArgumentException e){
