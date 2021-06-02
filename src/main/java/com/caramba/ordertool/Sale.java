@@ -2,20 +2,21 @@ package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Sale {
 
     private String order_nr;
-    private LocalDate date;
+    private LocalDateTime date;
     private HashMap<String, Integer> products;
 
-    public Sale(LocalDate date) {
+    public Sale(LocalDateTime date) {
         this.date = date;
         this.products = new HashMap<>();
     }
 
-    public Sale(HashMap<String, Integer> products, LocalDate date) {
+    public Sale(HashMap<String, Integer> products, LocalDateTime date) {
         this.date = date;
         this.products = products;
     }
@@ -30,11 +31,11 @@ public class Sale {
         throw new InvalidParameterException("This is not a valid id");
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

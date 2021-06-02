@@ -5,7 +5,7 @@ import com.caramba.ordertool.Notifications.NotificationManager;
 import com.caramba.ordertool.Notifications.NotificationType;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -163,7 +163,7 @@ public class Application {
                     throw new InvalidParameterException();
                 }else{
                     saleProducts.put(id, amount);
-                    saleslist.addToSalesList(new Sale(saleProducts, LocalDate.now()));
+                    saleslist.addToSalesList(new Sale(saleProducts, LocalDateTime.now()));
                     System.out.println("Sale has been created.");
                 }
             }
@@ -309,26 +309,26 @@ public class Application {
         suppliers.add(s1);
         suppliers.add(s2);
 
-        Sale sl1 = new Sale(LocalDate.parse("2020-01-01"));
-        Sale sl2 = new Sale(LocalDate.parse("2020-01-12"));
-        Sale sl3 = new Sale(LocalDate.parse("2020-02-01"));
-        Sale sl4 = new Sale(LocalDate.parse("2020-02-07"));
-        Sale sl5 = new Sale(LocalDate.parse("2020-03-01"));
-        Sale sl6 = new Sale(LocalDate.parse("2020-04-01"));
-        Sale sl7 = new Sale(LocalDate.parse("2020-05-01"));
-        Sale sl8 = new Sale(LocalDate.parse("2020-06-01"));
-        Sale sl9 = new Sale(LocalDate.parse("2020-07-01"));
-        Sale sl10 = new Sale(LocalDate.parse("2020-08-01"));
-        Sale sl11 = new Sale(LocalDate.parse("2020-09-01"));
-        Sale sl12 = new Sale(LocalDate.parse("2020-10-01"));
-        Sale sl13 = new Sale(LocalDate.parse("2020-11-01"));
-        Sale sl14 = new Sale(LocalDate.parse("2020-12-01"));
-        Sale sl15 = new Sale(LocalDate.parse("2021-01-01"));
-        Sale sl16 = new Sale(LocalDate.parse("2021-02-01"));
-        Sale sl17 = new Sale(LocalDate.parse("2021-03-01"));
-        Sale sl18 = new Sale(LocalDate.parse("2021-04-01"));
-        Sale sl19 = new Sale(LocalDate.parse("2021-05-01"));
-        Sale sl20 = new Sale(LocalDate.parse("2021-06-01"));
+        Sale sl1 = new Sale(LocalDateTime.parse("2020-01-01"));
+        Sale sl2 = new Sale(LocalDateTime.parse("2020-01-12"));
+        Sale sl3 = new Sale(LocalDateTime.parse("2020-02-01"));
+        Sale sl4 = new Sale(LocalDateTime.parse("2020-02-07"));
+        Sale sl5 = new Sale(LocalDateTime.parse("2020-03-01"));
+        Sale sl6 = new Sale(LocalDateTime.parse("2020-04-01"));
+        Sale sl7 = new Sale(LocalDateTime.parse("2020-05-01"));
+        Sale sl8 = new Sale(LocalDateTime.parse("2020-06-01"));
+        Sale sl9 = new Sale(LocalDateTime.parse("2020-07-01"));
+        Sale sl10 = new Sale(LocalDateTime.parse("2020-08-01"));
+        Sale sl11 = new Sale(LocalDateTime.parse("2020-09-01"));
+        Sale sl12 = new Sale(LocalDateTime.parse("2020-10-01"));
+        Sale sl13 = new Sale(LocalDateTime.parse("2020-11-01"));
+        Sale sl14 = new Sale(LocalDateTime.parse("2020-12-01"));
+        Sale sl15 = new Sale(LocalDateTime.parse("2021-01-01"));
+        Sale sl16 = new Sale(LocalDateTime.parse("2021-02-01"));
+        Sale sl17 = new Sale(LocalDateTime.parse("2021-03-01"));
+        Sale sl18 = new Sale(LocalDateTime.parse("2021-04-01"));
+        Sale sl19 = new Sale(LocalDateTime.parse("2021-05-01"));
+        Sale sl20 = new Sale(LocalDateTime.parse("2021-06-01"));
 
 
         for (Map.Entry<String, Product> entry : products.getProducts().entrySet()) {
