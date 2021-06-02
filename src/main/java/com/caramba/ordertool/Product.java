@@ -9,7 +9,6 @@ public class Product {
         this.productNum = productNum;
         this.description = description;
         this.quantity = 0;
-        this.minQuantity = minQuantity;
     }
 
     //region Getters and Setters
