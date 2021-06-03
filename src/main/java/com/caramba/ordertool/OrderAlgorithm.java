@@ -8,6 +8,22 @@ import java.util.*;
 
 public class OrderAlgorithm {
 
+    /**
+     * Checks all registered products and checks how many should be ordered for the given month
+     * @return hashmap with products and quantity to order
+     */
+    public HashMap<Product, Integer> createOrderList(YearMonth date){
+        HashMap<Product, Integer> result = new HashMap<>();
+        for (Map.Entry<String, Product> entry : Application.getMainProductList().getProducts().entrySet()) {
+            String id = entry.getKey();
+            Product p = entry.getValue();
+            int amount =  RecommendOrderAmount(id, date);
+            if(amount > 0){
+                result.put(p, amount);
+            }
+        }
+        return result;
+    }
 
     /**
      * todo part of pc-44
