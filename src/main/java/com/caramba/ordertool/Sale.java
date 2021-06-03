@@ -44,8 +44,8 @@ public class Sale {
     public void setProducts(HashMap<String, Integer> products) {
         this.products = products;
     }
-    //endregion
 
+    //endregion
     public void addToProducts(String uuid, int amount){
         if(products.containsKey(uuid)){
             products.replace(uuid,(products.get(uuid) + amount));

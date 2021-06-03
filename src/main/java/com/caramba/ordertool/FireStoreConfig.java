@@ -8,11 +8,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 
+import javax.print.Doc;
+import javax.swing.text.Document;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -250,11 +253,36 @@ public class FireStoreConfig {
         Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
         for (DocumentReference collRef : collections)
         {
+            //add subcollection to arraylist
+            ArrayList<Product> products = new ArrayList<>();
+            Iterable<DocumentReference> subCollections = collRef.collection("products").listDocuments();
+            for (DocumentReference subRef : subCollections){
+                ApiFuture<DocumentSnapshot> promise = subRef.get();
+                try{
+                    DocumentSnapshot docSnapshot = promise.get();
+                    if(docSnapshot.exists()){
+                        String id = subRef.getId();
+                        Product product = Application.getMainProductList().get(id);
+                        products.add(product);
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //add date from main collection
             ApiFuture<DocumentSnapshot> promise = collRef.get();
             try {
-                DocumentSnapshot documentSnapshot = promise.get();
-                if(documentSnapshot.exists()){
-                    Supplier s = documentSnapshot.toObject(Supplier.class);
+                DocumentSnapshot docSnapshot = promise.get();
+                if(docSnapshot.exists()){
+                    Integer avg = docSnapshot.getDouble("avgDeliveryTime").intValue();
+                    String n = docSnapshot.getString("name");
+                    Supplier s = new Supplier(n, avg);
+                    int i;
+                    for(i = 0; i < products.size();i++)
+                    {
+                        s.addProduct(products.get(i));
+                    }
                     result.add(collRef.getId(), s);
                 }
             } catch (InterruptedException | ExecutionException e) {

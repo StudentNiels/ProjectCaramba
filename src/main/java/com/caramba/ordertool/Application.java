@@ -27,9 +27,10 @@ public class Application {
 
         //load from db
         config.fireStoreConfig();
-        saleslist = config.retrieveAllSales();
-        //suppliers = config.retrieveAllSuppliers();
         products = config.retrieveAllProducts();
+        saleslist = config.retrieveAllSales();
+        suppliers = config.retrieveAllSuppliers();
+
 
         NotificationManager.add(new Notification(NotificationType.INFO,("Caramba Order Tool started. Ready for commands.")));
         while(true){
