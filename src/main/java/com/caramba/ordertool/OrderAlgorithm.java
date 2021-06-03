@@ -7,6 +7,18 @@ import java.time.YearMonth;
 import java.util.*;
 
 public class OrderAlgorithm {
+
+
+    /**
+     * todo part of pc-44
+     * Calculates how many products to order based on current stock and expected sales
+     * @param productID
+     * @return
+     */
+    public int RecommendOrderAmount(String productID){
+        throw new java.lang.UnsupportedOperationException();
+    }
+
     /**
      * Calculates how many units of a certain product is expected to be sold in the given month
      * based on the median of sales per month on record.
