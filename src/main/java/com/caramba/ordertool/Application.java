@@ -181,9 +181,9 @@ public class Application {
     }
 
     public static void removeSupplier(String[] command){
-        UUID id;
+        String id;
         try{
-            id = UUID.fromString(command[2]);
+            id = command[2];
             Supplier v = suppliers.get(id);
             if(v == null){
                 NotificationManager.add(new Notification(NotificationType.INFO,("that supplier does not exist")));
