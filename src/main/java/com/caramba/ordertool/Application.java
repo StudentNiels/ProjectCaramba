@@ -6,6 +6,7 @@ import com.caramba.ordertool.Notifications.NotificationType;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -252,28 +253,15 @@ public class Application {
         suppliers.clear();
     }
 
-    //create a pdf with the selected products
-    //todo remove/rework this
+    //create a pdf of the recommended orderlist for next month
     public static void createOrderlistPDF(String[] command){
-        if(command.length < 2){
-            NotificationManager.add(new Notification(NotificationType.ERROR, "Please select at least one product. Use pdf [product id 1] [product id 2] [ect.]"));
+        HashMap<Product, Integer> productQuantityMap = orderAlgo.createOrderList(YearMonth.now().plusMonths(1));
+        if(productQuantityMap.isEmpty()){
+            NotificationManager.add(new Notification(NotificationType.INFO, "There are no products currently recommend to order. The pdf was not created."));
         }else{
-            ProductList pl = new ProductList();
-            for (int i = 1; i < command.length; i++) {
-                try {
-                    String id = command[i];
-                    pl.add(products.get(id));
-                } catch (IllegalArgumentException e) {
-                    NotificationManager.add(new Notification(NotificationType.ERROR, command[i] + " is not a valid product id and was not added."));
-                }
-            }
-            if(pl.size() == 0){
-                NotificationManager.add(new Notification(NotificationType.ERROR, "No pdf was created because the command contained no valid product ids."));
-            }else{
-                PDFCreator pdfc = new PDFCreator("pdf/", suppliers);
-                pdfc.addProductList(pl);
-                pdfc.save();
-            }
+            PDFCreator pdfc = new PDFCreator("pdf/", suppliers);
+            pdfc.addProducts(productQuantityMap);
+            pdfc.save();
         }
     }
 
