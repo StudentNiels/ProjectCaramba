@@ -15,7 +15,7 @@ public class OrderAlgorithm {
      * @param productID
      * @return
      */
-    public int RecommendOrderAmount(String productID){
+    public int RecommendOrderAmount(String productID, YearMonth date){
         throw new java.lang.UnsupportedOperationException();
     }
 
