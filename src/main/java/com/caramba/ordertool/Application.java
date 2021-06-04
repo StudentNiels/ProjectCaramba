@@ -404,7 +404,8 @@ public class Application {
         return suppliers;
     }
 
-    public static Saleslist getMainSalesList(){return saleslist;}
+    public static Saleslist getMainSalesList(){
+        return saleslist;}
 
     public static String[] getCmdArguments() {
         return cmdArguments;

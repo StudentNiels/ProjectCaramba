@@ -28,7 +28,7 @@ public class Supplier {
 
     }
 
-//region Getters and Setters
+    //region Getters and Setters
     public int getAvgDeliveryTime() {
         return avgDeliveryTime;
     }
@@ -59,7 +59,7 @@ public class Supplier {
     public boolean containsProduct(Product p){
         return products.contains(p);
     }
-//endregion
+    //endregion
 
     /**
      * @param id of product to get
