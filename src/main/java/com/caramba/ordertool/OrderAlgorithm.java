@@ -26,13 +26,14 @@ public class OrderAlgorithm {
     }
 
     /**
-     * todo part of pc-44
      * Calculates how many products to order based on current stock and expected sales
      * @param productID
      * @return
      */
     public int RecommendOrderAmount(String productID, YearMonth date){
-        throw new java.lang.UnsupportedOperationException();
+        Product p = Application.getMainProductList().get(productID);
+        int result = getProjectedSaleAmount(productID, date) - p.getQuantity();
+        return Math.max(result, 0);
     }
 
     /**
