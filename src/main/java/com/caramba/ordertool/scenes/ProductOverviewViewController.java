@@ -33,7 +33,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         tableProductOverview.setRowFactory(tableView -> {
             final TableRow<DisplayProduct> row = new TableRow<>();
             //context options for clicking on an non-empty row
-            final ContextMenu contextMenuRow = new ContextMenu();
+            /*final ContextMenu contextMenuRow = new ContextMenu();
 
             final MenuItem removeRowMenuItem = new MenuItem("Verwijderen");
             removeRowMenuItem.setOnAction(event -> remove(row.getItem()));
@@ -60,7 +60,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                             .then(contextMenu)
                             .otherwise(contextMenuRow)
             );
-            tableProductOverview.setContextMenu(contextMenu);
+            tableProductOverview.setContextMenu(contextMenu);(*/
             return row;
         });
     }
