@@ -17,8 +17,9 @@ public class OrderToolGui extends Application {
     //keeps track of all known products
     private static final ProductList products = new ProductList();
     //Keeps track of all known suppliers
-    private static final SupplierList suppliers = new SupplierList();
-    private static final TimePeriodController timePeriods = new TimePeriodController();
+    private static SupplierList suppliers = new SupplierList();
+    //Keeps track of all known sales
+    private static Saleslist sales = new Saleslist();
     private static final FireStoreConfig config = new FireStoreConfig();
     private static ViewController activeController = null;
 
@@ -53,6 +54,9 @@ public class OrderToolGui extends Application {
         return suppliers;
     }
 
+    public static Saleslist getSales() {
+        return sales;
+    }
 
     private void switchScene(SceneType sceneType) throws IOException{
         URL res = getClass().getResource(sceneType.FXMLPath);
