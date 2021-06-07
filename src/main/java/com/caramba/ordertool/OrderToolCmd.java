@@ -1,8 +1,8 @@
 package com.caramba.ordertool;
 
-import com.caramba.ordertool.Notifications.Notification;
-import com.caramba.ordertool.Notifications.NotificationManager;
-import com.caramba.ordertool.Notifications.NotificationType;
+import com.caramba.ordertool.notifications.Notification;
+import com.caramba.ordertool.notifications.NotificationManager;
+import com.caramba.ordertool.notifications.NotificationType;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;

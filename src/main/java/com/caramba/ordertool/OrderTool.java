@@ -1,9 +1,7 @@
 package com.caramba.ordertool;
 
-import com.caramba.ordertool.Notifications.NotificationManager;
-import com.caramba.ordertool.scenes.ProductOverviewViewController;
+import com.caramba.ordertool.reports.ReportManager;
 import com.caramba.ordertool.scenes.ViewController;
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

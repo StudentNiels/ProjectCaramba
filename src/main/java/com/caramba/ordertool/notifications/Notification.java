@@ -1,4 +1,4 @@
-package com.caramba.ordertool.Notifications;
+package com.caramba.ordertool.notifications;
 
 import java.time.LocalDateTime;
 
