@@ -12,31 +12,32 @@ public class Supplier {
     /**
      * Estimated delivery time in days
      */
-    private int DeliveryTime;
-
+    private Integer avgDeliveryTime;
     /**
      * Products sold by this supplier
      */
     private final ProductList products = new ProductList();
 
-    public Supplier(String name, int DeliveryTime){
-        setDeliveryTime(DeliveryTime);
+
+    public Supplier(String name, int avgDeliveryTime){
         this.name = name;
+        this.avgDeliveryTime = avgDeliveryTime;
     }
 
-    public Supplier(String name){
-        this(name, 0);
-    }
-//region Getters and Setters
-    public int getDeliveryTime() {
-        return DeliveryTime;
+    public Supplier(){
+
     }
 
-    public void setDeliveryTime(int deliveryTime) {
-        if(deliveryTime < 0){
+    //region Getters and Setters
+    public int getAvgDeliveryTime() {
+        return avgDeliveryTime;
+    }
+
+    public void setAvgDeliveryTime(int avgDeliveryTime) {
+        if(avgDeliveryTime < 0){
             throw new InvalidParameterException();
         }
-        DeliveryTime = deliveryTime;
+        this.avgDeliveryTime = avgDeliveryTime;
     }
 
     public String getName() {
@@ -51,43 +52,42 @@ public class Supplier {
         return products;
     }
 
-    public boolean containsProductWithKey(UUID k){
+    public boolean containsProductWithKey(String k){
         return products.containsKey(k);
     }
 
     public boolean containsProduct(Product p){
         return products.contains(p);
     }
-//endregion
+    //endregion
 
     /**
      * @param id of product to get
      * @return the product or null if the index is invalid
      */
-    public Product getProduct(UUID id){
+    public Product getProduct(String id){
         return products.get(id);
     }
 
-    public void addProduct(UUID id, Product product){
+    public void addProduct(String id, Product product){
         products.add(id, product);
     }
 
     public void addProduct(Product product){
-        UUID id = null;
+        String id = null;
         while(id == null || containsProductWithKey(id)){
             //reroll key if there is a collision
-            id = UUID.randomUUID();
+            id = UUID.randomUUID().toString();
         }
         products.add(id, product);
     }
 
-    //TODO fix this
-  /*  public void listProducts(){
-        for(Map.Entry<Product, Integer> product : products.entrySet()){
-            Product selectedProduct = product.getKey();
-            int leverTijd = product.getValue();
+    public void listProducts(){
+        for(Map.Entry<String, Product> product : products.getProducts().entrySet()){
+            String ID = product.getKey();
+            Product selectedProduct = product.getValue();
 
-            System.out.println(selectedProduct.getArticlenr() + " " + selectedProduct.getDescription() + " Levertijd: " + leverTijd + " dagen");
+            System.out.println("ProductID = " + ID + "/" + selectedProduct.getProductNum() + " " + selectedProduct.getDescription());
         }
-    }*/
+    }
 }

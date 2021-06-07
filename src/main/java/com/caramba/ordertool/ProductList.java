@@ -2,12 +2,13 @@ package com.caramba.ordertool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class ProductList {
-    private final HashMap<UUID, Product> products = new HashMap<>();
+    private final HashMap<String, Product> products = new HashMap<>();
 
-    public HashMap<UUID, Product> getProducts() {
+    public HashMap<String, Product> getProducts() {
         return products;
     }
 
@@ -16,16 +17,16 @@ public class ProductList {
         return products.size();
     }
 
-    public Product get(UUID id) {
+    public Product get(String id) {
         return products.get(id);
     }
 
-    public void add(UUID id, Product product) {
+    public void add(String id, Product product) {
         products.put(id, product);
     }
 
 
-    public void remove(UUID id) {
+    public void remove(String id) {
         products.remove(id);
     }
 
@@ -38,17 +39,17 @@ public class ProductList {
         return products.containsValue(p);
     }
 
-    public boolean containsKey(UUID id) {
+    public boolean containsKey(String id) {
         return products.containsKey(id);
     }
     //#endregion
 
     public void add(Product product) {
         //add with auto generated id
-        UUID id = null;
+        String id = null;
         while(id == null || containsKey(id)){
             //reroll key if there is a collision
-            id = UUID.randomUUID();
+            id = UUID.randomUUID().toString();
         }
         add(id, product);
     }

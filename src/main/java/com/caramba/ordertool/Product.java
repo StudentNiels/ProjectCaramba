@@ -3,24 +3,16 @@ package com.caramba.ordertool;
 public class Product {
     private String productNum;
     private String description;
-    private Season season;
     private int quantity;
-    private int minQuantity;
 
-    public Product(String productNum, String description, Season season, int minQuantity) {
+    public Product(String productNum, String description) {
         this.productNum = productNum;
         this.description = description;
-        this.season = season;
         this.quantity = 0;
-        this.minQuantity = minQuantity;
     }
 
-    public Product(String productNum, String description, int minQuantity) {
-        this.productNum = productNum;
-        this.description = description;
-        this.season = Season.UNDEFINED;
-        this.quantity = 0;
-        this.minQuantity = minQuantity;
+    public Product(){
+
     }
 
     //region Getters and Setters
@@ -40,14 +32,6 @@ public class Product {
         this.description = description;
     }
 
-    public Season getSeason() {
-        return season;
-    }
-
-    public void setSeason(Season season) {
-        this.season = season;
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -56,13 +40,6 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public int getMinQuantity() {
-        return minQuantity;
-    }
-
-    public void setMinQuantity(int minQuantity) {
-        this.minQuantity = minQuantity;
-    }
     //endregion
 
     public void decrease(){

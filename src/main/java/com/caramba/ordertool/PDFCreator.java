@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 public class PDFCreator {
     private final String path;
@@ -50,9 +49,9 @@ public class PDFCreator {
         this(path, "Orderlist-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", suppliers);
     }
 
-    public void addProductList(ProductList products){
+    public void addProducts(HashMap<Product, Integer> products){
         PDPage page = new PDPage(PDRectangle.A4);
-        HashMap<String, ProductList> productMap = separateProductListPerSupplier(products);
+        HashMap<String, HashMap<Product, Integer>> supplierProductQuantityMap = separateProductQuantityMapPerSupplier(products);
         try{
             float margin = 50;
             float lineSpace = 20;
@@ -76,26 +75,30 @@ public class PDFCreator {
             cs.endText();
             //add a table per supplier
             int tableCount = 1;
-            for (Map.Entry<String, ProductList> productListEntry : productMap.entrySet()) {
+            for (Map.Entry<String, HashMap<Product, Integer>> mapEntry : supplierProductQuantityMap.entrySet()) {
                 BaseTable table = new BaseTable(y, yStartNewPage, margin, tableWidth, margin, document, page, true, true);
                 Row<PDPage> headerRow = table.createRow(15f);
                 Cell<PDPage> cell = headerRow.createCell(100, "ORDER #" + tableCount);
                 table.addHeaderRow(headerRow);
                 Row<PDPage> row = table.createRow(12);
-                cell = row.createCell(100, "Order for: " + productListEntry.getKey());
+                cell = row.createCell(100, "Order for: " + mapEntry.getKey());
                 row = table.createRow(12);
                 cell = row.createCell(4, "#");
                 cell = row.createCell(32, "Product Number");
                 cell = row.createCell(32, "Description");
                 cell = row.createCell(32, "Quantity");
                 int productCount = 1;
-                for (Product p : productListEntry.getValue().getProducts().values()) {
+                HashMap<Product, Integer> productQuantityMap = mapEntry.getValue();
+                for (Map.Entry<Product, Integer> productQuantityEntry : productQuantityMap.entrySet()) {
+                    Product p = productQuantityEntry.getKey();
+                    int amount = productQuantityEntry.getValue();
+
+                    //add the cells for this product
                     row = table.createRow(12);
                     cell = row.createCell(4, Integer.toString(productCount));
                     cell = row.createCell(32, p.getProductNum());
                     cell = row.createCell(32, p.getDescription());
-                    //todo quantity should be tracked by productList (or orderlist?). hardcoded to one for now
-                    cell = row.createCell(32, "1");
+                    cell = row.createCell(32, String.valueOf(amount));
                     productCount = productCount +  1;
                 }
                 y = table.draw() - lineSpace;
@@ -110,28 +113,27 @@ public class PDFCreator {
         document.addPage(page);
     }
 
-    private HashMap<String, ProductList> separateProductListPerSupplier(ProductList productlist){
-        HashMap<String, ProductList> result = new HashMap<>();
-        HashMap<UUID, Product> productsToCheck = productlist.getProducts();
+    private HashMap<String, HashMap<Product, Integer>> separateProductQuantityMapPerSupplier(HashMap<Product, Integer> products){
+        HashMap<String, HashMap<Product, Integer>> result = new HashMap<>();
         //check all known suppliers
-        for (Map.Entry<UUID, Supplier> sEntry : suppliers.getSuppliers().entrySet()) {
-            ProductList supplierProductList = new ProductList();
-            Iterator<Map.Entry<UUID, Product>> itP = productsToCheck.entrySet().iterator();
+        for (Map.Entry<String, Supplier> sEntry : suppliers.getSuppliers().entrySet()) {
+            HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
+            Iterator<Map.Entry<Product, Integer>> itP = products.entrySet().iterator();
             while (itP.hasNext()) {
-                Map.Entry<UUID, Product> pEntry = itP.next();
-                if (sEntry.getValue().containsProduct(pEntry.getValue())) {
-                    supplierProductList.add(pEntry.getValue());
+                Map.Entry<Product, Integer> pEntry = itP.next();
+                if (sEntry.getValue().containsProduct(pEntry.getKey())) {
+                    ProductQuantityMap.put(pEntry.getKey(), pEntry.getValue());
                     itP.remove();
                 }
             }
-            result.put(sEntry.getValue().getName(), supplierProductList);
+            result.put(sEntry.getValue().getName(), ProductQuantityMap);
         }
-        if(!productsToCheck.isEmpty()){
-            ProductList pList = new ProductList();
-            for(Product p : productsToCheck.values()){
-                pList.add(p);
+        if(!products.isEmpty()){
+            HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
+            for (Map.Entry<Product, Integer> productQuantityEntry : products.entrySet()) {
+                ProductQuantityMap.put(productQuantityEntry.getKey(), productQuantityEntry.getValue());
             }
-            result.put("Unknown supplier", pList);
+            result.put("Unknown supplier", ProductQuantityMap);
         }
         return result;
     }

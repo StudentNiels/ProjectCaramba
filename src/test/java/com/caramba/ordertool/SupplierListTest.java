@@ -12,19 +12,19 @@ class SupplierListTest {
     SupplierList suppliers = new SupplierList();
     ProductList products = new ProductList();
 
-    UUID supplierID1 = UUID.randomUUID();
-    UUID supplierID2 = UUID.randomUUID();
-    UUID supplierID3 = UUID.randomUUID();
-    UUID productID1 = UUID.randomUUID();
-    UUID productID2 = UUID.randomUUID();
+    String supplierID1 = UUID.randomUUID().toString();
+    String supplierID2 = UUID.randomUUID().toString();
+    String supplierID3 = UUID.randomUUID().toString();
+    String productID1 = UUID.randomUUID().toString();
+    String productID2 = UUID.randomUUID().toString();
     @BeforeEach
     void setUp() {
 
         suppliers.add(supplierID1, new Supplier("Supplier1", 10));
         suppliers.add(supplierID2, new Supplier("CoolSupplier2", 10));
         suppliers.add(supplierID3, new Supplier("SupplierNumber3", 10));
-        products.add(productID1, new Product("abc", "testPoduct",100));
-        products.add(productID2, new Product("123456789", "testme",100));
+        products.add(productID1, new Product("abc", "testPoduct"));
+        products.add(productID2, new Product("123456789", "testme"));
         //the first supplier has one product
         suppliers.get(supplierID1).addProduct(products.get(productID1));
         //the second supplier has both products

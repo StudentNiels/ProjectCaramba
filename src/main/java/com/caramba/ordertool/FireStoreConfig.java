@@ -8,10 +8,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 
+import javax.print.Doc;
+import javax.swing.text.Document;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +71,11 @@ public class FireStoreConfig {
         deleteCollection("test", 1);
         */
         // endregion
+
+        //Read individual
+        //readFromDB("Products", "c1dd2174-c207-11eb-8529-0242ac130003");
     }
+
 
     /**
      * A connection method to create an often used variable to prevent duplicate code
@@ -92,14 +100,11 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public HashMap setupProductDocument(String categorie_tag, int min_supply, String product_descript, String product_nr, int supply) {
+    public HashMap setupProductDocument(String description, String productNum, int quantity) {
         HashMap<String, Object> docData = new HashMap<>();
-        docData.put("Attention_Required", false);
-        docData.put("Categorie_Tag", categorie_tag);
-        docData.put("Min_Supply", min_supply);
-        docData.put("Product_Descript", product_descript);
-        docData.put("Product_NR", product_nr);
-        docData.put("Supply", supply);
+        docData.put("description", description);
+        docData.put("productNum", productNum);
+        docData.put("quantity", quantity);
         return docData;
     }
 
@@ -120,10 +125,10 @@ public class FireStoreConfig {
      * param attention required - starts out FALSE
      * @return the hashmap which can be added to the database with the correct method
      */
-    public HashMap setupSuppliersDocument(int AVG_DeliveryTime, String Supplier_Name) {
+    public HashMap setupSuppliersDocument(int avgDeliveryTime, String name) {
         HashMap<String, Object> docData = new HashMap<>();
-        docData.put("AVG_DeliveryTime", AVG_DeliveryTime);
-        docData.put("Supplier_Name", Supplier_Name);
+        docData.put("avgDeliveryTime", avgDeliveryTime);
+        docData.put("name", name);
         return docData;
     }
 
@@ -178,51 +183,114 @@ public class FireStoreConfig {
     /**
      * Make a list of all the products
      */
-    public Iterable<DocumentReference> retrieveAllProducts(){
+    public ProductList retrieveAllProducts(){
+        ProductList result = new ProductList();
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
-        int i = 0;
         for (DocumentReference collRef : collections) {
-            i++;
-            System.out.println("Product ID: " + collRef.getId());
+            ApiFuture<DocumentSnapshot> promise = collRef.get();
+            try {
+                DocumentSnapshot docSnapshot = promise.get();
+                if(docSnapshot.exists()){
+                    Product p = docSnapshot.toObject(Product.class);
+                    result.add(collRef.getId(), p);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println(i);
         closeDb();
-        return collections;
+        return result;
     }
 
     /**
      * Make a list of all the Sales
      */
-    public Iterable<DocumentReference> retrieveAllSales(){
+    public Saleslist retrieveAllSales(){
+        Saleslist result = new Saleslist();
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
-        int i = 0;
         for (DocumentReference collRef : collections)
         {
-            i++;
-            System.out.println("Sale ID: " + collRef.getId());
+            //add subcollection to hashmap
+            HashMap<String, Integer> products = new HashMap<>();
+            Iterable<DocumentReference> subCollections = collRef.collection("SalesList").listDocuments();
+            for(DocumentReference subRef : subCollections){
+                ApiFuture<DocumentSnapshot> promise = subRef.get();
+                try{
+                    DocumentSnapshot docSnapshot = promise.get();
+                    if(docSnapshot.exists()){
+                        products.put(subRef.getId(), docSnapshot.getLong("amount").intValue());
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //add date from main collection
+            ApiFuture<DocumentSnapshot> promise = collRef.get();
+            try {
+                DocumentSnapshot docSnapshot = promise.get();
+                if(docSnapshot.exists()){
+                    Date d = docSnapshot.getDate("date");
+                    Sale s = new Sale(products, d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                    result.addToSalesList(s);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println(i);
         closeDb();
-        return collections;
+        return result;
     }
 
     /**
      * Make a list of all the suppliers
      */
-    public Iterable<DocumentReference> retrieveAllSuppliers(){
+    public SupplierList retrieveAllSuppliers(){
+        SupplierList result = new SupplierList();
         dbConnect();
         Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
-        int i = 0;
         for (DocumentReference collRef : collections)
         {
-            i++;
-            System.out.println("Supplier ID: " + collRef.getId());
+            //add subcollection to arraylist
+            ArrayList<Product> products = new ArrayList<>();
+            Iterable<DocumentReference> subCollections = collRef.collection("products").listDocuments();
+            for (DocumentReference subRef : subCollections){
+                ApiFuture<DocumentSnapshot> promise = subRef.get();
+                try{
+                    DocumentSnapshot docSnapshot = promise.get();
+                    if(docSnapshot.exists()){
+                        String id = subRef.getId();
+                        Product product = Application.getMainProductList().get(id);
+                        products.add(product);
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //add date from main collection
+            ApiFuture<DocumentSnapshot> promise = collRef.get();
+            try {
+                DocumentSnapshot docSnapshot = promise.get();
+                if(docSnapshot.exists()){
+                    Integer avg = docSnapshot.getDouble("avgDeliveryTime").intValue();
+                    String n = docSnapshot.getString("name");
+                    Supplier s = new Supplier(n, avg);
+                    int i;
+                    for(i = 0; i < products.size();i++)
+                    {
+                        s.addProduct(products.get(i));
+                    }
+                    result.add(collRef.getId(), s);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println(i);
         closeDb();
-        return collections;
+        return result;
     }
 
     /**
@@ -302,7 +370,7 @@ public class FireStoreConfig {
 
     private void closeDb(){
         try{
-            db.close();
+            //db.close();
         }catch(Exception e){
             NotificationManager.addExceptionError(e);
         }
