@@ -65,27 +65,26 @@ public class OrderAlgorithm {
         //this is what we think an average year looks like in terms of sales.
         //e.g.: in january we typically sell 10 units, in february we typically sell 5, ect.
         //the current year is not taken into account for a reason mentioned below
-        int[] medianYear = getMedianYear(dateAmountList);
+        MedianYear medianYear = getMedianYear(dateAmountList);
 
         //The median year is calculated as percentages so we can show seasonal trends:
         //e.g.: 50% of our sales for this product typically happen in month of january, 25% in february, ect.
-        float[] medianPercentages = calculatePercentages(medianYear);
 
         //If we have sold this product before in the current year, we extrapolate the future sales of this year based on the seasonal trends
         //We assume this is more accurate then simply using median directly, as the sales of the current year
         //will probably be better at reflecting the growth/shrinkage of sales in general and the median year is mostly meant to show seasonal trends.
         //This is also why the current year is not used in calculating the median year.
         float percentageSoldThisYear = 0;
-        for(int i = 0; i < LocalDate.now().getMonth().getValue(); i++){
+        for(int i = 1; i <= LocalDate.now().getMonth().getValue(); i++){
             //in a typical year, this many % of the units would be sold at this point in time. We will assume that this year will be the same.
-            percentageSoldThisYear = percentageSoldThisYear + medianPercentages[i];
+            percentageSoldThisYear = percentageSoldThisYear + medianYear.getPercentageByMonthNumber(i);
         }if(percentageSoldThisYear != 0 || date.getYear() != Year.now().getValue()){
             //Finally we calculate the amount we expect to sell based on the percentage and the amount of units actually sold.
             int totalExpectedToSellThisYear = Math.round(totalSoldThisYear / percentageSoldThisYear);
-            return Math.round(totalExpectedToSellThisYear * medianPercentages[date.getMonth().getValue() - 1]);
+            return Math.round(totalExpectedToSellThisYear * medianYear.getPercentageByMonthNumber(date.getMonth().getValue()));
         }else{
             //If we sold 0 so far then we don't have any data to extrapolate on, so we assume the amount sold will be equal to that of the median year.
-            return medianYear[date.getMonth().getValue()];
+            return medianYear.getByMonthNumber(date.getMonth().getValue());
         }
 
     }
@@ -114,7 +113,7 @@ public class OrderAlgorithm {
      * @param dateAmountList hashmap with quantity sold in a certain YearMonth
      * @return array with the median of amount sold where i = the month of the year
      */
-    public int[] getMedianYear(HashMap<YearMonth, Integer> dateAmountList){
+    public MedianYear getMedianYear(HashMap<YearMonth, Integer> dateAmountList){
         int[] median = new int[12];
         ArrayList<Integer> januaryAmount    = new ArrayList<>();
         ArrayList<Integer> februaryAmount   = new ArrayList<>();
@@ -158,7 +157,7 @@ public class OrderAlgorithm {
         median[9] = getMedianFromArrayList(octoberAmount);
         median[10] = getMedianFromArrayList(novemberAmount);
         median[11] = getMedianFromArrayList(decemberAmount);
-        return median;
+        return new MedianYear(median);
     }
 
     public int getMedianFromArrayList(ArrayList<Integer> arrayList){
@@ -175,21 +174,5 @@ public class OrderAlgorithm {
             //odd
             return arrayList.get((int)Math.ceil((float) arrayList.size() / 2) - 1);
         }
-    }
-
-    /**
-     * Calculates the distribution of values in percentages.
-     * EXAMPLE
-     * int[3, 5, 4] would return  int[36(%), 60(%), 48(%)]
-     * @param array array to calculate of
-     * @return array with percentages
-     */
-    private float[] calculatePercentages(int[] array){
-        float[] result = new float[array.length];
-        int total = Arrays.stream(array).sum();
-        for(int i = 0; i < array.length; i++){
-            result[i] = (float) array[i] / total;
-        }
-        return result;
     }
 }
