@@ -15,7 +15,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 public class ProductOverviewViewController implements Initializable, ViewController{
     @FXML private TableView<DisplayProduct> tableProductOverview;
@@ -69,11 +68,11 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     public void update(){
         ProductList productList = OrderToolGui.getProducts();
         ObservableList<DisplayProduct> observableList = FXCollections.observableArrayList();
-        for (Map.Entry<UUID, Product> entry : productList.getProducts().entrySet()) {
-            UUID k = entry.getKey();
+        for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
+            String k = entry.getKey();
             Product p = entry.getValue();
             SupplierList sl = OrderToolGui.getSuppliers();
-            observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), p.getMinQuantity(), sl.getSuppliersSellingProduct(p)));
+            observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
         }
             tableProductOverview.setItems(observableList);
     }
@@ -91,11 +90,11 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
   private void edit(DisplayProduct displayProduct){
-        UUID uuid = displayProduct.getInternalId();
+        String internalId = displayProduct.getInternalId();
         Product p = showEditDialog("Product wijzigen", "Wijzigen", displayProduct);
         if(p != null){
-            OrderToolGui.getProducts().remove(uuid);
-            OrderToolGui.getProducts().add(uuid, p);
+            OrderToolGui.getProducts().remove(internalId);
+            OrderToolGui.getProducts().add(internalId, p);
             update();
         }
     }
@@ -124,26 +123,20 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         productNumTextField.setPromptText("Artiekel nummer");
         TextField productDescriptionTextField = new TextField();
         productDescriptionTextField.setPromptText("Beschrijving");
-        TextField minStockTextField = new TextField();
-        minStockTextField.setPromptText("Minimum voorraad");
 
         grid.add(new Label("Artiekel nummer"), 0, 0);
         grid.add(productNumTextField, 1, 0);
         grid.add(new Label("Beschrijving"), 0, 1);
         grid.add(productDescriptionTextField, 1, 1);
-        grid.add(new Label("Minimum voorraad"), 0, 2);
-        grid.add(minStockTextField, 1, 2);
 
         if(placeholder != null){
             productNumTextField.setText(placeholder.getProductNum());
-            productDescriptionTextField.setText(placeholder.getDescription());
-            minStockTextField.setText(String.valueOf(placeholder.getMinQuantity()));
         }
 
         dialog.getDialogPane().setContent(grid);
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
-                return new Product(productNumTextField.getText(), productDescriptionTextField.getText(), Integer.parseInt(minStockTextField.getText()));
+                return new Product(productNumTextField.getText(), productDescriptionTextField.getText());
             }
             return null;
         });
@@ -153,19 +146,17 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     public class DisplayProduct{
-        private final UUID internalId;
+        private final String internalId;
         private final String productNum;
         private final String description;
         private final int quantity;
-        private final int minQuantity;
         private final String supplierNames;
 
-        public DisplayProduct(UUID internalId, String productNum, String description, int quantity, int minQuantity, SupplierList suppliersSelling) {
+        public DisplayProduct(String internalId, String productNum, String description, int quantity,  SupplierList suppliersSelling) {
             this.internalId = internalId;
             this.productNum = productNum;
             this.description = description;
             this.quantity = quantity;
-            this.minQuantity = minQuantity;
 
             //Make a string of the names of the suppliers
             StringBuilder supplierNames = new StringBuilder();
@@ -185,7 +176,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             this.supplierNames = supplierNames.toString();
         }
 
-        public UUID getInternalId() {
+        public String getInternalId() {
             return internalId;
         }
 
@@ -199,10 +190,6 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
         public int getQuantity() {
             return quantity;
-        }
-
-        public int getMinQuantity() {
-            return minQuantity;
         }
 
         public String getSupplierNames() {
