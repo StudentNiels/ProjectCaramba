@@ -66,12 +66,12 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     public void update(){
-        ProductList productList = OrderToolGui.getProducts();
+        ProductList productList = OrderTool.getProducts();
         ObservableList<DisplayProduct> observableList = FXCollections.observableArrayList();
         for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
             String k = entry.getKey();
             Product p = entry.getValue();
-            SupplierList sl = OrderToolGui.getSuppliers();
+            SupplierList sl = OrderTool.getSuppliers();
             observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
         }
             tableProductOverview.setItems(observableList);
@@ -83,7 +83,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Weet u zeker dat u " + displayProduct.getProductNum() + " " + displayProduct.getDescription() + " wilt verwijderen?", yesBtnType, noBtnType);
         alert.showAndWait();
         if (alert.getResult() == yesBtnType) {
-            ProductList productList = OrderToolGui.getProducts();
+            ProductList productList = OrderTool.getProducts();
             productList.remove(displayProduct.getInternalId());
             update();
         }
@@ -93,8 +93,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         String internalId = displayProduct.getInternalId();
         Product p = showEditDialog("Product wijzigen", "Wijzigen", displayProduct);
         if(p != null){
-            OrderToolGui.getProducts().remove(internalId);
-            OrderToolGui.getProducts().add(internalId, p);
+            OrderTool.getProducts().remove(internalId);
+            OrderTool.getProducts().add(internalId, p);
             update();
         }
     }
@@ -102,7 +102,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     private void add(){
         Product p = showEditDialog("Nieuw product toevoegen", "Toevoegen", null);
         if(p != null){
-            OrderToolGui.getProducts().add(p);
+            OrderTool.getProducts().add(p);
             update();
         }
     }

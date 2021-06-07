@@ -6,7 +6,7 @@ public class Launcher {
         if(args.length > 1 && args[0] == "commandline"){
             OrderToolCmd.main(removeFirstArg(args));
         }else{
-            OrderToolGui.main(args);
+            OrderTool.main(args);
         }
     }
 

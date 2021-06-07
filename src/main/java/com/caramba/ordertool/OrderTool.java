@@ -14,7 +14,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-public class OrderToolGui extends Application {
+public class OrderTool extends javafx.application.Application {
     private Stage stage;
     //keeps track of all known products
     private static ProductList products = new ProductList();

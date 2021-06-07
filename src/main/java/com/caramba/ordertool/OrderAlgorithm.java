@@ -14,7 +14,7 @@ public class OrderAlgorithm {
      */
     public HashMap<Product, Integer> createOrderList(YearMonth date){
         HashMap<Product, Integer> result = new HashMap<>();
-        for (Map.Entry<String, Product> entry : Application.getMainProductList().getProducts().entrySet()) {
+        for (Map.Entry<String, Product> entry : OrderTool.getProducts().getProducts().entrySet()) {
             String id = entry.getKey();
             Product p = entry.getValue();
             int amount =  RecommendOrderAmount(id, date);
@@ -31,7 +31,7 @@ public class OrderAlgorithm {
      * @return
      */
     public int RecommendOrderAmount(String productID, YearMonth date){
-        Product p = Application.getMainProductList().get(productID);
+        Product p = OrderTool.getProducts().get(productID);
         int result = getProjectedSaleAmount(productID, date) - p.getQuantity();
         return Math.max(result, 0);
     }
@@ -47,7 +47,7 @@ public class OrderAlgorithm {
         if(!date.isAfter(YearMonth.now())){
             throw new InvalidParameterException("The given date is not in the future");
         }
-        Saleslist salesList = Application.getMainSalesList().getSalesByProduct(productID);
+        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
         HashMap<YearMonth, Integer> dateAmountList = new HashMap<>();
         int totalSoldThisYear = 0;
         for(Sale sale : salesList.getSales()){

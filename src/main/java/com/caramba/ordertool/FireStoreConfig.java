@@ -262,7 +262,7 @@ public class FireStoreConfig {
                     DocumentSnapshot docSnapshot = promise.get();
                     if(docSnapshot.exists()){
                         String id = subRef.getId();
-                        Product product = Application.getMainProductList().get(id);
+                        Product product = OrderTool.getProducts().get(id);
                         products.add(product);
                     }
                 } catch (InterruptedException | ExecutionException e) {
