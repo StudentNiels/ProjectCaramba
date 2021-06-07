@@ -11,11 +11,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 public class OrderToolGui extends Application {
     private Stage stage;
     //keeps track of all known products
-    private static final ProductList products = new ProductList();
+    private static ProductList products = new ProductList();
     //Keeps track of all known suppliers
     private static SupplierList suppliers = new SupplierList();
     //Keeps track of all known sales
@@ -41,8 +43,12 @@ public class OrderToolGui extends Application {
         stage.setScene(scene);
         stage.show();
 
-        //todo replace this with loading from database
-        loadTestData();
+        //load from db
+        config.fireStoreConfig();
+        products = config.retrieveAllProducts();
+        sales = config.retrieveAllSales();
+        suppliers = config.retrieveAllSuppliers();
+
         switchScene(SceneType.PRODUCT_OVERVIEW);
     }
 
