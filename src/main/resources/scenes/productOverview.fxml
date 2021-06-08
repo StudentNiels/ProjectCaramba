@@ -33,10 +33,19 @@
 -->
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -55,19 +64,6 @@
          </padding>
       </HBox>
    </top>
-   <center>
-      <TableView fx:id="tableProductOverview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="500.0" prefWidth="800.0" BorderPane.alignment="CENTER">
-         <columns>
-            <TableColumn fx:id="colProductNum" maxWidth="1.7976931348623157E308" prefWidth="120.0" text="Artiekel Nummer" />
-            <TableColumn fx:id="colProductDescription" prefWidth="118.0" text="Beschrijving" />
-            <TableColumn fx:id="colProductStock" maxWidth="163.0" prefWidth="118.0" text="Voorraad" />
-            <TableColumn fx:id="colProductSuppliers" maxWidth="163.0" prefWidth="118.0" text="Leverancier(s)" />
-         </columns>
-         <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" />
-         </BorderPane.margin>
-      </TableView>
-   </center>
    <bottom>
       <HBox BorderPane.alignment="CENTER">
          <children>
@@ -81,4 +77,64 @@
          </BorderPane.margin>
       </HBox>
    </bottom>
+   <left>
+      <TableView fx:id="tableProductOverview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="469.0" prefHeight="400.0" prefWidth="469.0" BorderPane.alignment="CENTER">
+         <columns>
+            <TableColumn fx:id="colProductNum" maxWidth="1.7976931348623157E308" prefWidth="120.0" text="Artiekel Nummer" />
+            <TableColumn fx:id="colProductDescription" prefWidth="118.0" text="Beschrijving" />
+            <TableColumn fx:id="colProductStock" maxWidth="163.0" prefWidth="118.0" text="Voorraad" />
+            <TableColumn fx:id="colProductSuppliers" maxWidth="163.0" prefWidth="118.0" text="Leverancier(s)" />
+         </columns>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </BorderPane.margin>
+      </TableView>
+   </left>
+   <center>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Jaar:">
+                     <HBox.margin>
+                        <Insets right="15.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Text>
+                  <ChoiceBox fx:id="choiceReportSelector" prefWidth="150.0" />
+               </children>
+            </HBox>
+            <LineChart fx:id="lineChartProductTimeLine" animated="false" title="Tijdlijn">
+              <xAxis>
+                <CategoryAxis label="Datum" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis label="Aantal" side="LEFT" />
+              </yAxis>
+            </LineChart>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <CheckBox mnemonicParsing="false" selected="true" text="Mediaan verkopen per maand" />
+                  <CheckBox mnemonicParsing="false" selected="true" text="Verkopen" GridPane.rowIndex="1" />
+                  <CheckBox mnemonicParsing="false" text="Voorraad op laatste dag van de maand" GridPane.columnIndex="2" />
+                  <CheckBox mnemonicParsing="false" selected="true" text="Verwachte verkopen" GridPane.columnIndex="1" />
+                  <CheckBox mnemonicParsing="false" text="Verkopen afgelopen jaar" GridPane.rowIndex="2" />
+                  <CheckBox mnemonicParsing="false" text="Vorige verwachte verkopen" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+   </center>
 </BorderPane>
