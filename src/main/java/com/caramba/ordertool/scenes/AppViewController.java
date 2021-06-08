@@ -9,6 +9,8 @@ import java.util.ResourceBundle;
 public class AppViewController implements Initializable, ViewController {
     @FXML
     private ProductOverviewViewController productOverviewController;
+    @FXML
+    private SupplierController suppliersController;
 
 
     @Override
@@ -20,6 +22,7 @@ public class AppViewController implements Initializable, ViewController {
     @Override
     public void update() {
         productOverviewController.update();
+        suppliersController.update();
     }
 
 }

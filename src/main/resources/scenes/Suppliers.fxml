@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.caramba.ordertool.scenes.SupplierController">
+   <top>
+      <HBox BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+   <right>
+      <VBox prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Producten">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Text>
+            <TableView fx:id="tableProducts">
+              <columns>
+                <TableColumn fx:id="colProductId" prefWidth="150.0" text="Artiekel Nummer" />
+                <TableColumn fx:id="colProductDescription" prefWidth="435.0" text="Beschrijving" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </right>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+   <left>
+      <VBox prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Leveranciers" wrappingWidth="344.13671875">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </Text>
+            <TableView fx:id="tableSuppliers">
+              <columns>
+                <TableColumn fx:id="colSupplierName" prefWidth="157.0" text="Naam" />
+                <TableColumn fx:id="colAvgDeliveryTime" prefWidth="174.0" text="Gemiddelde levertijd (dagen)" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </left>
+</BorderPane>
