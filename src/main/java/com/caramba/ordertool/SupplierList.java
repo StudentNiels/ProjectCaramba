@@ -40,7 +40,6 @@ public class SupplierList {
         return suppliers.size();
     }
 
-    @SuppressWarnings("SuspiciousMethodCalls")
     public boolean contains(Supplier o) {
         return suppliers.containsValue(o);
     }

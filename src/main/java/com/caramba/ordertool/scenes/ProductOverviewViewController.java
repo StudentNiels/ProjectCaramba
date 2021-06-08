@@ -51,9 +51,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         colProductSuppliers.setCellValueFactory(new PropertyValueFactory<>("supplierNames"));
 
         tableProductOverview.setRowFactory(tableView -> {
-            final TableRow<DisplayProduct> row = new TableRow<>();
-            //context options for clicking on an non-empty row
-            /*final ContextMenu contextMenuRow = new ContextMenu();
+            /*final TableRow<DisplayProduct> row = new TableRow<>();
+            final ContextMenu contextMenuRow = new ContextMenu();
 
             final MenuItem removeRowMenuItem = new MenuItem("Verwijderen");
             removeRowMenuItem.setOnAction(event -> remove(row.getItem()));
@@ -80,8 +79,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                             .then(contextMenu)
                             .otherwise(contextMenuRow)
             );
-            tableProductOverview.setContextMenu(contextMenu);(*/
-            return row;
+            tableProductOverview.setContextMenu(contextMenu);(
+            return row;*/
+            return new TableRow<>();
         });
 
         tableProductOverview.setOnMouseClicked((MouseEvent event) -> {
@@ -172,7 +172,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                         break;
                     }
                 }
-
+                assert selectedReport != null;
 
                 //median year
                 MedianYear my = selectedReport.getMedianYear();

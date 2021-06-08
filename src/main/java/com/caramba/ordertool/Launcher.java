@@ -3,7 +3,7 @@ package com.caramba.ordertool;
 public class Launcher {
 
     public static void main(String[] args) {
-        if(args.length > 1 && args[0] == "commandline"){
+        if(args.length > 1 && args[0].equals("commandline")){
             OrderToolCmd.main(removeFirstArg(args));
         }else{
             OrderTool.main(args);

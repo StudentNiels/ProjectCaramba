@@ -3,9 +3,9 @@ package com.caramba.ordertool.reports;
 import java.time.Month;
 
 public class MonthProductReport {
-    private Month month;
-    private int endOfMonthStock;
-    private int salesQuantity;
+    private final Month month;
+    private final int endOfMonthStock;
+    private final int salesQuantity;
     private int previousProjectedSaleQuantity;
 
     public MonthProductReport(int endOfMonthStock, int salesQuantity, Month month) {

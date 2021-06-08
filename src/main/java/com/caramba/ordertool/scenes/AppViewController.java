@@ -1,6 +1,5 @@
 package com.caramba.ordertool.scenes;
 
-import com.caramba.ordertool.Product;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 

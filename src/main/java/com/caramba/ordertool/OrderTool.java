@@ -2,14 +2,9 @@ package com.caramba.ordertool;
 
 import com.caramba.ordertool.reports.ReportManager;
 import com.caramba.ordertool.scenes.ViewController;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public class OrderTool extends javafx.application.Application {
-    private Stage stage;
     //keeps track of all known products
     private static ProductList products = new ProductList();
     //Keeps track of all known suppliers
@@ -26,7 +20,6 @@ public class OrderTool extends javafx.application.Application {
     //Keeps track of all known sales
     private static Saleslist sales = new Saleslist();
     private static final FireStoreConfig config = new FireStoreConfig();
-    private static ViewController viewController = null;
 
     public static void main(String[] args) {
         launch(args);
@@ -34,7 +27,6 @@ public class OrderTool extends javafx.application.Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        this.stage = stage;
         URL res = getClass().getResource("/scenes/app.fxml");
         if(res == null){
             throw new IOException();
@@ -42,8 +34,8 @@ public class OrderTool extends javafx.application.Application {
         FXMLLoader loader = new FXMLLoader(res);
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        stage.setTitle("Caramba Ordertool");
-        viewController =  (ViewController) loader.getController();
+        stage.setTitle("Caramba OrderTool");
+        ViewController viewController = loader.getController();
         stage.setScene(scene);
         stage.show();
 

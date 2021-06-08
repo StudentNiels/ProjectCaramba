@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.List;
 
 public class YearProductReport {
-    private Year year;
-    private MedianYear medianYear;
-    private Product product;
-    private List<MonthProductReport> monthReports = new ArrayList<>();
+    private final Year year;
+    private final MedianYear medianYear;
+    private final Product product;
+    private final List<MonthProductReport> monthReports = new ArrayList<>();
 
     public YearProductReport(Year year, MedianYear medianYear, Product product) {
         this.year = year;

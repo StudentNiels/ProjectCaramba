@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StockManager {
-    private HashMap<String, Integer> products;
-    private HashMap<String, Integer> minimumStock;
-    private HashMap<String, Integer> soldProducts;
-    private HashMap<String, Integer> orderList;
+    private final HashMap<String, Integer> products;
+    private final HashMap<String, Integer> minimumStock;
+    private final HashMap<String, Integer> soldProducts;
+    private final HashMap<String, Integer> orderList;
 
     public StockManager(){
 

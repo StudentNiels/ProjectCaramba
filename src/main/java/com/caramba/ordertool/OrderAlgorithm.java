@@ -30,8 +30,6 @@ public class OrderAlgorithm {
 
     /**
      * Calculates how many products to order based on current stock and expected sales
-     * @param productID
-     * @return
      */
     public int RecommendOrderAmount(String productID, YearMonth date){
         Product p = OrderTool.getProducts().get(productID);
@@ -98,7 +96,7 @@ public class OrderAlgorithm {
     }
 
     /**
-     * @Return How many of the product were sold in a certain year
+     * @return How many of the product were sold in a certain year
      */
     public int getTotalSoldInYear(String productID, int year){
         Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
@@ -113,7 +111,7 @@ public class OrderAlgorithm {
     }
 
     /**
-     * @Return How many of the product were sold in a certain yearMonth
+     * @return How many of the product were sold in a certain yearMonth
      */
     public int getSoldInYearMonth(String productID, YearMonth date){
         Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);

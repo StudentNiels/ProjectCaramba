@@ -5,30 +5,25 @@ import com.caramba.ordertool.OrderAlgorithm;
 import com.caramba.ordertool.OrderTool;
 import com.caramba.ordertool.Product;
 
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReportManager {
-    private static List<YearProductReport> yearProductReports = new ArrayList<>();
-    private static OrderAlgorithm orderAlog = new OrderAlgorithm();
+    private static final List<YearProductReport> yearProductReports = new ArrayList<>();
+    private static final OrderAlgorithm orderAlgo = new OrderAlgorithm();
 
     public static List<YearProductReport> getYearProductReports() {
         return yearProductReports;
     }
 
     public static void generateProductReport(String productId) {
-        MedianYear medianYear = orderAlog.getMedianYear(orderAlog.getDateAmountMap(productId));
+        MedianYear medianYear = orderAlgo.getMedianYear(orderAlgo.getDateAmountMap(productId));
         YearProductReport result = new YearProductReport(Year.now(), medianYear, OrderTool.getProducts().get(productId));
         for (int i = 1; i <= 6; i++) {
-            int amount = orderAlog.getSoldInYearMonth(productId, YearMonth.of(2021, i));
+            int amount = orderAlgo.getSoldInYearMonth(productId, YearMonth.of(2021, i));
             result.add(new MonthProductReport(0, amount, Month.of(i)));
         }
         yearProductReports.add(result);

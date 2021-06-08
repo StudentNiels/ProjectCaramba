@@ -56,7 +56,7 @@ public class Sale {
     }
 
     public void listProducts(){
-        System.out.println("Saleslist items:");
+        System.out.println("SalesList items:");
         HashMap<String, Product> allProducts = OrderTool.getProducts().getProducts();
         Product selectedProduct = null;
 

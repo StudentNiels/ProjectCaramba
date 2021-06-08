@@ -8,9 +8,7 @@ Wil ik: op basis van het seizoen, verkoop trends, geschatte levertijd en beschik
 Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 */
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Saleslist {
 
@@ -41,7 +39,6 @@ public class Saleslist {
     }
 
     /**
-     * @param productID
      * @return A new sales list that only includes sales with the given product. Unrelated products are removed from the sale entry
      */
     public Saleslist getSalesByProduct(String productID){
@@ -59,7 +56,6 @@ public class Saleslist {
 
     /**
      *
-     * @param year
      * @return A new salelist with all the sales in the given year
      */
     public Saleslist getSalesByYear(int year){
