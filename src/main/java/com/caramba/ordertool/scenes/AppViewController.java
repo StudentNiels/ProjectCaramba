@@ -13,7 +13,7 @@ public class AppViewController implements Initializable, ViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("test");
+
     }
 
 
