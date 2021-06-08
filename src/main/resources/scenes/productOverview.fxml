@@ -53,7 +53,7 @@
    <top>
       <HBox BorderPane.alignment="CENTER">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Artiekel overzicht" wrappingWidth="344.13671875">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Artikel overzicht" wrappingWidth="344.13671875">
                <font>
                   <Font size="16.0" />
                </font>
@@ -67,7 +67,7 @@
    <left>
       <TableView fx:id="tableProductOverview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="500.0" prefHeight="400.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <columns>
-            <TableColumn fx:id="colProductNum" maxWidth="1.7976931348623157E308" prefWidth="120.0" text="Artiekel Nummer" />
+            <TableColumn fx:id="colProductNum" maxWidth="1.7976931348623157E308" prefWidth="120.0" text="Artikel Nummer" />
             <TableColumn fx:id="colProductDescription" prefWidth="118.0" text="Beschrijving" />
             <TableColumn fx:id="colProductStock" maxWidth="163.0" prefWidth="118.0" text="Voorraad" />
             <TableColumn fx:id="colProductSuppliers" maxWidth="163.0" prefWidth="118.0" text="Leverancier(s)" />
