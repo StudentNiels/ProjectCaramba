@@ -47,6 +47,11 @@ public class OrderTool extends javafx.application.Application {
         sales = config.retrieveAllSales();
         suppliers = config.retrieveAllSuppliers();
 
+        //todo remove this when reports from db are implemented
+        ReportManager.generateProductReport("Uw0fE66fQWuCvNqV90Y0");
+        ReportManager.generateProductReport("QmuYT34bznQUAc3rN0Xa");
+        ReportManager.generateProductReport("fcda2026-c516-11eb-8529-0242ac130003");
+
         switchScene(SceneType.PRODUCT_OVERVIEW);
     }
 
