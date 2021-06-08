@@ -4,6 +4,7 @@ import com.caramba.ordertool.MedianYear;
 import com.caramba.ordertool.Product;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class YearProductReport {
     private Year year;
     private MedianYear medianYear;
     private Product product;
-    private List<MonthProductReport> monthReports;
+    private List<MonthProductReport> monthReports = new ArrayList<>();
 
     public YearProductReport(Year year, MedianYear medianYear, Product product) {
         this.year = year;
