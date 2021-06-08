@@ -2,9 +2,14 @@ package com.caramba.ordertool;
 
 import com.caramba.ordertool.reports.ReportManager;
 import com.caramba.ordertool.scenes.ViewController;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,7 +26,7 @@ public class OrderTool extends javafx.application.Application {
     //Keeps track of all known sales
     private static Saleslist sales = new Saleslist();
     private static final FireStoreConfig config = new FireStoreConfig();
-    private static ViewController activeController = null;
+    private static ViewController viewController = null;
 
     public static void main(String[] args) {
         launch(args);
@@ -34,10 +39,11 @@ public class OrderTool extends javafx.application.Application {
         if(res == null){
             throw new IOException();
         }
-        Parent root = FXMLLoader.load(res);
+        FXMLLoader loader = new FXMLLoader(res);
+        Parent root = loader.load();
         Scene scene = new Scene(root);
-        //scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-        stage.setTitle("JavaFX");
+        stage.setTitle("Caramba Ordertool");
+        viewController =  (ViewController) loader.getController();
         stage.setScene(scene);
         stage.show();
 
@@ -52,7 +58,7 @@ public class OrderTool extends javafx.application.Application {
         ReportManager.generateProductReport("QmuYT34bznQUAc3rN0Xa");
         ReportManager.generateProductReport("fcda2026-c516-11eb-8529-0242ac130003");
 
-        switchScene(SceneType.PRODUCT_OVERVIEW);
+        viewController.update();
     }
 
     public static ProductList getProducts() {
@@ -65,20 +71,6 @@ public class OrderTool extends javafx.application.Application {
 
     public static Saleslist getSales() {
         return sales;
-    }
-
-    private void switchScene(SceneType sceneType) throws IOException{
-        URL res = getClass().getResource(sceneType.FXMLPath);
-        if(res == null){
-            throw new IOException("invalid resource path");
-        }
-        FXMLLoader loader = new FXMLLoader(res);
-        Parent sceneParent = loader.load();
-        Scene newScene = new Scene(sceneParent);
-        stage.setScene(newScene);
-        stage.show();
-        activeController =  (ViewController) loader.getController();
-        activeController.update();
     }
 
     /**
@@ -165,16 +157,4 @@ public class OrderTool extends javafx.application.Application {
             }
         }
     }
-
-
-
-    public enum SceneType{
-        PRODUCT_OVERVIEW("/scenes/productOverview.fxml");
-
-        public final String FXMLPath;
-        SceneType(String FXMLPath) {
-            this.FXMLPath = FXMLPath;
-        }
-    }
-
 }
