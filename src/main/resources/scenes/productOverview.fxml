@@ -65,7 +65,7 @@
       </HBox>
    </top>
    <left>
-      <TableView fx:id="tableProductOverview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="469.0" prefHeight="400.0" prefWidth="469.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="tableProductOverview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="500.0" prefHeight="400.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <columns>
             <TableColumn fx:id="colProductNum" maxWidth="1.7976931348623157E308" prefWidth="120.0" text="Artiekel Nummer" />
             <TableColumn fx:id="colProductDescription" prefWidth="118.0" text="Beschrijving" />
@@ -101,7 +101,7 @@
                 <NumberAxis label="Aantal" side="LEFT" />
               </yAxis>
             </LineChart>
-            <GridPane>
+            <GridPane visible="false">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
