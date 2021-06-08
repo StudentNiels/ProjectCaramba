@@ -2,11 +2,14 @@ package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.*;
 
 public class OrderAlgorithm {
+
+    //todo fix the comments
 
     /**
      * Checks all registered products and checks how many should be ordered for the given month
@@ -47,25 +50,12 @@ public class OrderAlgorithm {
         if(!date.isAfter(YearMonth.now())){
             throw new InvalidParameterException("The given date is not in the future");
         }
-        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
-        HashMap<YearMonth, Integer> dateAmountList = new HashMap<>();
-        int totalSoldThisYear = 0;
-        for(Sale sale : salesList.getSales()){
-            int amount = sale.getAmountByID(productID);
-            YearMonth yearMonth = YearMonth.from(sale.getDate());
-            if(dateAmountList.containsKey(yearMonth)){
-                dateAmountList.put(yearMonth, amount + dateAmountList.get(yearMonth));
-            }else{
-                dateAmountList.put(yearMonth, amount);
-            }
-            if(sale.getDate().getYear() == LocalDate.now().getYear()){
-                totalSoldThisYear = totalSoldThisYear + amount;
-            }
-        }
+
+        HashMap<YearMonth, Integer> dateAmountMap = getDateAmountMap(productID);
         //this is what we think an average year looks like in terms of sales.
         //e.g.: in january we typically sell 10 units, in february we typically sell 5, ect.
         //the current year is not taken into account for a reason mentioned below
-        MedianYear medianYear = getMedianYear(dateAmountList);
+        MedianYear medianYear = getMedianYear(dateAmountMap);
 
         //The median year is calculated as percentages so we can show seasonal trends:
         //e.g.: 50% of our sales for this product typically happen in month of january, 25% in february, ect.
@@ -80,13 +70,61 @@ public class OrderAlgorithm {
             percentageSoldThisYear = percentageSoldThisYear + medianYear.getPercentageByMonthNumber(i);
         }if(percentageSoldThisYear != 0 || date.getYear() != Year.now().getValue()){
             //Finally we calculate the amount we expect to sell based on the percentage and the amount of units actually sold.
-            int totalExpectedToSellThisYear = Math.round(totalSoldThisYear / percentageSoldThisYear);
+            int totalExpectedToSellThisYear = Math.round(getTotalSoldInYear(productID, LocalDateTime.now().getYear()) / percentageSoldThisYear);
             return Math.round(totalExpectedToSellThisYear * medianYear.getPercentageByMonthNumber(date.getMonth().getValue()));
         }else{
             //If we sold 0 so far then we don't have any data to extrapolate on, so we assume the amount sold will be equal to that of the median year.
             return medianYear.getByMonthNumber(date.getMonth().getValue());
         }
 
+    }
+
+    /**
+     * Looks trough the sales of the product and adds them up to the total sold per YearMonth
+     */
+    public HashMap<YearMonth, Integer> getDateAmountMap(String productID){
+        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
+        HashMap<YearMonth, Integer> dateAmountMap = new HashMap<>();
+        for(Sale sale : salesList.getSales()){
+            int amount = sale.getAmountByID(productID);
+            YearMonth yearMonth = YearMonth.from(sale.getDate());
+            if(dateAmountMap.containsKey(yearMonth)){
+                dateAmountMap.put(yearMonth, amount + dateAmountMap.get(yearMonth));
+            }else{
+                dateAmountMap.put(yearMonth, amount);
+            }
+        }
+        return  dateAmountMap;
+    }
+
+    /**
+     * @Return How many of the product were sold in a certain year
+     */
+    public int getTotalSoldInYear(String productID, int year){
+        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
+        int totalSoldThisYear = 0;
+        for(Sale sale : salesList.getSales()){
+            int amount = sale.getAmountByID(productID);
+            if(sale.getDate().getYear() == year){
+                totalSoldThisYear = totalSoldThisYear + amount;
+            }
+        }
+        return  totalSoldThisYear;
+    }
+
+    /**
+     * @Return How many of the product were sold in a certain yearMonth
+     */
+    public int getSoldInYearMonth(String productID, YearMonth date){
+        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
+        int SoldThisMonth = 0;
+        for(Sale sale : salesList.getSales()){
+            int amount = sale.getAmountByID(productID);
+            if(YearMonth.from(sale.getDate()).equals(date)){
+                SoldThisMonth = SoldThisMonth + amount;
+            }
+        }
+        return  SoldThisMonth;
     }
 
     /**
