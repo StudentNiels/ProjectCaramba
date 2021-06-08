@@ -1,13 +1,17 @@
 package com.caramba.ordertool.reports;
 
+import java.time.Month;
+
 public class MonthProductReport {
+    private Month month;
     private int endOfMonthStock;
     private int salesQuantity;
     private int previousProjectedSaleQuantity;
 
-    public MonthProductReport(int endOfMonthStock, int salesQuantity) {
+    public MonthProductReport(int endOfMonthStock, int salesQuantity, Month month) {
         this.endOfMonthStock = endOfMonthStock;
         this.salesQuantity = salesQuantity;
+        this.month = month;
     }
 
     public int getEndOfMonthStock() {
@@ -20,5 +24,8 @@ public class MonthProductReport {
 
     public int getPreviousProjectedSaleQuantity() {
         return previousProjectedSaleQuantity;
+    }
+    public Month getMonth() {
+        return month;
     }
 }
