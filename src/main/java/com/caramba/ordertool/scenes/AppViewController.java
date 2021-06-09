@@ -11,6 +11,8 @@ public class AppViewController implements Initializable, ViewController {
     private ProductOverviewViewController productOverviewController;
     @FXML
     private SupplierController suppliersController;
+    @FXML
+    private RecommendedOrdersController recommendedOrdersController;
 
 
     @Override

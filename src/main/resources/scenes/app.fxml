@@ -35,7 +35,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
@@ -44,13 +43,15 @@
    <center>
       <TabPane fx:id="tabPaneMain" prefHeight="600.0" prefWidth="1250.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
          <tabs>
-            <Tab text="Artikelen">
-                  <fx:include fx:id="productOverview" source="productOverview.fxml" />
-            </Tab>
             <Tab text="Order aanbevelingen">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <fx:include fx:id="recommendedOrders" source="recommendedOrders.fxml" />
               </content>
+            </Tab>
+            <Tab text="Artikelen">
+                <content>
+                  <fx:include fx:id="productOverview" source="productOverview.fxml" />
+                </content>
             </Tab>
             <Tab text="Leveranciers">
               <content>
