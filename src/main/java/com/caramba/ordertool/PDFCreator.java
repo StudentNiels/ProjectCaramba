@@ -25,6 +25,7 @@ public class PDFCreator {
     private final String path;
     private final String filename;
     private final SupplierList suppliers;
+    private final RecommendationList recommendationList;
 
     private final PDDocument document = new PDDocument();
     private PDFCreator(String path, String filename, SupplierList suppliers){
@@ -45,8 +46,30 @@ public class PDFCreator {
         }
     }
 
+    private PDFCreator(String path, String filename, RecommendationList recommendationList){
+        this.filename = filename;
+        this.path = path;
+        this.recommendationList = recommendationList;
+        //create the file
+        try{
+            File f = new File(getFullPath());
+            if(f.getParentFile().mkdirs()){
+                NotificationManager.add(new Notification(NotificationType.INFO, "Created new directory"));
+            }
+            if(!f.createNewFile()){
+                NotificationManager.add(new Notification(NotificationType.WARNING, "The file " + filename + " already exists. Saving will overwrite it's contents."));
+            }
+        }catch (IOException e){
+            NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
+        }
+    }
+
     public PDFCreator(String path, SupplierList suppliers){
         this(path, "Orderlist-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", suppliers);
+    }
+
+    public PDFCreator(String path, RecommendationList recommendationList){
+        this(path, "Recommendation-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", recommendationList);
     }
 
     public void addProducts(HashMap<Product, Integer> products){
@@ -111,6 +134,17 @@ public class PDFCreator {
         }
 
         document.addPage(page);
+    }
+
+    //TODO: make proper method name once it's clear what the method needs to do
+    private RecommendationList methodName(){
+        RecommendationList rl = new RecommendationList();
+
+        for(Recommendation recommendation : this.recommendationList.getRecommendationList()){
+            //Do Something
+        }
+
+        return rl;
     }
 
     private HashMap<String, HashMap<Product, Integer>> separateProductQuantityMapPerSupplier(HashMap<Product, Integer> products){

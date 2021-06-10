@@ -18,6 +18,8 @@ public class OrderToolCmd {
     private static SupplierList suppliers = new SupplierList();
     //Keeps track of all known sales
     private static Saleslist saleslist = new Saleslist();
+    //Keeps track of all knows recommendations
+    private static RecommendationList recommendations = new RecommendationList();
     private static final FireStoreConfig config = new FireStoreConfig();
     private static final OrderAlgorithm orderAlgo = new OrderAlgorithm();
 
