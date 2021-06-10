@@ -1,6 +1,7 @@
 package com.caramba.ordertool;
 
 import com.caramba.ordertool.notifications.NotificationManager;
+import com.caramba.ordertool.reports.YearProductReport;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
@@ -187,6 +188,26 @@ public class FireStoreConfig {
             NotificationManager.addExceptionError(e);
         }
         closeDb();
+    }
+
+    public List<YearProductReport> retrieveAllYearProductReports(){
+        List<YearProductReport> result = new ArrayList<>();
+        dbConnect();
+        Iterable<DocumentReference> collections = db.collection("ProductReports").listDocuments();
+        for (DocumentReference collRef : collections) {
+            ApiFuture<DocumentSnapshot> promise = collRef.get();
+            try {
+                DocumentSnapshot docSnapshot = promise.get();
+                if(docSnapshot.exists()){
+                    YearProductReport report = docSnapshot.toObject(YearProductReport.class);
+                    result.add(report);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        closeDb();
+        return result;
     }
 
     /**
