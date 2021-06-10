@@ -4,8 +4,11 @@ public class Launcher {
 
     public static void main(String[] args) {
         if(args.length > 1 && args[0].equals("commandline")){
-            //command line version is broken
-            //OrderToolCmd.main(removeFirstArg(args));
+            switch (args[0]){
+                //case "commandline" -> OrderToolCmd.main(removeFirstArg(args)); command line version is broken
+                case "report" -> OrderTool.updateReports();
+                case "gui" -> OrderTool.main(removeFirstArg(args));
+            }
         }else{
             OrderTool.main(args);
         }

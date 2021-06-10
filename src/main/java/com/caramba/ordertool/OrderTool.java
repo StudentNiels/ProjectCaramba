@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Map;
 
 public class OrderTool extends javafx.application.Application {
@@ -63,6 +64,17 @@ public class OrderTool extends javafx.application.Application {
 
     public static Saleslist getSales() {
         return sales;
+    }
+
+
+    /**
+     * Generate report for the current month based on the current data.
+     */
+    public static void updateReports(){
+        YearMonth currentDate = YearMonth.now();
+        for(String productID : products.getProducts().keySet()){
+            ReportManager.generateProductReport(productID);
+        }
     }
 
     /**
