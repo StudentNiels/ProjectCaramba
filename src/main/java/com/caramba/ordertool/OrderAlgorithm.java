@@ -1,14 +1,11 @@
 package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.time.YearMonth;
+import java.time.*;
 import java.util.*;
 
 public class OrderAlgorithm {
-
+    Calendar c;
     //todo fix the comments
 
     /**
@@ -33,7 +30,11 @@ public class OrderAlgorithm {
      */
     public int RecommendOrderAmount(String productID, YearMonth date){
         Product p = OrderTool.getProducts().get(productID);
-        int result = getProjectedSaleAmount(productID, date) - p.getQuantity();
+
+        int result = getProjectedSaleAmount(productID, date);
+        if (p.getQuantity() < getAverageSoldLast12Months(productID)){
+            result = result - p.getQuantity();
+        }
         return Math.max(result, 0);
     }
 
@@ -93,6 +94,26 @@ public class OrderAlgorithm {
             }
         }
         return  dateAmountMap;
+    }
+
+    /**
+     * What is the average sold products for the last 12 months
+     */
+    public int getAverageSoldLast12Months(String productID) {
+        Saleslist saleslist = OrderTool.getSales().getSalesByProduct(productID);
+
+        int averageSoldLast12Months = 0;
+        for (Sale sale : saleslist.getSales()) {
+            int amount = sale.getAmountByID(productID);
+
+                for (int i = 0; i < 12; i++) {
+                    if(YearMonth.from(sale.getDate()).equals(YearMonth.now().minusMonths(i))){
+                        averageSoldLast12Months = averageSoldLast12Months + amount;
+                }
+            }
+        }
+        averageSoldLast12Months = averageSoldLast12Months / 12;
+        return averageSoldLast12Months;
     }
 
     /**

@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public class OrderTool extends javafx.application.Application {
+    OrderAlgorithm orderAlgorithm = new OrderAlgorithm();
+
+
     //keeps track of all known products
     private static ProductList products = new ProductList();
     //Keeps track of all known suppliers
@@ -51,6 +54,8 @@ public class OrderTool extends javafx.application.Application {
         ReportManager.generateProductReport("fcda2026-c516-11eb-8529-0242ac130003");
 
         viewController.update();
+
+        //System.out.println(orderAlgorithm.getAverageSoldLast12Months("Uw0fE66fQWuCvNqV90Y0"));
     }
 
     public static ProductList getProducts() {
