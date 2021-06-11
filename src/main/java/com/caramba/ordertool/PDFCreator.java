@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,10 +25,11 @@ import java.util.Map;
 public class PDFCreator {
     private final String path;
     private final String filename;
-    private final SupplierList suppliers;
-    private final RecommendationList recommendationList;
+    //private final SupplierList suppliers;
+    private final Recommendation recommendation;
 
     private final PDDocument document = new PDDocument();
+    /*
     private PDFCreator(String path, String filename, SupplierList suppliers){
         this.filename = filename;
         this.path = path;
@@ -45,11 +47,11 @@ public class PDFCreator {
             NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
         }
     }
-
-    private PDFCreator(String path, String filename, RecommendationList recommendationList){
+*/
+    private PDFCreator(String path, String filename, Recommendation recommendation){
         this.filename = filename;
         this.path = path;
-        this.recommendationList = recommendationList;
+        this.recommendation = recommendation;
         //create the file
         try{
             File f = new File(getFullPath());
@@ -68,8 +70,8 @@ public class PDFCreator {
         this(path, "Orderlist-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", suppliers);
     }
 
-    public PDFCreator(String path, RecommendationList recommendationList){
-        this(path, "Recommendation-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", recommendationList);
+    public PDFCreator(String path, Recommendation recommendation){
+        this(path, "Recommendation-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", recommendation);
     }
 
     public void addProducts(HashMap<Product, Integer> products){
@@ -134,17 +136,6 @@ public class PDFCreator {
         }
 
         document.addPage(page);
-    }
-
-    //TODO: make proper method name once it's clear what the method needs to do
-    private RecommendationList methodName(){
-        RecommendationList rl = new RecommendationList();
-
-        for(Recommendation recommendation : this.recommendationList.getRecommendationList()){
-            //Do Something
-        }
-
-        return rl;
     }
 
     private HashMap<String, HashMap<Product, Integer>> separateProductQuantityMapPerSupplier(HashMap<Product, Integer> products){

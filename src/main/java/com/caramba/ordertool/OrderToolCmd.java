@@ -18,8 +18,6 @@ public class OrderToolCmd {
     private static SupplierList suppliers = new SupplierList();
     //Keeps track of all known sales
     private static Saleslist saleslist = new Saleslist();
-    //Keeps track of all knows recommendations
-    private static RecommendationList recommendations = new RecommendationList();
     private static final FireStoreConfig config = new FireStoreConfig();
     private static final OrderAlgorithm orderAlgo = new OrderAlgorithm();
 
@@ -46,7 +44,7 @@ public class OrderToolCmd {
                 case "remove" -> remove(command);
                 case "link" -> link(command);
                 case "clear" -> clear(command);
-                case "pdf" -> createOrderlistPDF(command);
+                case "pdf" -> createRecommendationPDF(command);
                 case "loadtest" -> loadTestData();
                 case "project" -> displayProjectedSales(command);
                 default -> NotificationManager.add(new Notification(NotificationType.ERROR, "Unknown command " + command[0] + ". Use --help to see supported commands"));
@@ -262,13 +260,13 @@ public class OrderToolCmd {
     }
 
     //create a pdf of the recommended orderlist for next month
-    public static void createOrderlistPDF(String[] command){
-        HashMap<Product, Integer> productQuantityMap = orderAlgo.createOrderList(YearMonth.now().plusMonths(1));
-        if(productQuantityMap.isEmpty()){
-            NotificationManager.add(new Notification(NotificationType.INFO, "There are no products currently recommend to order. The pdf was not created."));
+    public static void createRecommendationPDF(String[] command){
+        Recommendation recommendation = orderAlgo.createRecommended(YearMonth.now().plusMonths(1));
+        if(recommendation.getProductRecommendation().isEmpty()){
+            NotificationManager.add(new Notification(NotificationType.INFO, "There are no products currently recommended to order. The pdf was not created."));
         }else{
             PDFCreator pdfc = new PDFCreator("pdf/", suppliers);
-            pdfc.addProducts(productQuantityMap);
+            pdfc.addProducts(recommendation.getProductRecommendation());
             pdfc.save();
         }
     }

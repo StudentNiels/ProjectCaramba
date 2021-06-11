@@ -18,12 +18,24 @@ public class Recommendation {
         this.confirmed = false;
     }
 
+    public Recommendation(Date creationDate, Supplier supplier, Date finalOrderDate, HashMap<Product, Integer> productRecommendation) {
+        this.creationDate = creationDate;
+        this.supplier = supplier;
+        this.finalOrderDate = finalOrderDate;
+        this.productRecommendation = productRecommendation;
+        this.confirmed = false;
+    }
+
     public Recommendation(Date creationDate, Supplier supplier, Date finalOrderDate, HashMap<Product, Integer> productRecommendation, boolean confirmed) {
         this.creationDate = creationDate;
         this.supplier = supplier;
         this.finalOrderDate = finalOrderDate;
         this.productRecommendation = productRecommendation;
         this.confirmed = confirmed;
+    }
+
+    public void addProductToRecommendation(Product product, int amount){
+        this.productRecommendation.put(product, amount);
     }
 
     //region Getters and Setters

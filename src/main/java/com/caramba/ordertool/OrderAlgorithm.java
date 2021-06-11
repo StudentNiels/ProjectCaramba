@@ -15,14 +15,14 @@ public class OrderAlgorithm {
      * Checks all registered products and checks how many should be ordered for the given month
      * @return hashmap with products and quantity to order
      */
-    public HashMap<Product, Integer> createOrderList(YearMonth date){
-        HashMap<Product, Integer> result = new HashMap<>();
+    public Recommendation createRecommended(YearMonth date){
+        Recommendation result = new Recommendation();
         for (Map.Entry<String, Product> entry : OrderTool.getProducts().getProducts().entrySet()) {
             String id = entry.getKey();
             Product p = entry.getValue();
             int amount =  RecommendOrderAmount(id, date);
             if(amount > 0){
-                result.put(p, amount);
+                result.addProductToRecommendation(p, amount);
             }
         }
         return result;
