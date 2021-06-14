@@ -1,12 +1,14 @@
 package com.caramba.ordertool;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 
 public class Recommendation {
-    private Date creationDate;
+    private LocalDateTime creationDate;
     private Supplier supplier;
-    private Date finalOrderDate;
+    //TODO: find a use for this or delete this when the time is ripe
+    private LocalDateTime finalOrderDate;
     private HashMap<Product, Integer> productRecommendation;
     private boolean confirmed;
 
@@ -18,18 +20,18 @@ public class Recommendation {
         this.confirmed = false;
     }
 
-    public Recommendation(Date creationDate, Supplier supplier, Date finalOrderDate, HashMap<Product, Integer> productRecommendation) {
+    public Recommendation(LocalDateTime creationDate, Supplier supplier, HashMap<Product, Integer> productRecommendation) {
         this.creationDate = creationDate;
         this.supplier = supplier;
-        this.finalOrderDate = finalOrderDate;
+        this.finalOrderDate = null;
         this.productRecommendation = productRecommendation;
         this.confirmed = false;
     }
 
-    public Recommendation(Date creationDate, Supplier supplier, Date finalOrderDate, HashMap<Product, Integer> productRecommendation, boolean confirmed) {
+    public Recommendation(LocalDateTime creationDate, Supplier supplier, HashMap<Product, Integer> productRecommendation, boolean confirmed) {
         this.creationDate = creationDate;
         this.supplier = supplier;
-        this.finalOrderDate = finalOrderDate;
+        this.finalOrderDate = null;
         this.productRecommendation = productRecommendation;
         this.confirmed = confirmed;
     }
@@ -39,11 +41,11 @@ public class Recommendation {
     }
 
     //region Getters and Setters
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -55,11 +57,11 @@ public class Recommendation {
         this.supplier = supplier;
     }
 
-    public Date getFinalOrderDate() {
+    public LocalDateTime getFinalOrderDate() {
         return finalOrderDate;
     }
 
-    public void setFinalOrderDate(Date finalOrderDate) {
+    public void setFinalOrderDate(LocalDateTime finalOrderDate) {
         this.finalOrderDate = finalOrderDate;
     }
 

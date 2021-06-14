@@ -15,12 +15,10 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class PDFCreator {
     private final String path;
@@ -65,11 +63,11 @@ public class PDFCreator {
             NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
         }
     }
-
+/*
     public PDFCreator(String path, SupplierList suppliers){
         this(path, "Orderlist-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", suppliers);
     }
-
+*/
     public PDFCreator(String path, Recommendation recommendation){
         this(path, "Recommendation-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", recommendation);
     }
@@ -138,10 +136,11 @@ public class PDFCreator {
         document.addPage(page);
     }
 
-    private HashMap<String, HashMap<Product, Integer>> separateProductQuantityMapPerSupplier(HashMap<Product, Integer> products){
-        HashMap<String, HashMap<Product, Integer>> result = new HashMap<>();
+    private ArrayList<Recommendation> getRecommendation(HashMap<Product, Integer> products){
+        ArrayList<Recommendation> recommendations = new ArrayList<>();
+
         //check all known suppliers
-        for (Map.Entry<String, Supplier> sEntry : suppliers.getSuppliers().entrySet()) {
+        for (Map.Entry<String, Supplier> sEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
             HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
             Iterator<Map.Entry<Product, Integer>> itP = products.entrySet().iterator();
             while (itP.hasNext()) {
@@ -151,6 +150,37 @@ public class PDFCreator {
                     itP.remove();
                 }
             }
+            recommendations.add(new Recommendation(LocalDateTime.now(), sEntry.getValue(),ProductQuantityMap));
+        }
+        if(!products.isEmpty()){
+            HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
+            for (Map.Entry<Product, Integer> productQuantityEntry : products.entrySet()) {
+                ProductQuantityMap.put(productQuantityEntry.getKey(), productQuantityEntry.getValue());
+            }
+            recommendations.add(new Recommendation(LocalDateTime.now(), null,ProductQuantityMap));
+        }
+
+        return recommendations;
+    }
+
+    private HashMap<String, HashMap<Product, Integer>> separateProductQuantityMapPerSupplier(HashMap<Product, Integer> products){
+        HashMap<String, HashMap<Product, Integer>> result = new HashMap<>();
+        Recommendation recommendation = new Recommendation();
+        //check all known suppliers
+        for (Map.Entry<String, Supplier> sEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
+            HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
+            Iterator<Map.Entry<Product, Integer>> itP = products.entrySet().iterator();
+            while (itP.hasNext()) {
+                Map.Entry<Product, Integer> pEntry = itP.next();
+                if (sEntry.getValue().containsProduct(pEntry.getKey())) {
+                    ProductQuantityMap.put(pEntry.getKey(), pEntry.getValue());
+                    itP.remove();
+                }
+            }
+            //Set recommendation creationDate to today, add product hashmap to recommendation, add supplier to recommendation
+            recommendation.setCreationDate(LocalDateTime.now());
+            recommendation.setSupplier(sEntry.getValue());
+            recommendation.setProductRecommendation(ProductQuantityMap);
             result.put(sEntry.getValue().getName(), ProductQuantityMap);
         }
         if(!products.isEmpty()){

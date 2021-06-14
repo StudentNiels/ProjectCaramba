@@ -265,7 +265,7 @@ public class OrderToolCmd {
         if(recommendation.getProductRecommendation().isEmpty()){
             NotificationManager.add(new Notification(NotificationType.INFO, "There are no products currently recommended to order. The pdf was not created."));
         }else{
-            PDFCreator pdfc = new PDFCreator("pdf/", suppliers);
+            PDFCreator pdfc = new PDFCreator("pdf/", recommendation);
             pdfc.addProducts(recommendation.getProductRecommendation());
             pdfc.save();
         }
