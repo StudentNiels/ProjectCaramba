@@ -1,6 +1,4 @@
 package com.caramba.ordertool;
-
-import com.caramba.ordertool.reports.ReportManager;
 import com.caramba.ordertool.scenes.ViewController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,6 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.Map;
 
@@ -26,8 +25,10 @@ public class OrderTool extends javafx.application.Application {
         launch(args);
     }
 
+
     @Override
     public void start(Stage stage) throws IOException {
+        //create the main window
         URL res = getClass().getResource("/scenes/app.fxml");
         if(res == null){
             throw new IOException();
@@ -41,17 +42,18 @@ public class OrderTool extends javafx.application.Application {
         stage.show();
 
         //load from db
+        OrderTool.loadFieldsFromDB();
+        //update the reports
+        //send data to controllers
+        viewController.update();
+    }
+
+    private static void loadFieldsFromDB(){
         config.fireStoreConfig();
         products = config.retrieveAllProducts();
         sales = config.retrieveAllSales();
         suppliers = config.retrieveAllSuppliers();
 
-        //todo remove this when reports from db are implemented
-        ReportManager.generateProductReport("Uw0fE66fQWuCvNqV90Y0");
-        ReportManager.generateProductReport("QmuYT34bznQUAc3rN0Xa");
-        ReportManager.generateProductReport("fcda2026-c516-11eb-8529-0242ac130003");
-
-        viewController.update();
     }
 
     public static ProductList getProducts() {
@@ -66,15 +68,8 @@ public class OrderTool extends javafx.application.Application {
         return sales;
     }
 
-
-    /**
-     * Generate report for the current month based on the current data.
-     */
-    public static void updateReports(){
-        YearMonth currentDate = YearMonth.now();
-        for(String productID : products.getProducts().keySet()){
-            ReportManager.generateProductReport(productID);
-        }
+    public static FireStoreConfig getConfig() {
+        return config;
     }
 
     /**

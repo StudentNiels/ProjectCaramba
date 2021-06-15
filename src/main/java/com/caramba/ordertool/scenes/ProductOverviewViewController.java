@@ -1,11 +1,12 @@
 package com.caramba.ordertool.scenes;
 
 import com.caramba.ordertool.*;
-import com.caramba.ordertool.reports.MonthProductReport;
-import com.caramba.ordertool.reports.ReportManager;
-import com.caramba.ordertool.reports.YearProductReport;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -39,9 +40,11 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     @FXML
     private TableColumn<DisplayProduct, String> colProductSuppliers;
     @FXML
-    private ChoiceBox<Year> choiceReportSelector;
+    private ComboBox<Year> comboYearSelector;
     @FXML
     private LineChart<String, Integer> lineChartProductTimeLine;
+
+    private DisplayProduct selectedProduct = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -86,8 +89,19 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
         tableProductOverview.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                showChart(tableProductOverview.getSelectionModel().getSelectedItem());
+                selectedProduct = tableProductOverview.getSelectionModel().getSelectedItem();
+                showChart();
             }
+        });
+
+        //create year selector
+        for(int y = LocalDate.now().plusYears(1).getYear(); y >= 1900; y--){
+            comboYearSelector.getItems().add(Year.of(y));
+        }
+        comboYearSelector.getSelectionModel().select(Year.now());
+
+        comboYearSelector.setOnAction((ActionEvent event) -> {
+            showChart();
         });
     }
 
@@ -133,29 +147,17 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         }
     }
 
-    private void showChart(DisplayProduct displayProduct) {
-        if (displayProduct != null) {
-            String productID = displayProduct.getInternalId();
+    private void showChart() {
+        if (selectedProduct != null) {
+            String productID = selectedProduct.getInternalId();
+            OrderAlgorithm orderAlgo = new OrderAlgorithm();
 
-            List<YearProductReport> reports = ReportManager.getReportsByProduct(OrderTool.getProducts().get(productID));
-            //create report selector
-            choiceReportSelector.getItems().clear();
+            //clear chart
             lineChartProductTimeLine.getData().clear();
-            if (reports.isEmpty()) {
-                choiceReportSelector.setValue(null);
-            } else {
-                Year latestYear = Year.of(0);
-                for (YearProductReport report : reports) {
-                    Year reportYear = report.getYear();
-                    choiceReportSelector.getItems().add(reportYear);
-                    if (reportYear.isAfter(latestYear)) {
-                        latestYear = reportYear;
-                    }
-                }
-                choiceReportSelector.setValue(latestYear);
-            }
 
-            if (choiceReportSelector.getValue() != null) {
+
+            if (comboYearSelector.getValue() != null) {
+                Year selectedYear = comboYearSelector.getValue();
                 XYChart.Series<String, Integer> quantitySoldSeries = new XYChart.Series<>();
                 quantitySoldSeries.setName("Verkopen");
                 XYChart.Series<String, Integer> medianYearSeries = new XYChart.Series<>();
@@ -163,19 +165,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 XYChart.Series<String, Integer> projectedSalesSeries = new XYChart.Series<>();
                 projectedSalesSeries.setName("Verwachte verkopen");
 
-                //show the chart of selected year
-                YearProductReport selectedReport = null;
-                for (YearProductReport report : reports) {
-                    Year year = report.getYear();
-                    if (year == choiceReportSelector.getValue()) {
-                        selectedReport = report;
-                        break;
-                    }
-                }
-                assert selectedReport != null;
-
-                //median year
-                MedianYear my = selectedReport.getMedianYear();
+                //median year based on sales before the selected year
+                Saleslist previousSales = OrderTool.getSales().getSalesBeforeYear(selectedYear.getValue());
+                MedianYear my = orderAlgo.getMedianYear(previousSales.getDateAmountMap(productID));
                 if(my != null) {
                     for (int i = 1; i <= 12; i++) {
                         XYChart.Data<String, Integer> data = new XYChart.Data<>(Month.of(i).toString(), my.getByMonthNumber(i));
@@ -184,24 +176,27 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 }
 
                 //sales
+                Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
                 XYChart.Data<String, Integer> lastSaleData = null;
-                for (MonthProductReport monthProductReport : selectedReport.getMonthReports()) {
-                    String m = monthProductReport.getMonth().toString();
-                    int amount = monthProductReport.getSalesQuantity();
-                    XYChart.Data<String, Integer> data = new XYChart.Data<>(m, amount);
-                    quantitySoldSeries.getData().add(data);
-                    lastSaleData = data;
+                for (int i = 1; i <= 12; i++) {
+                    YearMonth date = YearMonth.of(selectedYear.getValue(), i);
+                    //do not add data for the future
+                    if(!date.isAfter(YearMonth.now())){
+                        String m = Month.of(i).toString();
+                        int amount = sales.getSoldInYearMonth(productID, date);
+                        XYChart.Data<String, Integer> data = new XYChart.Data<>(m, amount);
+                        quantitySoldSeries.getData().add(data);
+                        lastSaleData = data;
+                    }
                 }
-
 
                 //projected sales
                 if(lastSaleData != null){
                     XYChart.Data<String, Integer> data = new XYChart.Data<>(lastSaleData.getXValue(), lastSaleData.getYValue());
                     projectedSalesSeries.getData().add(data);
                 }
-                OrderAlgorithm orderAlgo = new OrderAlgorithm();
                 for(int m = LocalDate.now().getMonth().getValue() + 1; m <= 12; m++){
-                    int amount = orderAlgo.getProjectedSaleAmount(displayProduct.getInternalId(),YearMonth.of(Year.now().getValue(), m));
+                    int amount = orderAlgo.getProjectedSaleAmount(productID,YearMonth.of(Year.now().getValue(), m));
                     XYChart.Data<String, Integer> data = new XYChart.Data<>(Month.of(m).toString(), amount);
                     projectedSalesSeries.getData().add(data);
                 }

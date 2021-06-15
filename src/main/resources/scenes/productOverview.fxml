@@ -37,7 +37,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -90,7 +90,7 @@
                         <Font size="15.0" />
                      </font>
                   </Text>
-                  <ChoiceBox fx:id="choiceReportSelector" prefWidth="150.0" />
+                  <ComboBox fx:id="comboYearSelector" prefWidth="150.0" />
                </children>
             </HBox>
             <LineChart fx:id="lineChartProductTimeLine" animated="false" title="Tijdlijn">
