@@ -271,6 +271,23 @@ public class FireStoreConfig {
         return result;
     }
 
+    public void addSale(com.google.cloud.Timestamp timestamp, String productId, int amount){
+        dbConnect();
+        HashMap<String, com.google.cloud.Timestamp> map = new HashMap<>();
+        map.put("date", timestamp);
+        ApiFuture<DocumentReference> promise = db.collection("Sales").add(map);
+        try {
+            DocumentReference docref = promise.get();
+            HashMap<String, Integer> amountMap = new HashMap<>();
+            amountMap.put("amount", amount);
+            docref.collection("SalesList").document(productId).set(amountMap);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        closeDb();
+    }
+
+
     /**
      * Make a list of all the suppliers
      */

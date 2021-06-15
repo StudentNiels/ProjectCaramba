@@ -1,5 +1,6 @@
 package com.caramba.ordertool;
 import com.caramba.ordertool.scenes.ViewController;
+import com.google.cloud.Timestamp;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -7,6 +8,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
@@ -70,6 +73,17 @@ public class OrderTool extends javafx.application.Application {
 
     public static FireStoreConfig getConfig() {
         return config;
+    }
+
+    public static void addSale(String productID, String date, int amount){
+        //debug stuff for adding sales quickly
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Timestamp time = Timestamp.of(format.parse(date));
+            config.addSale(time, productID, amount);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
