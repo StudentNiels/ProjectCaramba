@@ -41,7 +41,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.caramba.ordertool.scenes.AppViewController">
    <center>
-      <TabPane fx:id="tabPaneMain" prefHeight="600.0" prefWidth="1250.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="tabPaneMain" prefHeight="600.0" prefWidth="1530.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
          <tabs>
             <Tab text="Order aanbevelingen">
               <content>

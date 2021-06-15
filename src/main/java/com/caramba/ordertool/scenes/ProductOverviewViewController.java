@@ -44,7 +44,41 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     @FXML
     private LineChart<String, Integer> lineChartProductTimeLine;
 
+    @FXML
+    private TableView<ProductDetailsTableData> tableProductDetails;
+    @FXML
+    private TableColumn<ProductDetailsTableData, String> colProductDetailsName;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsJan;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsFeb;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsMar;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsApr;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsMay;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsJun;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsJul;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsAug;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsSept;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsOct;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsNov;
+    @FXML
+    private TableColumn<ProductDetailsTableData, Integer> colProductDetailsDec;
+
+
+
+
     private DisplayProduct selectedProduct = null;
+
+    private final static String MONTH_NAME[] = { "jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec" };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -52,6 +86,22 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         colProductDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         colProductStock.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         colProductSuppliers.setCellValueFactory(new PropertyValueFactory<>("supplierNames"));
+
+
+        colProductDetailsName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colProductDetailsJan.setCellValueFactory(new PropertyValueFactory<>("janValue"));
+        colProductDetailsFeb.setCellValueFactory(new PropertyValueFactory<>("febValue"));
+        colProductDetailsMar.setCellValueFactory(new PropertyValueFactory<>("marValue"));
+        colProductDetailsApr.setCellValueFactory(new PropertyValueFactory<>("aprValue"));
+        colProductDetailsMay.setCellValueFactory(new PropertyValueFactory<>("mayValue"));
+        colProductDetailsJun.setCellValueFactory(new PropertyValueFactory<>("junValue"));
+        colProductDetailsJul.setCellValueFactory(new PropertyValueFactory<>("julValue"));
+        colProductDetailsAug.setCellValueFactory(new PropertyValueFactory<>("augValue"));
+        colProductDetailsSept.setCellValueFactory(new PropertyValueFactory<>("septValue"));
+        colProductDetailsOct.setCellValueFactory(new PropertyValueFactory<>("octValue"));
+        colProductDetailsNov.setCellValueFactory(new PropertyValueFactory<>("novValue"));
+        colProductDetailsDec.setCellValueFactory(new PropertyValueFactory<>("decValue"));
+
 
         tableProductOverview.setRowFactory(tableView -> {
             /*final TableRow<DisplayProduct> row = new TableRow<>();
@@ -155,6 +205,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             //clear chart
             lineChartProductTimeLine.getData().clear();
 
+            //create the observableList for the table
+            ObservableList<ProductDetailsTableData> tableData = FXCollections.observableArrayList();
+
 
             if (comboYearSelector.getValue() != null) {
                 Year selectedYear = comboYearSelector.getValue();
@@ -169,26 +222,33 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 Saleslist previousSales = OrderTool.getSales().getSalesBeforeYear(selectedYear.getValue());
                 MedianYear my = orderAlgo.getMedianYear(previousSales.getDateAmountMap(productID));
                 if(my != null) {
+                    ProductDetailsTableData medianYearTableData = new ProductDetailsTableData(medianYearSeries.getName());
                     for (int i = 1; i <= 12; i++) {
-                        XYChart.Data<String, Integer> data = new XYChart.Data<>(Month.of(i).toString(), my.getByMonthNumber(i));
+                        int amount = my.getByMonthNumber(i);
+                        XYChart.Data<String, Integer> data = new XYChart.Data<>(MONTH_NAME[i - 1], amount);
                         medianYearSeries.getData().add(data);
+                        medianYearTableData.setValue(i, amount);
                     }
+                    tableData.add(medianYearTableData);
                 }
 
                 //sales
+                ProductDetailsTableData salesTableData = new ProductDetailsTableData(quantitySoldSeries.getName());
                 Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
                 XYChart.Data<String, Integer> lastSaleData = null;
                 for (int i = 1; i <= 12; i++) {
                     YearMonth date = YearMonth.of(selectedYear.getValue(), i);
                     //do not add data for the future
                     if(!date.isAfter(YearMonth.now())){
-                        String m = Month.of(i).toString();
+                        String m = MONTH_NAME[i - 1];
                         int amount = sales.getSoldInYearMonth(productID, date);
                         XYChart.Data<String, Integer> data = new XYChart.Data<>(m, amount);
                         quantitySoldSeries.getData().add(data);
                         lastSaleData = data;
+                        salesTableData.setValue(i, amount);
                     }
                 }
+                tableData.add(salesTableData);
 
                 //projected sales
                 //todo this should be fixed
@@ -197,15 +257,18 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 //(e.g. we can't project jan 2021 if we're in dec 2020)
                 //until this is fixed projected sales should only show for the current year
                 if(selectedYear.equals(Year.now())){
+                    ProductDetailsTableData projectedSalesTableData = new ProductDetailsTableData(projectedSalesSeries.getName());
                     if (lastSaleData != null) {
                         XYChart.Data<String, Integer> data = new XYChart.Data<>(lastSaleData.getXValue(), lastSaleData.getYValue());
                         projectedSalesSeries.getData().add(data);
                     }
                     for (int m = LocalDate.now().getMonth().getValue() + 1; m <= 12; m++) {
                         int amount = orderAlgo.getProjectedSaleAmount(productID, YearMonth.of(Year.now().getValue(), m));
-                        XYChart.Data<String, Integer> data = new XYChart.Data<>(Month.of(m).toString(), amount);
+                        XYChart.Data<String, Integer> data = new XYChart.Data<>(MONTH_NAME[m - 1], amount);
                         projectedSalesSeries.getData().add(data);
+                        projectedSalesTableData.setValue(m, amount);
                     }
+                    tableData.add(projectedSalesTableData);
                 }
                 lineChartProductTimeLine.getData().add(medianYearSeries);
                 lineChartProductTimeLine.getData().add(projectedSalesSeries);
@@ -213,6 +276,10 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
                 lineChartProductTimeLine.setStyle("CHART_COLOR_1: #33ccff ; CHART_COLOR_2: #64b000 ; CHART_COLOR_3: #00b80c;");
                 projectedSalesSeries.getNode().setStyle("-fx-stroke-dash-array: 2 12 12 2;");
+
+                //update the table
+                tableProductDetails.getItems().clear();
+                tableProductDetails.setItems(tableData);
             }
 
         }
@@ -306,5 +373,120 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         public String getSupplierNames() {
             return supplierNames;
         }
+    }
+    public class ProductDetailsTableData{
+        private final String name;
+        private  Integer janValue;
+        private  Integer febValue;
+        private  Integer marValue;
+        private  Integer aprValue;
+        private  Integer mayValue;
+        private  Integer junValue;
+        private  Integer julValue;
+        private  Integer augValue;
+        private  Integer septValue;
+        private  Integer octValue;
+        private  Integer novValue;
+        private  Integer decValue;
+
+        public ProductDetailsTableData(String name) {
+            this.name = name;
+        }
+
+        public Integer getJanValue() {
+            return janValue;
+        }
+
+        public Integer getFebValue() {
+            return febValue;
+        }
+
+        public Integer getMarValue() {
+            return marValue;
+        }
+
+        public Integer getAprValue() {
+            return aprValue;
+        }
+
+        public Integer getMayValue() {
+            return mayValue;
+        }
+
+        public Integer getJunValue() {
+            return junValue;
+        }
+
+        public Integer getJulValue() {
+            return julValue;
+        }
+
+        public Integer getAugValue() {
+            return augValue;
+        }
+
+        public Integer getSeptValue() {
+            return septValue;
+        }
+
+        public Integer getOctValue() {
+            return octValue;
+        }
+
+        public Integer getNovValue() {
+            return novValue;
+        }
+
+        public Integer getDecValue() {
+            return decValue;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setValue(int monthToSet, Integer value){
+            switch (monthToSet){
+                case 1:
+                    this.janValue = value;
+                    break;
+                case 2:
+                    this.febValue = value;
+                    break;
+                case 3:
+                    this.marValue = value;
+                    break;
+                case 4:
+                    this.aprValue = value;
+                    break;
+                case 5:
+                    this.mayValue = value;
+                    break;
+                case 6:
+                    this.junValue = value;
+                    break;
+                case 7:
+                    this.julValue = value;
+                    break;
+                case 8:
+                    this.augValue = value;
+                    break;
+                case 9:
+                    this.septValue = value;
+                    break;
+                case 10:
+                    this.octValue = value;
+                    break;
+                case 11:
+                    this.novValue = value;
+                    break;
+                case 12:
+                    this.decValue = value;
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
     }
 }
