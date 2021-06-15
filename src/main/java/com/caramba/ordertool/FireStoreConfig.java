@@ -1,6 +1,7 @@
 package com.caramba.ordertool;
 
 import com.caramba.ordertool.notifications.NotificationManager;
+import com.caramba.ordertool.reports.MonthProductReport;
 import com.caramba.ordertool.reports.YearProductReport;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -14,11 +15,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class FireStoreConfig {
@@ -209,8 +208,29 @@ public class FireStoreConfig {
                 e.printStackTrace();
             }
         }
+        //save to history
+        saveProductQuantityHistory(result);
         closeDb();
         return result;
+    }
+
+    /**
+     * Saves the current quantity of the product to the history of this year and month.
+     *
+     * This is currently run every time the products are retrieved
+     * Ideally this should be run automatically once at the end of the month instead
+     * This could be probably be done using firebase's 'scheduled functions' feature
+     * However this feature is exclusive to the paid plan of firebase, which we don't currently have access to
+     */
+    public void saveProductQuantityHistory(ProductList productList){
+        LocalDate now = LocalDate.now();
+        for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
+            String k = entry.getKey();
+            Product p = entry.getValue();
+            Map<String, Integer> data = new HashMap<>();
+            data.put("quantity", p.getQuantity());
+            db.collection("Products").document(k).collection("History").document(String.valueOf(now.getYear())).collection("Months").document(now.getMonth().toString()).set(data);
+        }
     }
 
     /**
@@ -302,6 +322,7 @@ public class FireStoreConfig {
         closeDb();
         return result;
     }
+
 
     /**
      * Read out a specific product, product's sales date or supplier
