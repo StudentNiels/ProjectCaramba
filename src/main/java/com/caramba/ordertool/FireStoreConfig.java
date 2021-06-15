@@ -190,26 +190,6 @@ public class FireStoreConfig {
         closeDb();
     }
 
-    public List<YearProductReport> retrieveAllYearProductReports(){
-        List<YearProductReport> result = new ArrayList<>();
-        dbConnect();
-        Iterable<DocumentReference> collections = db.collection("ProductReports").listDocuments();
-        for (DocumentReference collRef : collections) {
-            ApiFuture<DocumentSnapshot> promise = collRef.get();
-            try {
-                DocumentSnapshot docSnapshot = promise.get();
-                if(docSnapshot.exists()){
-                    YearProductReport report = docSnapshot.toObject(YearProductReport.class);
-                    result.add(report);
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        closeDb();
-        return result;
-    }
-
     /**
      * Make a list of all the products
      */
