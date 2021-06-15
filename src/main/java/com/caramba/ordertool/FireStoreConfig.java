@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -321,6 +322,32 @@ public class FireStoreConfig {
         }
         closeDb();
         return result;
+    }
+
+    /**
+     * @return The amount of products sold in a certain YearMonth according to the db
+     */
+    public Integer getProductHistoryQuantity(String productId, YearMonth yearMonth){
+        dbConnect();
+        ApiFuture<DocumentSnapshot> promise = db.collection("Products").document(productId).collection("History").document(String.valueOf(yearMonth.getYear())).collection("Months").document(yearMonth.getMonth().toString()).get();
+        DocumentSnapshot doc = null;
+        try {
+            doc = promise.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert doc != null;
+        if(doc.exists()) {
+            Long r = doc.getLong("quantity");
+            if (r != null) {
+                closeDb();
+                return Math.toIntExact(r);
+            }
+        }
+        closeDb();
+        return null;
     }
 
 
