@@ -1,9 +1,6 @@
 package com.caramba.ordertool.reports;
 
-import com.caramba.ordertool.MedianYear;
-import com.caramba.ordertool.OrderAlgorithm;
-import com.caramba.ordertool.OrderTool;
-import com.caramba.ordertool.Product;
+import com.caramba.ordertool.*;
 
 import java.time.Month;
 import java.time.Year;
@@ -23,7 +20,8 @@ public class ReportManager {
         MedianYear medianYear = orderAlgo.getMedianYear(orderAlgo.getDateAmountMap(productId));
         YearProductReport result = new YearProductReport(Year.now(), medianYear, OrderTool.getProducts().get(productId));
         for (int i = 1; i <= 6; i++) {
-            int amount = orderAlgo.getSoldInYearMonth(productId, YearMonth.of(2021, i));
+            Saleslist sales = OrderTool.getSales();
+            int amount = sales.getSoldInYearMonth(productId, YearMonth.of(2021, i));
             result.add(new MonthProductReport(0, amount, Month.of(i)));
         }
         yearProductReports.add(result);
