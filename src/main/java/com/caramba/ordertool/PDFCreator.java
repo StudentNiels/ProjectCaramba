@@ -15,18 +15,19 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class PDFCreator {
     private final String path;
     private final String filename;
-    private final SupplierList suppliers;
+    //private final SupplierList suppliers;
+    private final Recommendation recommendation;
 
     private final PDDocument document = new PDDocument();
+    /*
     private PDFCreator(String path, String filename, SupplierList suppliers){
         this.filename = filename;
         this.path = path;
@@ -44,14 +45,37 @@ public class PDFCreator {
             NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
         }
     }
-
+*/
+    private PDFCreator(String path, String filename, Recommendation recommendation){
+        this.filename = filename;
+        this.path = path;
+        this.recommendation = recommendation;
+        //create the file
+        try{
+            File f = new File(getFullPath());
+            if(f.getParentFile().mkdirs()){
+                NotificationManager.add(new Notification(NotificationType.INFO, "Created new directory"));
+            }
+            if(!f.createNewFile()){
+                NotificationManager.add(new Notification(NotificationType.WARNING, "The file " + filename + " already exists. Saving will overwrite it's contents."));
+            }
+        }catch (IOException e){
+            NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
+        }
+    }
+/*
     public PDFCreator(String path, SupplierList suppliers){
         this(path, "Orderlist-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", suppliers);
+    }
+*/
+    public PDFCreator(String path, Recommendation recommendation){
+        this(path, "Recommendation-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", recommendation);
     }
 
     public void addProducts(HashMap<Product, Integer> products){
         PDPage page = new PDPage(PDRectangle.A4);
-        HashMap<String, HashMap<Product, Integer>> supplierProductQuantityMap = separateProductQuantityMapPerSupplier(products);
+        ArrayList<Recommendation> recommendations = getRecommendation(products);
+        HashMap<String, HashMap<Product, Integer>> supplierProductQuantityMap = separateProductQuantityMapPerSupplier(products); // Get ArrayList<Recommendation>
         try{
             float margin = 50;
             float lineSpace = 20;
@@ -75,36 +99,66 @@ public class PDFCreator {
             cs.endText();
             //add a table per supplier
             int tableCount = 1;
-            for (Map.Entry<String, HashMap<Product, Integer>> mapEntry : supplierProductQuantityMap.entrySet()) {
+            for(Recommendation recommendation : recommendations){
                 BaseTable table = new BaseTable(y, yStartNewPage, margin, tableWidth, margin, document, page, true, true);
                 Row<PDPage> headerRow = table.createRow(15f);
                 Cell<PDPage> cell = headerRow.createCell(100, "ORDER #" + tableCount);
                 table.addHeaderRow(headerRow);
                 Row<PDPage> row = table.createRow(12);
-                cell = row.createCell(100, "Order for: " + mapEntry.getKey());
+                cell = row.createCell(100, "Order for: " + recommendation.getSupplier().getName()); //Supplier name
                 row = table.createRow(12);
                 cell = row.createCell(4, "#");
                 cell = row.createCell(32, "Product Number");
                 cell = row.createCell(32, "Description");
                 cell = row.createCell(32, "Quantity");
                 int productCount = 1;
-                HashMap<Product, Integer> productQuantityMap = mapEntry.getValue();
+                HashMap<Product, Integer> productQuantityMap = recommendation.getProductRecommendation(); // Product HashMap
                 for (Map.Entry<Product, Integer> productQuantityEntry : productQuantityMap.entrySet()) {
-                    Product p = productQuantityEntry.getKey();
-                    int amount = productQuantityEntry.getValue();
+                    Product p = productQuantityEntry.getKey(); // Product from Product HashMap
+                    int amount = productQuantityEntry.getValue(); // Amount from Product HashMap
 
                     //add the cells for this product
                     row = table.createRow(12);
                     cell = row.createCell(4, Integer.toString(productCount));
-                    cell = row.createCell(32, p.getProductNum());
-                    cell = row.createCell(32, p.getDescription());
+                    cell = row.createCell(32, p.getProductNum()); // Product number
+                    cell = row.createCell(32, p.getDescription()); // Product description
                     cell = row.createCell(32, String.valueOf(amount));
                     productCount = productCount +  1;
                 }
                 y = table.draw() - lineSpace;
                 tableCount = tableCount + 1;
             }
+            /*
+            for (Map.Entry<String, HashMap<Product, Integer>> mapEntry : supplierProductQuantityMap.entrySet()) {
+                BaseTable table = new BaseTable(y, yStartNewPage, margin, tableWidth, margin, document, page, true, true);
+                Row<PDPage> headerRow = table.createRow(15f);
+                Cell<PDPage> cell = headerRow.createCell(100, "ORDER #" + tableCount);
+                table.addHeaderRow(headerRow);
+                Row<PDPage> row = table.createRow(12);
+                cell = row.createCell(100, "Order for: " + mapEntry.getKey()); //Supplier name
+                row = table.createRow(12);
+                cell = row.createCell(4, "#");
+                cell = row.createCell(32, "Product Number");
+                cell = row.createCell(32, "Description");
+                cell = row.createCell(32, "Quantity");
+                int productCount = 1;
+                HashMap<Product, Integer> productQuantityMap = mapEntry.getValue(); // Product HashMap
+                for (Map.Entry<Product, Integer> productQuantityEntry : productQuantityMap.entrySet()) {
+                    Product p = productQuantityEntry.getKey(); // Product from Product HashMap
+                    int amount = productQuantityEntry.getValue(); // Amount from Product HashMap
 
+                    //add the cells for this product
+                    row = table.createRow(12);
+                    cell = row.createCell(4, Integer.toString(productCount));
+                    cell = row.createCell(32, p.getProductNum()); // Product number
+                    cell = row.createCell(32, p.getDescription()); // Product description
+                    cell = row.createCell(32, String.valueOf(amount));
+                    productCount = productCount +  1;
+                }
+                y = table.draw() - lineSpace;
+                tableCount = tableCount + 1;
+            }
+            */
             cs.close();
         }catch (IOException e){
             NotificationManager.addExceptionError(e);
@@ -113,10 +167,52 @@ public class PDFCreator {
         document.addPage(page);
     }
 
+    private ArrayList<Recommendation> getRecommendation(HashMap<Product, Integer> products){
+        ArrayList<Recommendation> recommendations = new ArrayList<>();
+        HashMap<String, HashMap<Product, Integer>> productsPerSupplier = separateProductQuantityMapPerSupplier(products);
+        SupplierList sl = OrderTool.getSuppliers();
+
+        for (Map.Entry<String, HashMap<Product, Integer>> sEntry : productsPerSupplier.entrySet()) {
+            Recommendation recommendation = new Recommendation();
+            for(Map.Entry<String, Supplier> supplier : sl.getSuppliers().entrySet()){
+                if(sEntry.getKey().equals(supplier.getValue().getName())){
+                    recommendation.setSupplier(supplier.getValue());
+                }
+            }
+            recommendation.setCreationDate(LocalDateTime.now());
+            recommendation.setProductRecommendation(sEntry.getValue());
+            recommendations.add(recommendation);
+        }
+
+        /*
+        //check all known suppliers
+        for (Map.Entry<String, Supplier> sEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
+            HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
+            Iterator<Map.Entry<Product, Integer>> itP = products.entrySet().iterator();
+            while (itP.hasNext()) {
+                Map.Entry<Product, Integer> pEntry = itP.next();
+                if (sEntry.getValue().containsProduct(pEntry.getKey())) {
+                    ProductQuantityMap.put(pEntry.getKey(), pEntry.getValue());
+                    itP.remove();
+                }
+            }
+            recommendations.add(new Recommendation(LocalDateTime.now(), sEntry.getValue(),ProductQuantityMap));
+        }
+        if(!products.isEmpty()){
+            HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
+            for (Map.Entry<Product, Integer> productQuantityEntry : products.entrySet()) {
+                ProductQuantityMap.put(productQuantityEntry.getKey(), productQuantityEntry.getValue());
+            }
+            recommendations.add(new Recommendation(LocalDateTime.now(), null,ProductQuantityMap));
+        }
+*/
+        return recommendations;
+    }
+
     private HashMap<String, HashMap<Product, Integer>> separateProductQuantityMapPerSupplier(HashMap<Product, Integer> products){
         HashMap<String, HashMap<Product, Integer>> result = new HashMap<>();
         //check all known suppliers
-        for (Map.Entry<String, Supplier> sEntry : suppliers.getSuppliers().entrySet()) {
+        for (Map.Entry<String, Supplier> sEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
             HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
             Iterator<Map.Entry<Product, Integer>> itP = products.entrySet().iterator();
             while (itP.hasNext()) {
