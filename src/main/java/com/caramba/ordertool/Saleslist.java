@@ -45,7 +45,6 @@ public class Saleslist {
      */
     public Saleslist getSalesByProduct(String productID){
         Saleslist soldProducts = new Saleslist();
-
         for (Sale sale : this.sales) {
             if(sale.getProducts().containsKey(productID)){
                 Sale newSale = new Sale(sale.getDate());
@@ -64,6 +63,20 @@ public class Saleslist {
         Saleslist result = new Saleslist();
         for (Sale sale : this.sales) {
             if(sale.getDate().getYear() == year){
+                result.addToSalesList(sale);
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @return A new salelist with all the sales before the given year
+     */
+    public Saleslist getSalesBeforeYear(int year){
+        Saleslist result = new Saleslist();
+        for (Sale sale : this.sales) {
+            if(sale.getDate().getYear() < year){
                 result.addToSalesList(sale);
             }
         }
