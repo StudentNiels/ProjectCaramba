@@ -3,21 +3,21 @@ package com.caramba.ordertool;
 import java.util.ArrayList;
 
 public class RecommendationList {
-    private ArrayList<Recommendation> recommendationList;
+    private ArrayList<Recommendation> recommendations;
 
     public RecommendationList() {
-        this.recommendationList = new ArrayList<>();
+        this.recommendations = new ArrayList<>();
     }
 
     public void addRecommendation(Recommendation recommendation){
-        recommendationList.add(recommendation);
+        recommendations.add(recommendation);
     }
 
-    public ArrayList<Recommendation> getRecommendationList() {
-        return recommendationList;
+    public ArrayList<Recommendation> getRecommendations() {
+        return recommendations;
     }
 
-    public void setRecommendationList(ArrayList<Recommendation> recommendationList) {
-        this.recommendationList = recommendationList;
+    public void setRecommendations(ArrayList<Recommendation> recommendations) {
+        this.recommendations = recommendations;
     }
 }
