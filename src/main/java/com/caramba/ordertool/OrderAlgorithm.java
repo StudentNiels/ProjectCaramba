@@ -68,7 +68,8 @@ public class OrderAlgorithm {
             percentageSoldThisYear = percentageSoldThisYear + medianYear.getPercentageByMonthNumber(i);
         }if(percentageSoldThisYear != 0 || date.getYear() != Year.now().getValue()){
             //Finally we calculate the amount we expect to sell based on the percentage and the amount of units actually sold.
-            int totalExpectedToSellThisYear = Math.round(getTotalSoldInYear(productID, LocalDateTime.now().getYear()) / percentageSoldThisYear);
+            Saleslist sales = OrderTool.getSales();
+            int totalExpectedToSellThisYear = Math.round(sales.getTotalSoldInYear(productID, LocalDateTime.now().getYear()) / percentageSoldThisYear);
             return Math.round(totalExpectedToSellThisYear * medianYear.getPercentageByMonthNumber(date.getMonth().getValue()));
         }else{
             //If we sold 0 so far then we don't have any data to extrapolate on, so we assume the amount sold will be equal to that of the median year.
@@ -93,36 +94,6 @@ public class OrderAlgorithm {
             }
         }
         return  dateAmountMap;
-    }
-
-    /**
-     * @return How many of the product were sold in a certain year
-     */
-    public int getTotalSoldInYear(String productID, int year){
-        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
-        int totalSoldThisYear = 0;
-        for(Sale sale : salesList.getSales()){
-            int amount = sale.getAmountByID(productID);
-            if(sale.getDate().getYear() == year){
-                totalSoldThisYear = totalSoldThisYear + amount;
-            }
-        }
-        return  totalSoldThisYear;
-    }
-
-    /**
-     * @return How many of the product were sold in a certain yearMonth
-     */
-    public int getSoldInYearMonth(String productID, YearMonth date){
-        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
-        int SoldThisMonth = 0;
-        for(Sale sale : salesList.getSales()){
-            int amount = sale.getAmountByID(productID);
-            if(YearMonth.from(sale.getDate()).equals(date)){
-                SoldThisMonth = SoldThisMonth + amount;
-            }
-        }
-        return  SoldThisMonth;
     }
 
     /**

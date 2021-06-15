@@ -8,6 +8,7 @@ Wil ik: op basis van het seizoen, verkoop trends, geschatte levertijd en beschik
 Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 */
 
+import java.time.YearMonth;
 import java.util.ArrayList;
 
 public class Saleslist {
@@ -73,5 +74,35 @@ public class Saleslist {
             System.out.println(sale.getDate());
             sale.listProducts();
         }
+    }
+
+    /**
+     * @return How many of the product were sold in a certain year
+     */
+    public int getTotalSoldInYear(String productID, int year){
+        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
+        int totalSoldThisYear = 0;
+        for(Sale sale : salesList.getSales()){
+            int amount = sale.getAmountByID(productID);
+            if(sale.getDate().getYear() == year){
+                totalSoldThisYear = totalSoldThisYear + amount;
+            }
+        }
+        return  totalSoldThisYear;
+    }
+
+    /**
+     * @return How many of the product were sold in a certain yearMonth
+     */
+    public int getSoldInYearMonth(String productID, YearMonth date){
+        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
+        int SoldThisMonth = 0;
+        for(Sale sale : salesList.getSales()){
+            int amount = sale.getAmountByID(productID);
+            if(YearMonth.from(sale.getDate()).equals(date)){
+                SoldThisMonth = SoldThisMonth + amount;
+            }
+        }
+        return  SoldThisMonth;
     }
 }
