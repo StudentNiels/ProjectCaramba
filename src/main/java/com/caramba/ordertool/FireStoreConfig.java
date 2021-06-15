@@ -1,8 +1,6 @@
 package com.caramba.ordertool;
 
 import com.caramba.ordertool.notifications.NotificationManager;
-import com.caramba.ordertool.reports.MonthProductReport;
-import com.caramba.ordertool.reports.YearProductReport;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
@@ -15,9 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -327,27 +323,31 @@ public class FireStoreConfig {
     /**
      * @return The amount of products sold in a certain YearMonth according to the db
      */
-    public Integer getProductHistoryQuantity(String productId, YearMonth yearMonth){
+    public Map<YearMonth, Integer> getProductHistoryQuantity(String productId) {
         dbConnect();
-        ApiFuture<DocumentSnapshot> promise = db.collection("Products").document(productId).collection("History").document(String.valueOf(yearMonth.getYear())).collection("Months").document(yearMonth.getMonth().toString()).get();
-        DocumentSnapshot doc = null;
-        try {
-            doc = promise.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        assert doc != null;
-        if(doc.exists()) {
-            Long r = doc.getLong("quantity");
-            if (r != null) {
-                closeDb();
-                return Math.toIntExact(r);
+        //ApiFuture<DocumentSnapshot> promise = db.collection("Products").document(productId).collection("History").document(String.valueOf(yearMonth.getYear())).collection("Months").document(yearMonth.getMonth().toString()).get();
+        Map<YearMonth, Integer> result = new HashMap<>();
+        Iterable<DocumentReference> years = db.collection("Products").document(productId).collection("History").listDocuments();
+        for (DocumentReference yearDocReference : years) {
+            Iterable<DocumentReference> months = yearDocReference.collection("Months").listDocuments();
+            for (DocumentReference MonthDocReference : months) {
+                ApiFuture<DocumentSnapshot> promise = MonthDocReference.get();
+                try {
+                    DocumentSnapshot docSnapshot = promise.get();
+                    if (docSnapshot.exists()) {
+                        int month = Integer.parseInt(MonthDocReference.getId());
+                        int year = Integer.parseInt(yearDocReference.getId());
+                        Long quantity = docSnapshot.getLong("quantity");
+                        if(quantity != null) {
+                            result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
+                        }
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        closeDb();
-        return null;
+        return result;
     }
 
 
