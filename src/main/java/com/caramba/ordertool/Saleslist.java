@@ -81,7 +81,7 @@ public class Saleslist {
      * @return How many of the product were sold in a certain year
      */
     public int getTotalSoldInYear(String productID, int year){
-        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
+        Saleslist salesList = getSalesByProduct(productID);
         int totalSoldThisYear = 0;
         for(Sale sale : salesList.getSales()){
             int amount = sale.getAmountByID(productID);
@@ -96,7 +96,7 @@ public class Saleslist {
      * @return How many of the product were sold in a certain yearMonth
      */
     public int getSoldInYearMonth(String productID, YearMonth date){
-        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
+        Saleslist salesList = getSalesByProduct(productID);
         int SoldThisMonth = 0;
         for(Sale sale : salesList.getSales()){
             int amount = sale.getAmountByID(productID);
