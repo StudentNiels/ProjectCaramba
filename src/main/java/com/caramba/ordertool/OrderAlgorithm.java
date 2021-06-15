@@ -49,7 +49,7 @@ public class OrderAlgorithm {
             throw new InvalidParameterException("The given date is not in the future");
         }
 
-        HashMap<YearMonth, Integer> dateAmountMap = getDateAmountMap(productID);
+        HashMap<YearMonth, Integer> dateAmountMap = OrderTool.getSales().getDateAmountMap(productID);
         //this is what we think an average year looks like in terms of sales.
         //e.g.: in january we typically sell 10 units, in february we typically sell 5, ect.
         //the current year is not taken into account for a reason mentioned below
@@ -76,24 +76,6 @@ public class OrderAlgorithm {
             return medianYear.getByMonthNumber(date.getMonth().getValue());
         }
 
-    }
-
-    /**
-     * Looks trough the sales of the product and adds them up to the total sold per YearMonth
-     */
-    public HashMap<YearMonth, Integer> getDateAmountMap(String productID){
-        Saleslist salesList = OrderTool.getSales().getSalesByProduct(productID);
-        HashMap<YearMonth, Integer> dateAmountMap = new HashMap<>();
-        for(Sale sale : salesList.getSales()){
-            int amount = sale.getAmountByID(productID);
-            YearMonth yearMonth = YearMonth.from(sale.getDate());
-            if(dateAmountMap.containsKey(yearMonth)){
-                dateAmountMap.put(yearMonth, amount + dateAmountMap.get(yearMonth));
-            }else{
-                dateAmountMap.put(yearMonth, amount);
-            }
-        }
-        return  dateAmountMap;
     }
 
     /**

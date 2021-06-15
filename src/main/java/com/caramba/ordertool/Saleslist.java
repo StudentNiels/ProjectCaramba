@@ -10,6 +10,7 @@ Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Saleslist {
 
@@ -104,5 +105,23 @@ public class Saleslist {
             }
         }
         return  SoldThisMonth;
+    }
+
+    /**
+     * Looks trough the sales of the product and adds them up to the total sold per YearMonth
+     */
+    public HashMap<YearMonth, Integer> getDateAmountMap(String productID){
+        Saleslist salesList = getSalesByProduct(productID);
+        HashMap<YearMonth, Integer> dateAmountMap = new HashMap<>();
+        for(Sale sale : salesList.getSales()){
+            int amount = sale.getAmountByID(productID);
+            YearMonth yearMonth = YearMonth.from(sale.getDate());
+            if(dateAmountMap.containsKey(yearMonth)){
+                dateAmountMap.put(yearMonth, amount + dateAmountMap.get(yearMonth));
+            }else{
+                dateAmountMap.put(yearMonth, amount);
+            }
+        }
+        return  dateAmountMap;
     }
 }

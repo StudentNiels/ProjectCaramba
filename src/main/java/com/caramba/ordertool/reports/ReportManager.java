@@ -17,7 +17,7 @@ public class ReportManager {
     }
 
     public static void generateProductReport(String productId) {
-        MedianYear medianYear = orderAlgo.getMedianYear(orderAlgo.getDateAmountMap(productId));
+        MedianYear medianYear = orderAlgo.getMedianYear(OrderTool.getSales().getDateAmountMap(productId));
         YearProductReport result = new YearProductReport(Year.now(), medianYear, OrderTool.getProducts().get(productId));
         for (int i = 1; i <= 6; i++) {
             Saleslist sales = OrderTool.getSales();
