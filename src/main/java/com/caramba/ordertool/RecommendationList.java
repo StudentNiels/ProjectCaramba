@@ -20,4 +20,5 @@ public class RecommendationList {
     public void setRecommendations(ArrayList<Recommendation> recommendations) {
         this.recommendations = recommendations;
     }
+
 }

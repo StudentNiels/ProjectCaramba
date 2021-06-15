@@ -22,6 +22,8 @@ public class OrderTool extends javafx.application.Application {
     private static SupplierList suppliers = new SupplierList();
     //Keeps track of all known sales
     private static Saleslist sales = new Saleslist();
+
+    private static final RecommendationList recommendations = new RecommendationList();
     private static final FireStoreConfig config = new FireStoreConfig();
 
     public static void main(String[] args) {
@@ -46,7 +48,20 @@ public class OrderTool extends javafx.application.Application {
 
         //load from db
         OrderTool.loadFieldsFromDB();
-        //update the reports
+
+        //test for recommendations
+        Recommendation test = new Recommendation();
+        test.setSupplier(suppliers.get("4EnOt6bg2NC6Uj8t0qVR"));
+        test.addProductToRecommendation(products.get("QmuYT34bznQUAc3rN0Xa"), 4);
+        test.addProductToRecommendation(products.get("RgGAlJ7xZI0GbBt1FscH"), 10);
+        test.addProductToRecommendation(products.get("dTZiBgFEIVJY8XGhd08N"), 1);
+
+        Recommendation test2 = new Recommendation();
+        test2.setSupplier(suppliers.get("7OO9OpsX65LjPQpPzoBE"));
+        test2.addProductToRecommendation(products.get("nidDfiYlO2JbEb1JuCfu"), 40);
+        test2.addProductToRecommendation(products.get("mZBqigkeFLYYBy9gkQMh"), 30);
+        recommendations.addRecommendation(test);
+        recommendations.addRecommendation(test2);
         //send data to controllers
         viewController.update();
     }
@@ -69,6 +84,10 @@ public class OrderTool extends javafx.application.Application {
 
     public static Saleslist getSales() {
         return sales;
+    }
+
+    public static RecommendationList getRecommendations() {
+        return recommendations;
     }
 
     public static FireStoreConfig getConfig() {

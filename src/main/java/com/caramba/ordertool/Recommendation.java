@@ -13,23 +13,23 @@ public class Recommendation {
     private boolean confirmed;
 
     public Recommendation() {
-        this.creationDate = null;
+        this.creationDate = LocalDateTime.now();
         this.supplier = null;
         this.finalOrderDate = null;
         this.productRecommendation = new HashMap<>();
         this.confirmed = false;
     }
 
-    public Recommendation(LocalDateTime creationDate, Supplier supplier, HashMap<Product, Integer> productRecommendation) {
-        this.creationDate = creationDate;
+    public Recommendation(Supplier supplier, HashMap<Product, Integer> productRecommendation) {
+        this.creationDate = LocalDateTime.now();
         this.supplier = supplier;
         this.finalOrderDate = null;
         this.productRecommendation = productRecommendation;
         this.confirmed = false;
     }
 
-    public Recommendation(LocalDateTime creationDate, Supplier supplier, HashMap<Product, Integer> productRecommendation, boolean confirmed) {
-        this.creationDate = creationDate;
+    public Recommendation(Supplier supplier, HashMap<Product, Integer> productRecommendation, boolean confirmed) {
+        this.creationDate = LocalDateTime.now();
         this.supplier = supplier;
         this.finalOrderDate = null;
         this.productRecommendation = productRecommendation;

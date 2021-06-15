@@ -25,6 +25,7 @@ public class AppViewController implements Initializable, ViewController {
     public void update() {
         productOverviewController.update();
         suppliersController.update();
+        recommendedOrdersController.update();
     }
 
 }
