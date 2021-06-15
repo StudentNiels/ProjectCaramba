@@ -45,6 +45,12 @@ public class OrderAlgorithm {
      * @return The amount to order
      */
     public int getProjectedSaleAmount(String productID, YearMonth date){
+
+        //todo this should be fixed
+        // projected sales are currently based on a full calendar year (jan to dec)
+        //This means that we cannot currently project sales of future years, even if they are nearby
+        //(e.g. we can't project jan 2021 if we're in dec 2020)
+
         if(!date.isAfter(YearMonth.now())){
             throw new InvalidParameterException("The given date is not in the future");
         }

@@ -191,16 +191,22 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 }
 
                 //projected sales
-                if(lastSaleData != null){
-                    XYChart.Data<String, Integer> data = new XYChart.Data<>(lastSaleData.getXValue(), lastSaleData.getYValue());
-                    projectedSalesSeries.getData().add(data);
+                //todo this should be fixed
+                // projected sales are currently based on a full calendar year (jan to dec)
+                //This means that we cannot currently project sales of future years, even if they are nearby
+                //(e.g. we can't project jan 2021 if we're in dec 2020)
+                //until this is fixed projected sales should only show for the current year
+                if(selectedYear.equals(Year.now())){
+                    if (lastSaleData != null) {
+                        XYChart.Data<String, Integer> data = new XYChart.Data<>(lastSaleData.getXValue(), lastSaleData.getYValue());
+                        projectedSalesSeries.getData().add(data);
+                    }
+                    for (int m = LocalDate.now().getMonth().getValue() + 1; m <= 12; m++) {
+                        int amount = orderAlgo.getProjectedSaleAmount(productID, YearMonth.of(Year.now().getValue(), m));
+                        XYChart.Data<String, Integer> data = new XYChart.Data<>(Month.of(m).toString(), amount);
+                        projectedSalesSeries.getData().add(data);
+                    }
                 }
-                for(int m = LocalDate.now().getMonth().getValue() + 1; m <= 12; m++){
-                    int amount = orderAlgo.getProjectedSaleAmount(productID,YearMonth.of(Year.now().getValue(), m));
-                    XYChart.Data<String, Integer> data = new XYChart.Data<>(Month.of(m).toString(), amount);
-                    projectedSalesSeries.getData().add(data);
-                }
-
                 lineChartProductTimeLine.getData().add(medianYearSeries);
                 lineChartProductTimeLine.getData().add(projectedSalesSeries);
                 lineChartProductTimeLine.getData().add(quantitySoldSeries);
