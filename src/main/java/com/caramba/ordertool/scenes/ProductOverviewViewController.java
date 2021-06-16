@@ -107,36 +107,6 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
 
         tableProductOverview.setRowFactory(tableView -> {
-            /*final TableRow<DisplayProduct> row = new TableRow<>();
-            final ContextMenu contextMenuRow = new ContextMenu();
-
-            final MenuItem removeRowMenuItem = new MenuItem("Verwijderen");
-            removeRowMenuItem.setOnAction(event -> remove(row.getItem()));
-            final MenuItem editRowMenuItem = new MenuItem("Wijzigen");
-            editRowMenuItem.setOnAction(event -> edit(row.getItem()));
-            final MenuItem addRowMenuItem = new MenuItem("Toevoegen");
-            addRowMenuItem.setOnAction(event -> add());
-            final MenuItem updateRowMenuItem = new MenuItem("Verversen");
-            updateRowMenuItem.setOnAction(event -> update());
-
-            contextMenuRow.getItems().addAll(editRowMenuItem, removeRowMenuItem, addRowMenuItem, updateRowMenuItem);
-            //context options for clicking on an empty row
-            final ContextMenu contextMenu = new ContextMenu();
-
-            final MenuItem addMenuItem = new MenuItem("Toevoegen");
-            addMenuItem.setOnAction(event -> add());
-            final MenuItem updateMenuItem = new MenuItem("Verversen");
-            updateRowMenuItem.setOnAction(event -> update());
-
-            contextMenu.getItems().addAll(addMenuItem, updateMenuItem);
-            // Set context menu on row, but use a binding to make it only show for non-empty rows:
-            row.contextMenuProperty().bind(
-                    Bindings.when(row.emptyProperty())
-                            .then(contextMenu)
-                            .otherwise(contextMenuRow)
-            );
-            tableProductOverview.setContextMenu(contextMenu);(
-            return row;*/
             return new TableRow<>();
         });
 
@@ -168,36 +138,6 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
         }
         tableProductOverview.setItems(observableList);
-    }
-
-    private void remove(DisplayProduct displayProduct) {
-        ButtonType yesBtnType = new ButtonType("Verwijderen", ButtonBar.ButtonData.OK_DONE);
-        ButtonType noBtnType = new ButtonType("Annuleren", ButtonBar.ButtonData.CANCEL_CLOSE);
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Weet u zeker dat u " + displayProduct.getProductNum() + " " + displayProduct.getDescription() + " wilt verwijderen?", yesBtnType, noBtnType);
-        alert.showAndWait();
-        if (alert.getResult() == yesBtnType) {
-            ProductList productList = OrderTool.getProducts();
-            productList.remove(displayProduct.getInternalId());
-            update();
-        }
-    }
-
-    private void edit(DisplayProduct displayProduct) {
-        String internalId = displayProduct.getInternalId();
-        Product p = showEditDialog("Product wijzigen", "Wijzigen", displayProduct);
-        if (p != null) {
-            OrderTool.getProducts().remove(internalId);
-            OrderTool.getProducts().add(internalId, p);
-            update();
-        }
-    }
-
-    private void add() {
-        Product p = showEditDialog("Nieuw product toevoegen", "Toevoegen", null);
-        if (p != null) {
-            OrderTool.getProducts().add(p);
-            update();
-        }
     }
 
     private void showChart() {
@@ -317,44 +257,6 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             }
 
         }
-    }
-
-    private Product showEditDialog(String title, String buttonText, DisplayProduct placeholder) {
-        Dialog<Product> dialog = new Dialog<>();
-        dialog.setTitle(title);
-        dialog.setHeaderText(title);
-        ButtonType confirmButtonType = new ButtonType(buttonText, ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField productNumTextField = new TextField();
-        productNumTextField.setPromptText("Artiekel nummer");
-        TextField productDescriptionTextField = new TextField();
-        productDescriptionTextField.setPromptText("Beschrijving");
-
-        grid.add(new Label("Artiekel nummer"), 0, 0);
-        grid.add(productNumTextField, 1, 0);
-        grid.add(new Label("Beschrijving"), 0, 1);
-        grid.add(productDescriptionTextField, 1, 1);
-
-        if (placeholder != null) {
-            productNumTextField.setText(placeholder.getProductNum());
-        }
-
-        dialog.getDialogPane().setContent(grid);
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == confirmButtonType) {
-                return new Product(productNumTextField.getText(), productDescriptionTextField.getText());
-            }
-            return null;
-        });
-
-        Optional<Product> result = dialog.showAndWait();
-        return result.orElse(null);
     }
 
     public class DisplayProduct {
