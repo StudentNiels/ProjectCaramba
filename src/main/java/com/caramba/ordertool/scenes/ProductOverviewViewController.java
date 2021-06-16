@@ -2,30 +2,25 @@ package com.caramba.ordertool.scenes;
 
 import com.caramba.ordertool.*;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
+import org.apache.poi.ss.formula.functions.T;
 
+import javax.annotation.Nonnull;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ProductOverviewViewController implements Initializable, ViewController {
@@ -80,6 +75,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
 
     private DisplayProduct selectedProduct = null;
+    private Year selectedYear = null;
+    private OrderAlgorithm orderAlgo = new OrderAlgorithm();
 
     private final static String MONTH_NAME[] = { "jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec" };
 
@@ -113,7 +110,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         tableProductOverview.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 selectedProduct = tableProductOverview.getSelectionModel().getSelectedItem();
-                showChart();
+                updateProductData();
             }
         });
 
@@ -124,11 +121,13 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         comboYearSelector.getSelectionModel().select(Year.now());
 
         comboYearSelector.setOnAction((ActionEvent event) -> {
-            showChart();
+            updateProductData();
         });
     }
 
     public void update() {
+        //Product List
+        //Load products and create display products
         ProductList productList = OrderTool.getProducts();
         ObservableList<DisplayProduct> observableList = FXCollections.observableArrayList();
         for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
@@ -137,126 +136,126 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             SupplierList sl = OrderTool.getSuppliers();
             observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
         }
+        //add them to the overview list
         tableProductOverview.setItems(observableList);
+
+        //Product Details
+        updateProductData();
     }
 
-    private void showChart() {
-        if (selectedProduct != null) {
-            String productID = selectedProduct.getInternalId();
-            OrderAlgorithm orderAlgo = new OrderAlgorithm();
+    /**
+     *Shows the median sales per month of the selected year
+     */
+    private ProductDetailsTableData getMedianYearData(String displayName, String productID, Year year, boolean selectedByDefault){
+        //median year based on sales before the selected year
+        Saleslist previousSales = OrderTool.getSales().getSalesBeforeYear(year.getValue());
+        MedianYear my = orderAlgo.getMedianYear(previousSales.getDateAmountMap(productID));
+        if(my != null) {
+            ProductDetailsTableData medianYearTableData = new ProductDetailsTableData(displayName);
+            //this series is selected by default
+            medianYearTableData.getCheckboxToggleVisible().setSelected(true);
+            for (int i = 1; i <= 12; i++) {
+                int amount = my.getByMonthNumber(i);
+                medianYearTableData.setValue(i, amount);
+            }
+            medianYearTableData.getCheckboxToggleVisible().setSelected(selectedByDefault);
+            return medianYearTableData;
+        }
+        return null;
+    }
 
-            //clear chart
-            lineChartProductTimeLine.getData().clear();
+    /**
+     *Shows the sales in the given year
+     */
+    private ProductDetailsTableData getSalesData(String displayName, String productID, Year year, boolean selectedByDefault){
+        ProductDetailsTableData salesTableData = new ProductDetailsTableData(displayName);
+        Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
+        for (int i = 1; i <= 12; i++) {
+            YearMonth date = YearMonth.of(year.getValue(), i);
+            //do not add data for the future
+            if(!date.isAfter(YearMonth.now())){
+                int amount = sales.getSoldInYearMonth(productID, date);
+                salesTableData.setValue(i, amount);
+            }
+        }
+        salesTableData.getCheckboxToggleVisible().setSelected(selectedByDefault);
+        return salesTableData;
+    }
+
+    /**
+     *Shows the amount of projected Sales in the selected year
+     */
+    private ProductDetailsTableData getProjectedSalesData(String displayName, String productID, Year year, boolean selectedByDefault){
+        //todo this should be fixed
+        // projected sales are currently based on a full calendar year (jan to dec), so we can only show projected sales of the current year
+        ProductDetailsTableData projectedSalesTableData = new ProductDetailsTableData(displayName);
+        if(selectedYear.equals(Year.now())){
+            for (int m = LocalDate.now().getMonth().getValue() + 1; m <= 12; m++) {
+                int amount = orderAlgo.getProjectedSaleAmount(productID, YearMonth.of(year.getValue(), m));
+                projectedSalesTableData.setValue(m, amount);
+            }
+        }
+        projectedSalesTableData.getCheckboxToggleVisible().setSelected(selectedByDefault);
+        return projectedSalesTableData;
+    }
+
+    /**
+     * Converts table data to an XYseries that can be displayed in the chart
+     */
+    private @Nonnull XYChart.Series<String, Integer> convertToChartSeries(ProductDetailsTableData productDetailsTableData){
+        XYChart.Series<String, Integer> result = new XYChart.Series<>();
+        for(int i = 1; i <= 12; i++){
+            Integer value = productDetailsTableData.getMonthValue(i);
+            if(value != null){
+                result.getData().add(new XYChart.Data<>(MONTH_NAME[i - 1], value));
+            }
+        }
+        result.setName(productDetailsTableData.getName());
+        return result;
+    }
+
+    private void updateProductData(){
+        selectedYear = comboYearSelector.getValue();
+        if (selectedProduct != null && selectedYear != null) {
+            String productID = selectedProduct.getInternalId();
 
             //create the observableList for the table
             ObservableList<ProductDetailsTableData> tableData = FXCollections.observableArrayList();
 
+            //add the data
+            tableData.add(getMedianYearData("Mediaan verkopen per maand", productID, selectedYear, true));
+            tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true));
+            tableData.add(getProjectedSalesData("Verwachte verkoop", productID, selectedYear, true));
+            tableData.add(getSalesData("Verkopen afeglopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false));
 
-            if (comboYearSelector.getValue() != null) {
-                Year selectedYear = comboYearSelector.getValue();
-                //sales series
-                XYChart.Series<String, Integer> quantitySoldSeries = new XYChart.Series<>();
-                quantitySoldSeries.setName("Verkopen");
-                //median year series
-                XYChart.Series<String, Integer> medianYearSeries = new XYChart.Series<>();
-                medianYearSeries.setName("Mediaan verkopen per maand");
-                //projected sales series
-                XYChart.Series<String, Integer> projectedSalesSeries = new XYChart.Series<>();
-                projectedSalesSeries.setName("Verwachte verkopen");
-                //sales last year series
-                XYChart.Series<String, Integer> salesLastYearSeries = new XYChart.Series<>();
-                salesLastYearSeries.setName("Verkopen afgelopen jaar");
+            //update the table
+            tableProductDetails.getItems().clear();
+            tableProductDetails.setItems(tableData);
 
-                //median year based on sales before the selected year
-                Saleslist previousSales = OrderTool.getSales().getSalesBeforeYear(selectedYear.getValue());
-                MedianYear my = orderAlgo.getMedianYear(previousSales.getDateAmountMap(productID));
-                if(my != null) {
-                    ProductDetailsTableData medianYearTableData = new ProductDetailsTableData(medianYearSeries.getName());
-                    //this series is selected by default
-                    medianYearTableData.getCheckboxToggleVisible().setSelected(true);
-                    for (int i = 1; i <= 12; i++) {
-                        int amount = my.getByMonthNumber(i);
-                        XYChart.Data<String, Integer> data = new XYChart.Data<>(MONTH_NAME[i - 1], amount);
-                        medianYearSeries.getData().add(data);
-                        medianYearTableData.setValue(i, amount);
-                    }
-                    tableData.add(medianYearTableData);
-                }
-
-                //sales
-                ProductDetailsTableData salesTableData = new ProductDetailsTableData(quantitySoldSeries.getName());
-                //this series is selected by default
-                salesTableData.getCheckboxToggleVisible().setSelected(true);
-                Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
-                XYChart.Data<String, Integer> lastSaleData = null;
-                for (int i = 1; i <= 12; i++) {
-                    YearMonth date = YearMonth.of(selectedYear.getValue(), i);
-                    //do not add data for the future
-                    if(!date.isAfter(YearMonth.now())){
-                        String m = MONTH_NAME[i - 1];
-                        int amount = sales.getSoldInYearMonth(productID, date);
-                        XYChart.Data<String, Integer> data = new XYChart.Data<>(m, amount);
-                        quantitySoldSeries.getData().add(data);
-                        lastSaleData = data;
-                        salesTableData.setValue(i, amount);
-                    }
-                }
-                tableData.add(salesTableData);
-
-                //projected sales
-                //todo this should be fixed
-                // projected sales are currently based on a full calendar year (jan to dec)
-                //This means that we cannot currently project sales of future years, even if they are nearby
-                //(e.g. we can't project jan 2021 if we're in dec 2020)
-                //until this is fixed projected sales should only show for the current year
-                if(selectedYear.equals(Year.now())){
-                    ProductDetailsTableData projectedSalesTableData = new ProductDetailsTableData(projectedSalesSeries.getName());
-                    //this series is selected by default
-                    projectedSalesTableData.getCheckboxToggleVisible().setSelected(true);
-                    if (lastSaleData != null) {
-                        XYChart.Data<String, Integer> data = new XYChart.Data<>(lastSaleData.getXValue(), lastSaleData.getYValue());
-                        projectedSalesSeries.getData().add(data);
-                    }
-                    for (int m = LocalDate.now().getMonth().getValue() + 1; m <= 12; m++) {
-                        int amount = orderAlgo.getProjectedSaleAmount(productID, YearMonth.of(Year.now().getValue(), m));
-                        XYChart.Data<String, Integer> data = new XYChart.Data<>(MONTH_NAME[m - 1], amount);
-                        projectedSalesSeries.getData().add(data);
-                        projectedSalesTableData.setValue(m, amount);
-                    }
-                    tableData.add(projectedSalesTableData);
-                }
-
-                //Last year sales
-                Year lastYear = selectedYear.minusYears(1);
-                ProductDetailsTableData lastYearSalesTableData = new ProductDetailsTableData(salesLastYearSeries.getName());
-                Saleslist salesLastYear = sales.getSalesByYear(lastYear.getValue());
-                for (int i = 1; i <= 12; i++) {
-                    YearMonth date = YearMonth.of(lastYear.getValue(), i);
-                    String m = MONTH_NAME[i - 1];
-                    int amount = salesLastYear.getSoldInYearMonth(productID, date);
-                    XYChart.Data<String, Integer> data = new XYChart.Data<>(m, amount);
-                    salesLastYearSeries.getData().add(data);
-                    lastYearSalesTableData.setValue(i, amount);
-                }
-                tableData.add(lastYearSalesTableData);
-
-
-                //add the series to the chart
-                lineChartProductTimeLine.getData().add(medianYearSeries);
-                lineChartProductTimeLine.getData().add(projectedSalesSeries);
-                lineChartProductTimeLine.getData().add(quantitySoldSeries);
-                lineChartProductTimeLine.getData().add(salesLastYearSeries);
-
-                //set the style
-                lineChartProductTimeLine.setStyle("CHART_COLOR_1: #33ccff ; CHART_COLOR_2: #64b000 ; CHART_COLOR_3: #00b80c;");
-                projectedSalesSeries.getNode().setStyle("-fx-stroke-dash-array: 2 12 12 2;");
-
-                //update the table
-                tableProductDetails.getItems().clear();
-                tableProductDetails.setItems(tableData);
-            }
-
+            //update the chart
+            updateChart();
         }
+    }
+
+    private void updateChart(){
+        //clear chart
+        lineChartProductTimeLine.getData().clear();
+
+        //get the data from the table
+        ObservableList<ProductDetailsTableData> tableData = tableProductDetails.getItems();
+        for (ProductDetailsTableData ProductDetailsTableData : tableData) {
+            //only display selected data
+            if(ProductDetailsTableData.getCheckboxToggleVisible().isSelected()){
+                XYChart.Series<String, Integer> series = convertToChartSeries(ProductDetailsTableData);
+                lineChartProductTimeLine.getData().add(series);
+                if(series.getName() != null && series.getName().equals("Verwachte verkoop")) {
+                    //projected sales line needs to be dashed
+                    series.getNode().setStyle("-fx-stroke-dash-array: 2 12 12 2;");
+                }
+            }
+        }
+        //set the line colors
+        lineChartProductTimeLine.setStyle("CHART_COLOR_1: #33ccff ; CHART_COLOR_2: #64b000 ; CHART_COLOR_3: #00b80c;");
     }
 
     public class DisplayProduct {
@@ -313,6 +312,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     public class ProductDetailsTableData{
         private final CheckBox checkboxToggleVisible = new CheckBox();
         private final String name;
+        //the values need to be stored in separate fields like this in order for javafx to place them in a table
         private  Integer janValue;
         private  Integer febValue;
         private  Integer marValue;
@@ -328,6 +328,37 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
         public ProductDetailsTableData(String name) {
             this.name = name;
+        }
+
+        public Integer getMonthValue(int monthNumber){
+            switch (monthNumber){
+                case 1:
+                    return janValue;
+                case 2:
+                    return febValue;
+                case 3:
+                    return marValue;
+                case 4:
+                    return aprValue;
+                case 5:
+                    return mayValue;
+                case 6:
+                    return junValue;
+                case 7:
+                    return julValue;
+                case 8:
+                    return augValue;
+                case 9:
+                    return septValue;
+                case 10:
+                    return octValue;
+                case 11:
+                    return novValue;
+                case 12:
+                    return decValue;
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
 
         public Integer getJanValue() {
