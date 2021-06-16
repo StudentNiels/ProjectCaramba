@@ -99,7 +99,8 @@
             </LineChart>
             <TableView fx:id="tableProductDetails">
               <columns>
-                <TableColumn fx:id="colProductDetailsName" prefWidth="175.0" text="Gegeven" />
+                  <TableColumn fx:id="colProductDetailsVisible" prefWidth="60.0" text="Zichtbaar" />
+                <TableColumn fx:id="colProductDetailsName" prefWidth="190.0" text="Gegeven" />
                 <TableColumn fx:id="colProductDetailsJan" prefWidth="50.0" text="jan" />
                   <TableColumn fx:id="colProductDetailsFeb" prefWidth="50.0" text="feb" />
                   <TableColumn fx:id="colProductDetailsMar" prefWidth="50.0" text="mrt" />

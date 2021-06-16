@@ -46,6 +46,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
     @FXML
     private TableView<ProductDetailsTableData> tableProductDetails;
+
+    @FXML
+    private TableColumn<ProductDetailsTableData, CheckBox> colProductDetailsVisible;
     @FXML
     private TableColumn<ProductDetailsTableData, String> colProductDetailsName;
     @FXML
@@ -87,7 +90,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         colProductStock.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         colProductSuppliers.setCellValueFactory(new PropertyValueFactory<>("supplierNames"));
 
-
+        colProductDetailsVisible.setCellValueFactory(new PropertyValueFactory<>("checkboxToggleVisible"));
         colProductDetailsName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colProductDetailsJan.setCellValueFactory(new PropertyValueFactory<>("janValue"));
         colProductDetailsFeb.setCellValueFactory(new PropertyValueFactory<>("febValue"));
@@ -229,6 +232,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 MedianYear my = orderAlgo.getMedianYear(previousSales.getDateAmountMap(productID));
                 if(my != null) {
                     ProductDetailsTableData medianYearTableData = new ProductDetailsTableData(medianYearSeries.getName());
+                    //this series is selected by default
+                    medianYearTableData.getCheckboxToggleVisible().setSelected(true);
                     for (int i = 1; i <= 12; i++) {
                         int amount = my.getByMonthNumber(i);
                         XYChart.Data<String, Integer> data = new XYChart.Data<>(MONTH_NAME[i - 1], amount);
@@ -240,6 +245,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
                 //sales
                 ProductDetailsTableData salesTableData = new ProductDetailsTableData(quantitySoldSeries.getName());
+                //this series is selected by default
+                salesTableData.getCheckboxToggleVisible().setSelected(true);
                 Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
                 XYChart.Data<String, Integer> lastSaleData = null;
                 for (int i = 1; i <= 12; i++) {
@@ -264,6 +271,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 //until this is fixed projected sales should only show for the current year
                 if(selectedYear.equals(Year.now())){
                     ProductDetailsTableData projectedSalesTableData = new ProductDetailsTableData(projectedSalesSeries.getName());
+                    //this series is selected by default
+                    projectedSalesTableData.getCheckboxToggleVisible().setSelected(true);
                     if (lastSaleData != null) {
                         XYChart.Data<String, Integer> data = new XYChart.Data<>(lastSaleData.getXValue(), lastSaleData.getYValue());
                         projectedSalesSeries.getData().add(data);
@@ -400,6 +409,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         }
     }
     public class ProductDetailsTableData{
+        private final CheckBox checkboxToggleVisible = new CheckBox();
         private final String name;
         private  Integer janValue;
         private  Integer febValue;
@@ -468,6 +478,10 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
         public String getName() {
             return name;
+        }
+
+        public CheckBox getCheckboxToggleVisible() {
+            return checkboxToggleVisible;
         }
 
         public void setValue(int monthToSet, Integer value){
