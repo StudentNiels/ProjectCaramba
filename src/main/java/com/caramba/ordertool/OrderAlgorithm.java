@@ -46,6 +46,26 @@ public class OrderAlgorithm {
     }
 
     /**
+     * What is the average sold products for the last 12 months
+     */
+    public int getAverageSoldLast12Months(String productID) {
+        Saleslist saleslist = OrderTool.getSales().getSalesByProduct(productID);
+
+        int averageSoldLast12Months = 0;
+        for (Sale sale : saleslist.getSales()) {
+            int amount = sale.getAmountByID(productID);
+
+            for (int i = 0; i < 12; i++) {
+                if(YearMonth.from(sale.getDate()).equals(YearMonth.now().minusMonths(i))){
+                    averageSoldLast12Months = averageSoldLast12Months + amount;
+                }
+            }
+        }
+        averageSoldLast12Months = averageSoldLast12Months / 12;
+        return averageSoldLast12Months;
+    }
+
+    /**
      * Calculates how many units of a certain product is expected to be sold in the given month
      * based on the median of sales per month on record.
      * @param productID The uuid of the product to check
