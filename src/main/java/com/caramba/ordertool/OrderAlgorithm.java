@@ -33,7 +33,15 @@ public class OrderAlgorithm {
      */
     public int RecommendOrderAmount(String productID, YearMonth date){
         Product p = OrderTool.getProducts().get(productID);
-        int result = getProjectedSaleAmount(productID, date) - p.getQuantity();
+        int minStock = getAverageSoldLast12Months(productID);
+        int projectedSales = getProjectedSaleAmount(productID, date);
+        int currentStock = p.getQuantity();
+        int result;
+        if (minStock > projectedSales){
+            result = minStock - currentStock;
+        }else{
+            result = projectedSales - currentStock;
+        }
         return Math.max(result, 0);
     }
 
