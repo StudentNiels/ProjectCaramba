@@ -1,7 +1,6 @@
 package com.caramba.ordertool.scenes;
 
 import com.caramba.ordertool.*;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,13 +12,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import org.apache.poi.ss.formula.functions.T;
 
 import javax.annotation.Nonnull;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -146,12 +145,12 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     /**
      *Shows the median sales per month of the selected year
      */
-    private ProductDetailsTableData getMedianYearData(String displayName, String productID, Year year, boolean selectedByDefault){
+    private ProductDetailsTableData getMedianYearData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
         //median year based on sales before the selected year
         Saleslist previousSales = OrderTool.getSales().getSalesBeforeYear(year.getValue());
         MedianYear my = orderAlgo.getMedianYear(previousSales.getDateAmountMap(productID));
         if(my != null) {
-            ProductDetailsTableData medianYearTableData = new ProductDetailsTableData(displayName);
+            ProductDetailsTableData medianYearTableData = createProductDetailsTableData(displayName, color, isDashed);
             //this series is selected by default
             medianYearTableData.getCheckboxToggleVisible().setSelected(true);
             for (int i = 1; i <= 12; i++) {
@@ -167,8 +166,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     /**
      *Shows the sales in the given year
      */
-    private ProductDetailsTableData getSalesData(String displayName, String productID, Year year, boolean selectedByDefault){
-        ProductDetailsTableData salesTableData = new ProductDetailsTableData(displayName);
+    private ProductDetailsTableData getSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
+        ProductDetailsTableData salesTableData = createProductDetailsTableData(displayName, color, isDashed);
         Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
         for (int i = 1; i <= 12; i++) {
             YearMonth date = YearMonth.of(year.getValue(), i);
@@ -185,10 +184,10 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     /**
      *Shows the amount of projected Sales in the selected year
      */
-    private ProductDetailsTableData getProjectedSalesData(String displayName, String productID, Year year, boolean selectedByDefault){
+    private ProductDetailsTableData getProjectedSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
         //todo this should be fixed
         // projected sales are currently based on a full calendar year (jan to dec), so we can only show projected sales of the current year
-        ProductDetailsTableData projectedSalesTableData = new ProductDetailsTableData(displayName);
+        ProductDetailsTableData projectedSalesTableData = createProductDetailsTableData(displayName, color, isDashed);
         if(selectedYear.equals(Year.now())){
             for (int m = LocalDate.now().getMonth().getValue() + 1; m <= 12; m++) {
                 int amount = orderAlgo.getProjectedSaleAmount(productID, YearMonth.of(year.getValue(), m));
@@ -223,10 +222,10 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             ObservableList<ProductDetailsTableData> tableData = FXCollections.observableArrayList();
 
             //add the data
-            tableData.add(getMedianYearData("Mediaan verkopen per maand", productID, selectedYear, true));
-            tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true));
-            tableData.add(getProjectedSalesData("Verwachte verkoop", productID, selectedYear, true));
-            tableData.add(getSalesData("Verkopen afeglopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false));
+            tableData.add(getMedianYearData("Mediaan verkopen per maand", productID, selectedYear, true, "#33ccff", false));
+            tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true,"#64b000", false));
+            tableData.add(getProjectedSalesData("Verwachte verkoop", productID, selectedYear, true, "#eb4034", true));
+            tableData.add(getSalesData("Verkopen afeglopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false, "#009917", false));
 
             //update the table
             tableProductDetails.getItems().clear();
@@ -240,22 +239,40 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     private void updateChart(){
         //clear chart
         lineChartProductTimeLine.getData().clear();
-
         //get the data from the table
         ObservableList<ProductDetailsTableData> tableData = tableProductDetails.getItems();
+        ArrayList<String> colorOrder = new ArrayList();
         for (ProductDetailsTableData ProductDetailsTableData : tableData) {
             //only display selected data
             if(ProductDetailsTableData.getCheckboxToggleVisible().isSelected()){
                 XYChart.Series<String, Integer> series = convertToChartSeries(ProductDetailsTableData);
                 lineChartProductTimeLine.getData().add(series);
-                if(series.getName() != null && series.getName().equals("Verwachte verkoop")) {
-                    //projected sales line needs to be dashed
+                String color = ProductDetailsTableData.getColor();
+                if(color != null){
+                    colorOrder.add(color);
+                }
+                if(ProductDetailsTableData.hasDashedLine) {
                     series.getNode().setStyle("-fx-stroke-dash-array: 2 12 12 2;");
                 }
             }
         }
         //set the line colors
-        lineChartProductTimeLine.setStyle("CHART_COLOR_1: #33ccff ; CHART_COLOR_2: #64b000 ; CHART_COLOR_3: #00b80c;");
+        String styleString = "";
+        for(int i = 1; i <= colorOrder.size(); i++){
+            styleString = styleString + "CHART_COLOR_" + i + ": " + colorOrder.get(i - 1) + ";";
+        }
+        if(!styleString.isEmpty()){
+            lineChartProductTimeLine.setStyle(styleString);
+        }
+        //lineChartProductTimeLine.setStyle("CHART_COLOR_1: #33ccff ; CHART_COLOR_2: #64b000 ; CHART_COLOR_3: #00b80c;");
+    }
+
+    private ProductDetailsTableData createProductDetailsTableData(String displayName, String color, boolean isDashed){
+        CheckBox checkBox = new CheckBox();
+        checkBox.setOnAction((ActionEvent event) -> {
+            updateChart();
+        });
+        return new ProductDetailsTableData(displayName, checkBox, color, isDashed);
     }
 
     public class DisplayProduct {
@@ -310,7 +327,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         }
     }
     public class ProductDetailsTableData{
-        private final CheckBox checkboxToggleVisible = new CheckBox();
+        private final CheckBox checkboxToggleVisible;
         private final String name;
         //the values need to be stored in separate fields like this in order for javafx to place them in a table
         private  Integer janValue;
@@ -325,9 +342,15 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         private  Integer octValue;
         private  Integer novValue;
         private  Integer decValue;
+        //style
+        private String color;
+        private boolean hasDashedLine;
 
-        public ProductDetailsTableData(String name) {
+        public ProductDetailsTableData(String name, CheckBox checkBox, String color, Boolean hasDashedLine) {
             this.name = name;
+            this.checkboxToggleVisible = checkBox;
+            this.color = color;
+            this.hasDashedLine = hasDashedLine;
         }
 
         public Integer getMonthValue(int monthNumber){
@@ -415,6 +438,14 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
         public CheckBox getCheckboxToggleVisible() {
             return checkboxToggleVisible;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public boolean isHasDashedLine() {
+            return hasDashedLine;
         }
 
         public void setValue(int monthToSet, Integer value){
