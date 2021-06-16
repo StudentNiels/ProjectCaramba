@@ -14,6 +14,8 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -73,7 +75,13 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     @FXML
     private TableColumn<ProductDetailsTableData, Integer> colProductDetailsDec;
 
-
+    @FXML
+    private TextField search_bar;
+    @FXML
+    private Button search_button;
+    @FXML
+    private Button reset_button;
+    private String search_value = "";
 
 
     private DisplayProduct selectedProduct = null;
@@ -144,6 +152,28 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             }
         });
 
+        search_bar.setOnKeyPressed((KeyEvent keyEvent) -> {
+            if(keyEvent.getCode().equals(KeyCode.ENTER)){
+                search_value = search_bar.getCharacters().toString().toLowerCase();
+                update();
+            }
+        });
+
+        search_button.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                search_value = search_bar.getCharacters().toString().toLowerCase();
+                update();
+            }
+        });
+
+        reset_button.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                search_value = "";
+                search_bar.clear();
+                update();
+            }
+        });
+
         //create year selector
         for(int y = LocalDate.now().plusYears(1).getYear(); y >= 1900; y--){
             comboYearSelector.getItems().add(Year.of(y));
@@ -158,11 +188,22 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     public void update() {
         ProductList productList = OrderTool.getProducts();
         ObservableList<DisplayProduct> observableList = FXCollections.observableArrayList();
-        for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
-            String k = entry.getKey();
-            Product p = entry.getValue();
-            SupplierList sl = OrderTool.getSuppliers();
-            observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
+        if(search_value.equals("")){
+            for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
+                String k = entry.getKey();
+                Product p = entry.getValue();
+                SupplierList sl = OrderTool.getSuppliers();
+                observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
+            }
+        }else{
+            for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
+                String k = entry.getKey();
+                Product p = entry.getValue();
+                SupplierList sl = OrderTool.getSuppliers();
+                if(p.getDescription().toLowerCase().contains(search_value) || p.getProductNum().toLowerCase().contains(search_value)){
+                    observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
+                }
+            }
         }
         tableProductOverview.setItems(observableList);
     }
