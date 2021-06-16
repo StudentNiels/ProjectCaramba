@@ -89,6 +89,8 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 table.getColumns().add(colProductDescription);
                 table.getColumns().add(colAmount);
 
+
+
                 ObservableList<productQuantityPair> quantityPairs = FXCollections.observableArrayList();
                 for (Map.Entry<Product, Integer> entry : recommendation.getProductRecommendation().entrySet()) {
                     Product k = entry.getKey();

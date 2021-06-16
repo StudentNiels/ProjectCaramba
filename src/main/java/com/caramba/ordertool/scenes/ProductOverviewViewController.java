@@ -211,12 +211,18 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
             if (comboYearSelector.getValue() != null) {
                 Year selectedYear = comboYearSelector.getValue();
+                //sales series
                 XYChart.Series<String, Integer> quantitySoldSeries = new XYChart.Series<>();
                 quantitySoldSeries.setName("Verkopen");
+                //median year series
                 XYChart.Series<String, Integer> medianYearSeries = new XYChart.Series<>();
                 medianYearSeries.setName("Mediaan verkopen per maand");
+                //projected sales series
                 XYChart.Series<String, Integer> projectedSalesSeries = new XYChart.Series<>();
                 projectedSalesSeries.setName("Verwachte verkopen");
+                //sales last year series
+                XYChart.Series<String, Integer> salesLastYearSeries = new XYChart.Series<>();
+                salesLastYearSeries.setName("Verkopen afgelopen jaar");
 
                 //median year based on sales before the selected year
                 Saleslist previousSales = OrderTool.getSales().getSalesBeforeYear(selectedYear.getValue());
@@ -270,10 +276,29 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                     }
                     tableData.add(projectedSalesTableData);
                 }
+
+                //Last year sales
+                Year lastYear = selectedYear.minusYears(1);
+                ProductDetailsTableData lastYearSalesTableData = new ProductDetailsTableData(salesLastYearSeries.getName());
+                Saleslist salesLastYear = sales.getSalesByYear(lastYear.getValue());
+                for (int i = 1; i <= 12; i++) {
+                    YearMonth date = YearMonth.of(lastYear.getValue(), i);
+                    String m = MONTH_NAME[i - 1];
+                    int amount = salesLastYear.getSoldInYearMonth(productID, date);
+                    XYChart.Data<String, Integer> data = new XYChart.Data<>(m, amount);
+                    salesLastYearSeries.getData().add(data);
+                    lastYearSalesTableData.setValue(i, amount);
+                }
+                tableData.add(lastYearSalesTableData);
+
+
+                //add the series to the chart
                 lineChartProductTimeLine.getData().add(medianYearSeries);
                 lineChartProductTimeLine.getData().add(projectedSalesSeries);
                 lineChartProductTimeLine.getData().add(quantitySoldSeries);
+                lineChartProductTimeLine.getData().add(salesLastYearSeries);
 
+                //set the style
                 lineChartProductTimeLine.setStyle("CHART_COLOR_1: #33ccff ; CHART_COLOR_2: #64b000 ; CHART_COLOR_3: #00b80c;");
                 projectedSalesSeries.getNode().setStyle("-fx-stroke-dash-array: 2 12 12 2;");
 
