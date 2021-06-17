@@ -146,9 +146,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      *Shows the median sales per month of the selected year
      */
     private ProductDetailsTableData getMedianYearData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
-        //median year based on sales before the selected year
-        Saleslist previousSales = OrderTool.getSales().getSalesBeforeYear(year.getValue());
-        MedianYear my = orderAlgo.getMedianYear(previousSales.getDateAmountMap(productID));
+        MedianYear my = orderAlgo.getMedianYear(OrderTool.getSales().getDateAmountMap(productID));
         if(my != null) {
             ProductDetailsTableData medianYearTableData = createProductDetailsTableData(displayName, color, isDashed);
             //this series is selected by default
