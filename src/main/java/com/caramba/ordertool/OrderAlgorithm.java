@@ -151,21 +151,19 @@ public class OrderAlgorithm {
         ArrayList<Integer> novemberAmount   = new ArrayList<>();
         ArrayList<Integer> decemberAmount   = new ArrayList<>();
         for (Map.Entry<YearMonth, Integer> entry : dateAmountList.entrySet()) {
-            if(entry.getKey().getYear() != LocalDate.now().getYear()) {
-                switch (entry.getKey().getMonth()) {
-                    case JANUARY -> januaryAmount.add(entry.getValue());
-                    case FEBRUARY -> februaryAmount.add(entry.getValue());
-                    case MARCH -> marchAmount.add(entry.getValue());
-                    case APRIL -> aprilAmount.add(entry.getValue());
-                    case MAY -> mayAmount.add(entry.getValue());
-                    case JUNE -> juneAmount.add(entry.getValue());
-                    case JULY -> julyAmount.add(entry.getValue());
-                    case AUGUST -> augustAmount.add(entry.getValue());
-                    case SEPTEMBER -> septemberAmount.add(entry.getValue());
-                    case OCTOBER -> octoberAmount.add(entry.getValue());
-                    case NOVEMBER -> novemberAmount.add(entry.getValue());
-                    case DECEMBER -> decemberAmount.add(entry.getValue());
-                }
+            switch (entry.getKey().getMonth()) {
+                case JANUARY -> januaryAmount.add(entry.getValue());
+                case FEBRUARY -> februaryAmount.add(entry.getValue());
+                case MARCH -> marchAmount.add(entry.getValue());
+                case APRIL -> aprilAmount.add(entry.getValue());
+                case MAY -> mayAmount.add(entry.getValue());
+                case JUNE -> juneAmount.add(entry.getValue());
+                case JULY -> julyAmount.add(entry.getValue());
+                case AUGUST -> augustAmount.add(entry.getValue());
+                case SEPTEMBER -> septemberAmount.add(entry.getValue());
+                case OCTOBER -> octoberAmount.add(entry.getValue());
+                case NOVEMBER -> novemberAmount.add(entry.getValue());
+                case DECEMBER -> decemberAmount.add(entry.getValue());
             }
         }
         median[0] = getMedianFromArrayList(januaryAmount);
