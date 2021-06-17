@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -43,6 +44,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
         URL res = getClass().getResource("/scenes/recommendation.fxml");
         RecommendationList recommendations = OrderTool.getRecommendations();
+        recommendations.sortRecommendationsByDate();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         for (Recommendation recommendation : recommendations.getRecommendations()) {
             try {
