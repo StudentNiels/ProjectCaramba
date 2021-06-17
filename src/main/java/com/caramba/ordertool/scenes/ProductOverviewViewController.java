@@ -171,8 +171,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
         for (int i = 1; i <= 12; i++) {
             YearMonth date = YearMonth.of(year.getValue(), i);
-            //do not add data for the future
-            if(!date.isAfter(YearMonth.now())){
+            //do not add data for the current month or the future
+            //(the total sales in the current month won't be certain until the month is over)
+            if(date.isBefore(YearMonth.now())){
                 int amount = sales.getSoldInYearMonth(productID, date);
                 salesTableData.setValue(i, amount);
             }
