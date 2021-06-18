@@ -23,7 +23,6 @@ public class ProductList {
         products.put(id, product);
     }
 
-
     public void remove(String id) {
         products.remove(id);
     }

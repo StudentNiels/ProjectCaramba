@@ -11,7 +11,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.time.YearMonth;
 import java.util.Map;
 
@@ -71,7 +70,6 @@ public class OrderTool extends javafx.application.Application {
         products = config.retrieveAllProducts();
         sales = config.retrieveAllSales();
         suppliers = config.retrieveAllSuppliers();
-
     }
 
     public static ProductList getProducts() {
@@ -88,6 +86,11 @@ public class OrderTool extends javafx.application.Application {
 
     public static RecommendationList getRecommendations() {
         return recommendations;
+    }
+
+    public static Map<YearMonth, Integer> getProductHistoryQuantity(String productID) {
+        Map<YearMonth,Integer> productHistoryQuantityList = config.getProductHistoryQuantity(productID);
+        return productHistoryQuantityList;
     }
 
     public static FireStoreConfig getConfig() {
