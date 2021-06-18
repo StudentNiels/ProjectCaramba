@@ -91,10 +91,10 @@
             </HBox>
             <LineChart fx:id="lineChartProductTimeLine" animated="false" title="Tijdlijn">
               <xAxis>
-                <CategoryAxis label="Datum" />
+                <CategoryAxis animated="false" label="Datum" />
               </xAxis>
               <yAxis>
-                <NumberAxis label="Aantal" side="LEFT" />
+                <NumberAxis fx:id="NumberAxisAmount" animated="false" label="Aantal" side="LEFT" />
               </yAxis>
             </LineChart>
             <TableView fx:id="tableProductDetails">

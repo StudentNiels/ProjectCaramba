@@ -7,11 +7,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.util.StringConverter;
 
 import javax.annotation.Nonnull;
 import java.net.URL;
@@ -37,10 +39,11 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     private ComboBox<Year> comboYearSelector;
     @FXML
     private LineChart<String, Integer> lineChartProductTimeLine;
+    @FXML
+    private NumberAxis NumberAxisAmount;
 
     @FXML
     private TableView<ProductDetailsTableData> tableProductDetails;
-
     @FXML
     private TableColumn<ProductDetailsTableData, CheckBox> colProductDetailsVisible;
     @FXML
@@ -81,6 +84,26 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        //set tickLabelFormatter
+        StringConverter<Number> tickLabelFormatter = new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                //make sure all ticks are full ints, so no decimal numbers appear on the axis
+                if(object.doubleValue() == object.intValue()){
+                    return object.intValue() + "";
+                }else{
+                    return "";
+                }
+            }
+
+            @Override
+            public Integer fromString(String string) {
+                return null;
+            }
+        };
+        NumberAxisAmount.setTickLabelFormatter(tickLabelFormatter);
+
         colProductNum.setCellValueFactory(new PropertyValueFactory<>("productNum"));
         colProductDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         colProductStock.setCellValueFactory(new PropertyValueFactory<>("quantity"));
