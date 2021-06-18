@@ -5,9 +5,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class OrderAlgorithm {
+    //Amount of months that the projected sales method extrapolates from
+    //Should be higher than 0
+    private final int PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK = 6;
 
     //todo fix the comments
 
@@ -73,43 +77,36 @@ public class OrderAlgorithm {
      * @return The amount to order
      */
     public int getProjectedSaleAmount(String productID, YearMonth date){
-
-        //todo this should be fixed
-        // projected sales are currently based on a full calendar year (jan to dec)
-        //This means that we cannot currently project sales of future years, even if they are nearby
-        //(e.g. we can't project jan 2021 if we're in dec 2020)
-
-        if(!date.isAfter(YearMonth.now())){
+        if(date.isBefore(YearMonth.now())){
             throw new InvalidParameterException("The given date is not in the future");
         }
+        Saleslist allSales = OrderTool.getSales();
+        YearMonth now = YearMonth.now();
+        HashMap<YearMonth, Integer> dateAmountMap = allSales.getDateAmountMap(productID);
+        //we use all the sales of this product so far to get the median amount of sales in a certain month.
+        //e.g. In january we typically sell 10 units. In february 5 units, ect.
+        //This gives us an overview of what a typical year looks like for this product, and allows us to see seasonal trends.
+        //we only use months before the look back number, so that those months do not affect the percentage calculation
+        MedianYear medianYear = getMedianYear(allSales.getSalesBeforeYearMonth(date.minusMonths(PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK)).getDateAmountMap(productID));
 
-        HashMap<YearMonth, Integer> dateAmountMap = OrderTool.getSales().getDateAmountMap(productID);
-        //this is what we think an average year looks like in terms of sales.
-        //e.g.: in january we typically sell 10 units, in february we typically sell 5, ect.
-        //the current year is not taken into account for a reason mentioned below
-        MedianYear medianYear = getMedianYear(dateAmountMap);
+        //then we look back at the past X months and see how much they differ from a typical year.
+        //the average of the difference is used to project future sales
+        //e.g. in the past 6 months we sold 110% of a typical year, so we assume that we will sell 110% every next month.
+        int totalTypical = 0;
+        int totalActual = 0;
+        for(int i = 0; i < PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK; i++){
+            YearMonth selectedDate = now.minusMonths(PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK - i);
+            totalTypical = totalTypical + medianYear.getByMonthNumber(selectedDate.getMonthValue());
+            Integer actualSalesThisMonth = dateAmountMap.get(selectedDate);
+            //don't use this month for the calculation if there is no data.
+                if(actualSalesThisMonth != null){
+                    totalActual = totalActual + actualSalesThisMonth;
+                }
+            }
+        double avgDifferenceInPercentage = (double) totalActual / totalTypical;
 
-        //The median year is calculated as percentages so we can show seasonal trends:
-        //e.g.: 50% of our sales for this product typically happen in month of january, 25% in february, ect.
-
-        //If we have sold this product before in the current year, we extrapolate the future sales of this year based on the seasonal trends
-        //We assume this is more accurate then simply using median directly, as the sales of the current year
-        //will probably be better at reflecting the growth/shrinkage of sales in general and the median year is mostly meant to show seasonal trends.
-        //This is also why the current year is not used in calculating the median year.
-        float percentageSoldThisYear = 0;
-        for(int i = 1; i <= LocalDate.now().getMonth().getValue(); i++){
-            //in a typical year, this many % of the units would be sold at this point in time. We will assume that this year will be the same.
-            percentageSoldThisYear = percentageSoldThisYear + medianYear.getPercentageByMonthNumber(i);
-        }if(percentageSoldThisYear != 0 || date.getYear() != Year.now().getValue()){
-            //Finally we calculate the amount we expect to sell based on the percentage and the amount of units actually sold.
-            Saleslist sales = OrderTool.getSales();
-            int totalExpectedToSellThisYear = Math.round(sales.getTotalSoldInYear(productID, LocalDateTime.now().getYear()) / percentageSoldThisYear);
-            return Math.round(totalExpectedToSellThisYear * medianYear.getPercentageByMonthNumber(date.getMonth().getValue()));
-        }else{
-            //If we sold 0 so far then we don't have any data to extrapolate on, so we assume the amount sold will be equal to that of the median year.
-            return medianYear.getByMonthNumber(date.getMonth().getValue());
-        }
-
+        //Finally, we calculate the percentages back to a number based on the median year
+        return Math.max((int) Math.round(medianYear.getByMonthNumber(date.getMonthValue()) * avgDifferenceInPercentage), 0);
     }
 
     /**
@@ -132,7 +129,6 @@ public class OrderAlgorithm {
     /**
      * Analyzes the sales of the product in previous years to calculate a 'median year'.
      * The median year includes the median of products sold in per month of the year.
-     * NOTE: does NOT use the sales during the current year, only previous years.
      * @param dateAmountList hashmap with quantity sold in a certain YearMonth
      * @return array with the median of amount sold where i = the month of the year
      */

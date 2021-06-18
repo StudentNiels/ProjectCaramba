@@ -73,10 +73,11 @@ public class Saleslist {
      *
      * @return A new salelist with all the sales before the given year
      */
-    public Saleslist getSalesBeforeYear(int year){
+    public Saleslist getSalesBeforeYearMonth(YearMonth yearMonth){
         Saleslist result = new Saleslist();
         for (Sale sale : this.sales) {
-            if(sale.getDate().getYear() < year){
+            YearMonth saleYearMonth = YearMonth.of(sale.getDate().getYear(), sale.getDate().getMonthValue());
+            if(saleYearMonth.isBefore(yearMonth)){
                 result.addToSalesList(sale);
             }
         }

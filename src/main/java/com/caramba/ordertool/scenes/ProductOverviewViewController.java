@@ -184,11 +184,16 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      *Shows the amount of projected Sales in the selected year
      */
     private ProductDetailsTableData getProjectedSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
-        //todo this should be fixed
-        // projected sales are currently based on a full calendar year (jan to dec), so we can only show projected sales of the current year
         ProductDetailsTableData projectedSalesTableData = createProductDetailsTableData(displayName, color, isDashed);
-        if(selectedYear.equals(Year.now())){
-            for (int m = LocalDate.now().getMonth().getValue() + 1; m <= 12; m++) {
+        Year now = Year.now();
+        if(!selectedYear.isBefore(now)){
+            int monthToStart;
+            if(selectedYear.equals(now)){
+                monthToStart = LocalDate.now().getMonth().getValue();
+            }else{
+                monthToStart = 1;
+            }
+            for (int m = monthToStart; m <= 12; m++) {
                 int amount = orderAlgo.getProjectedSaleAmount(productID, YearMonth.of(year.getValue(), m));
                 projectedSalesTableData.setValue(m, amount);
             }
