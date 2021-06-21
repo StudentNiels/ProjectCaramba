@@ -13,20 +13,49 @@ public class OrderAlgorithm {
     //Should be higher than 0
     private final int PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK = 6;
 
-    //todo fix the comments
+
+;
+
+    public RecommendationList createRecommendations(){
+        RecommendationList result = new RecommendationList();
+        SupplierList suppliers = OrderTool.getSuppliers();
+        for (Supplier supplier : suppliers.getSuppliers().values()) {
+            //some suppliers might have a delivery time longer than 1 month
+            //so we need to be sure that the recommendation gets created ahead of time.
+            //check what date the products could arrive if they were ordered today
+            LocalDate dateToOrderFor = LocalDate.now().plusDays(supplier.getAvgDeliveryTime());
+            YearMonth yearMonthToOrderFor = YearMonth.of(dateToOrderFor.getYear(), dateToOrderFor.getMonth());
+            if(dateToOrderFor.getDayOfMonth() != 1){
+                //if the arrival date is not the first of the month, then it's to late to get the products for this month and we have to make a recommendation for the month after
+                yearMonthToOrderFor = yearMonthToOrderFor.plusMonths(1);
+            }
+            result.addRecommendation(createRecommendation(supplier, yearMonthToOrderFor));
+        }
+        return result;
+    }
 
     /**
-     * Checks all registered products and checks how many should be ordered for the given month
+     * Checks all registered products and checks how many should be ordered from the given supplier
+     * @param supplier the supplier to create the recommendation for
+     * @param date YearMonth that the products should be in stock
      * @return hashmap with products and quantity to order
      */
-    public Recommendation createRecommended(YearMonth date){
-        Recommendation result = new Recommendation();
-        for (Map.Entry<String, Product> entry : OrderTool.getProducts().getProducts().entrySet()) {
+    public Recommendation createRecommendation(Supplier supplier, YearMonth date){
+        SupplierList suppliers = OrderTool.getSuppliers();
+        ProductList products = OrderTool.getProducts();
+        Recommendation result = new Recommendation(supplier, date);
+        for (Map.Entry<String, Product> entry : products.getProducts().entrySet()) {
             String id = entry.getKey();
             Product p = entry.getValue();
-            int amount =  RecommendOrderAmount(id, date);
-            if(amount > 0){
-                result.addProductToRecommendation(p, amount);
+            SupplierList suppliersSelling = suppliers.getSuppliersSellingProduct(p);
+            //if multiple suppliers offer this product, choose the one with the lowest delivery time
+            Supplier supplierToBuyFrom = suppliersSelling.getSupplierWithLowestAvgShippingTime();
+            //only add it to this recommendation if this is the correct supplier
+            if(supplier == supplierToBuyFrom){
+                int amount =  RecommendOrderAmount(id, date);
+                if(amount > 0){
+                    result.addProductToRecommendation(p, amount);
+                }
             }
         }
         return result;
@@ -39,12 +68,12 @@ public class OrderAlgorithm {
         Product p = OrderTool.getProducts().get(productID);
         int minStock = getAverageSoldLast12Months(productID);
         int projectedSales = getProjectedSaleAmount(productID, date);
-        int currentStock = p.getQuantity();
+        int projectedStock = getProjectedStock(productID, date);
         int result;
         if (minStock > projectedSales){
-            result = minStock - currentStock;
+            result = minStock - projectedStock;
         }else{
-            result = projectedSales - currentStock;
+            result = projectedSales - projectedStock;
         }
         return Math.max(result, 0);
     }
@@ -67,6 +96,32 @@ public class OrderAlgorithm {
         }
         averageSoldLast12Months = averageSoldLast12Months / 12;
         return averageSoldLast12Months;
+    }
+
+    /**
+     * Returns the expected stock of the given product at the start of the given yearMonth
+     * This assumes that the full projected sales amount is sold every month, and no extra products are ordered
+     */
+    public int getProjectedStock(String productID, YearMonth date){
+        if(date.isBefore(YearMonth.now())){
+            throw new InvalidParameterException("The given date is not in the future");
+        }
+        Product p = OrderTool.getProducts().get(productID);
+        Saleslist sales = OrderTool.getSales();
+        YearMonth now = YearMonth.now();
+        //the expected stock at the end of the current month is based on the current stock and projected sales minus sales already made this month
+        int result = p.getQuantity() - (getProjectedSaleAmount(productID, now) - sales.getSoldInYearMonth(productID, now));
+        if(result <= 0){
+            return 0;
+        }
+        //the expected stock for the rest of the month decreases by the projected amount each month until it reaches 0
+        for(YearMonth n = now.plusMonths(1); n.isBefore(date); n = n.plusMonths(1)){
+            result = result - getProjectedSaleAmount(productID, n);
+            if(result <= 0){
+                return 0;
+            }
+        }
+        return result;
     }
 
     /**

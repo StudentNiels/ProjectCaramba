@@ -64,4 +64,14 @@ public class SupplierList {
         }
         return result;
     }
+
+    public Supplier getSupplierWithLowestAvgShippingTime(){
+        Supplier result = null;
+        for (Supplier supplier : suppliers.values()) {
+            if(result == null || supplier.getAvgDeliveryTime() < result.getAvgDeliveryTime()){
+                result = supplier;
+            }
+        }
+        return result;
+    }
 }

@@ -1,39 +1,22 @@
 package com.caramba.ordertool;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.YearMonth;
 import java.util.HashMap;
 
 public class Recommendation {
     private LocalDateTime creationDate;
     private Supplier supplier;
     //TODO: find a use for this or delete this when the time is ripe
-    private LocalDateTime finalOrderDate;
-    private HashMap<Product, Integer> productRecommendation;
-    private boolean confirmed;
+    private YearMonth yearMonthToOrderFor;
+    private HashMap<Product, Integer> productRecommendation = new HashMap<>();
+    private boolean confirmed = false;
 
-    public Recommendation() {
-        this.creationDate = LocalDateTime.now();
-        this.supplier = null;
-        this.finalOrderDate = null;
-        this.productRecommendation = new HashMap<>();
-        this.confirmed = false;
-    }
-
-    public Recommendation(Supplier supplier, HashMap<Product, Integer> productRecommendation) {
+    public Recommendation(Supplier supplier, YearMonth yearMonthToOrderFor) {
         this.creationDate = LocalDateTime.now();
         this.supplier = supplier;
-        this.finalOrderDate = null;
-        this.productRecommendation = productRecommendation;
-        this.confirmed = false;
-    }
-
-    public Recommendation(Supplier supplier, HashMap<Product, Integer> productRecommendation, boolean confirmed) {
-        this.creationDate = LocalDateTime.now();
-        this.supplier = supplier;
-        this.finalOrderDate = null;
-        this.productRecommendation = productRecommendation;
-        this.confirmed = confirmed;
+        this.yearMonthToOrderFor = yearMonthToOrderFor;
     }
 
     public void addProductToRecommendation(Product product, int amount){
@@ -57,13 +40,10 @@ public class Recommendation {
         this.supplier = supplier;
     }
 
-    public LocalDateTime getFinalOrderDate() {
-        return finalOrderDate;
+    public LocalDate getFinalOrderDate() {
+        return LocalDate.of(yearMonthToOrderFor.getYear(), yearMonthToOrderFor.getMonth(), 1).minusDays(supplier.getAvgDeliveryTime());
     }
 
-    public void setFinalOrderDate(LocalDateTime finalOrderDate) {
-        this.finalOrderDate = finalOrderDate;
-    }
 
     public HashMap<Product, Integer> getProductRecommendation() {
         return productRecommendation;

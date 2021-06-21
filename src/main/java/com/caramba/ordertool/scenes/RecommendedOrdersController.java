@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -69,7 +70,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 supplierText.setText(supplierName);
 
                 //Final order date
-                LocalDateTime finalOrderDate = recommendation.getFinalOrderDate();
+                LocalDate finalOrderDate = recommendation.getFinalOrderDate();
                 if(finalOrderDate != null){
                     Text textFinalOrderDate = (Text) pane.getContent().lookup("#textFinalOrderDate");
                     textFinalOrderDate.setText(finalOrderDate.format(dateTimeFormatter));

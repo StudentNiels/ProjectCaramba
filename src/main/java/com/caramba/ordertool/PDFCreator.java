@@ -173,13 +173,12 @@ public class PDFCreator {
         SupplierList sl = OrderTool.getSuppliers();
 
         for (Map.Entry<String, HashMap<Product, Integer>> sEntry : productsPerSupplier.entrySet()) {
-            Recommendation recommendation = new Recommendation();
+            Recommendation recommendation = new Recommendation(null, null);
             for(Map.Entry<String, Supplier> supplier : sl.getSuppliers().entrySet()){
                 if(sEntry.getKey().equals(supplier.getValue().getName())){
                     recommendation.setSupplier(supplier.getValue());
                 }
             }
-            recommendation.setCreationDate(LocalDateTime.now());
             recommendation.setProductRecommendation(sEntry.getValue());
             recommendations.add(recommendation);
         }
