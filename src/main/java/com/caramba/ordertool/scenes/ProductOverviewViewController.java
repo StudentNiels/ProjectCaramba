@@ -137,7 +137,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         });
 
         //create year selector
-        for(int y = LocalDate.now().plusYears(1).getYear(); y >= 1900; y--){
+        for(int y = LocalDate.now().plusYears(1).getYear(); y >= 1900; y--) {
             comboYearSelector.getItems().add(Year.of(y));
         }
         comboYearSelector.getSelectionModel().select(Year.now());
@@ -225,6 +225,31 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     /**
+     * Shows the supply of a product at the end of the month
+     *
+     * Inserts the data from the database into the table underneath the graph.
+     */
+    private ProductDetailsTableData getProductQuantity(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
+        ProductDetailsTableData productQuantity = createProductDetailsTableData(displayName, color, isDashed);
+        Map<YearMonth, Integer> productHistoryQuantityList = OrderTool.getProductHistoryQuantity(productID);
+        for (Map.Entry<YearMonth, Integer> entry : productHistoryQuantityList.entrySet()) {
+            YearMonth k = entry.getKey();
+            Integer p = entry.getValue();
+            for (int i = 1; i <= 12; i++) {
+                YearMonth date = YearMonth.of(year.getValue(), i);
+                if(k.equals(date))
+                {
+                    if(!date.isAfter(YearMonth.now())) {
+                        productQuantity.setValue(i, p);
+                    }
+                }
+            }
+        }
+        productQuantity.getCheckboxToggleVisible().setSelected(selectedByDefault);
+        return productQuantity;
+    }
+
+    /**
      * Converts table data to an XYseries that can be displayed in the chart
      */
     private @Nonnull XYChart.Series<String, Integer> convertToChartSeries(ProductDetailsTableData productDetailsTableData){
@@ -252,6 +277,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true,"#64b000", false));
             tableData.add(getProjectedSalesData("Verwachte verkoop", productID, selectedYear, true, "#eb4034", true));
             tableData.add(getSalesData("Verkopen afeglopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false, "#009917", false));
+            tableData.add(getProductQuantity("Voorraad", productID, selectedYear, true, "#000f00", false));
 
             //update the table
             tableProductDetails.getItems().clear();

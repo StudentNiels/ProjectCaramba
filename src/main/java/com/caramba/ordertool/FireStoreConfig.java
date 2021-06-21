@@ -221,12 +221,14 @@ public class FireStoreConfig {
      */
     public void saveProductQuantityHistory(ProductList productList){
         LocalDate now = LocalDate.now();
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
             String k = entry.getKey();
             Product p = entry.getValue();
             Map<String, Integer> data = new HashMap<>();
             data.put("quantity", p.getQuantity());
-            db.collection("Products").document(k).collection("History").document(String.valueOf(now.getYear())).collection("Months").document(now.getMonth().toString()).set(data);
+            db.collection("Products").document(k).collection("History").document(toString().valueOf(now.getYear())).collection("Months").document(Integer.toString(now.getMonth().getValue())).set(data);
         }
     }
 
@@ -339,20 +341,22 @@ public class FireStoreConfig {
 
     /**
      * @return The amount of products sold in a certain YearMonth according to the db
+     * Goes through the database to retrieve years and months for each product
+     * For each month the product's supply is beind retreived
+     * This will be used in the graph and table of the program
      */
     public Map<YearMonth, Integer> getProductHistoryQuantity(String productId) {
         dbConnect();
-        //ApiFuture<DocumentSnapshot> promise = db.collection("Products").document(productId).collection("History").document(String.valueOf(yearMonth.getYear())).collection("Months").document(yearMonth.getMonth().toString()).get();
         Map<YearMonth, Integer> result = new HashMap<>();
         Iterable<DocumentReference> years = db.collection("Products").document(productId).collection("History").listDocuments();
         for (DocumentReference yearDocReference : years) {
             Iterable<DocumentReference> months = yearDocReference.collection("Months").listDocuments();
-            for (DocumentReference MonthDocReference : months) {
-                ApiFuture<DocumentSnapshot> promise = MonthDocReference.get();
+            for (DocumentReference monthDocReference : months) {
+                ApiFuture<DocumentSnapshot> promise = monthDocReference.get();
                 try {
                     DocumentSnapshot docSnapshot = promise.get();
-                    if (docSnapshot.exists()) {
-                        int month = Integer.parseInt(MonthDocReference.getId());
+                    if (docSnapshot.exists()){
+                        int month = Integer.parseInt(monthDocReference.getId());
                         int year = Integer.parseInt(yearDocReference.getId());
                         Long quantity = docSnapshot.getLong("quantity");
                         if(quantity != null) {

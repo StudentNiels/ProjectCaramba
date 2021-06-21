@@ -12,7 +12,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class SupplierController implements Initializable, ViewController {
@@ -47,7 +46,6 @@ public class SupplierController implements Initializable, ViewController {
             }
         });
     }
-
 
     @Override
     public void update() {
