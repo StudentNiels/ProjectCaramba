@@ -229,8 +229,7 @@ public class FireStoreConfig {
             Product p = entry.getValue();
             Map<String, Integer> data = new HashMap<>();
             data.put("quantity", p.getQuantity());
-            //db.collection("Products").document(k).collection("History").document(String.valueOf(now.getYear())).collection("Months").document(Integer.toString(now.getMonth().getValue())).set(data);
-            db.collection("Products").document(k).collection("History").document(toString().valueOf(now.getYear())).collection("Months").document(String.valueOf(month)).set(data);
+            db.collection("Products").document(k).collection("History").document(toString().valueOf(now.getYear())).collection("Months").document(Integer.toString(now.getMonth().getValue())).set(data);
         }
     }
 
