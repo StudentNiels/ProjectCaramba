@@ -68,10 +68,6 @@ public class RecommendationList {
             Collections.reverse(creationDates);
         }
 
-        System.out.println("dateTimes " + dateTimes);
-        System.out.println("finalOrderDates " + finalOrderDates);
-        System.out.println("creationDates " + creationDates);
-
         if(!finalOrderDates.isEmpty()){
             for(LocalDateTime dateTime : finalOrderDates){
                 for(Recommendation recommendation : tempList){
@@ -95,7 +91,6 @@ public class RecommendationList {
                 }
             }
         }
-        System.out.println("sortedList " + sortedList);
         setRecommendations(sortedList);
     }
 

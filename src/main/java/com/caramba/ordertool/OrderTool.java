@@ -23,6 +23,8 @@ public class OrderTool extends javafx.application.Application {
     //Keeps track of all known sales
     private static Saleslist sales = new Saleslist();
 
+    private static Stage mainStage;
+
     private static final RecommendationList recommendations = new RecommendationList();
     private static final FireStoreConfig config = new FireStoreConfig();
 
@@ -44,6 +46,7 @@ public class OrderTool extends javafx.application.Application {
         stage.setTitle("Caramba OrderTool");
         ViewController viewController = loader.getController();
         stage.setScene(scene);
+        mainStage = stage;
         stage.show();
 
         //load from db
@@ -127,6 +130,10 @@ public class OrderTool extends javafx.application.Application {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Stage getMainStage(){
+        return mainStage;
     }
 
     /**

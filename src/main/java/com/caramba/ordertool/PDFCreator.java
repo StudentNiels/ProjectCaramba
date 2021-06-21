@@ -72,10 +72,15 @@ public class PDFCreator {
         this(path, "Recommendation-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", recommendation);
     }
 
-    public void addProducts(HashMap<Product, Integer> products){
+//    public void addProducts(HashMap<Product, Integer> products){
+    public void addProducts(){
         PDPage page = new PDPage(PDRectangle.A4);
-        ArrayList<Recommendation> recommendations = getRecommendation(products);
-        HashMap<String, HashMap<Product, Integer>> supplierProductQuantityMap = separateProductQuantityMapPerSupplier(products); // Get ArrayList<Recommendation>
+        //ArrayList<Recommendation> recommendations = getRecommendation(products);
+        //HashMap<String, HashMap<Product, Integer>> supplierProductQuantityMap = separateProductQuantityMapPerSupplier(products); // Get ArrayList<Recommendation>
+
+        RecommendationList recommendations = OrderTool.getRecommendations();
+        recommendations.sortRecommendationsByDate();
+
         try{
             float margin = 50;
             float lineSpace = 20;
@@ -99,7 +104,7 @@ public class PDFCreator {
             cs.endText();
             //add a table per supplier
             int tableCount = 1;
-            for(Recommendation recommendation : recommendations){
+            //for(Recommendation recommendation : recommendations.getRecommendations()){
                 BaseTable table = new BaseTable(y, yStartNewPage, margin, tableWidth, margin, document, page, true, true);
                 Row<PDPage> headerRow = table.createRow(15f);
                 Cell<PDPage> cell = headerRow.createCell(100, "ORDER #" + tableCount);
@@ -127,7 +132,7 @@ public class PDFCreator {
                 }
                 y = table.draw() - lineSpace;
                 tableCount = tableCount + 1;
-            }
+            //}
             /*
             for (Map.Entry<String, HashMap<Product, Integer>> mapEntry : supplierProductQuantityMap.entrySet()) {
                 BaseTable table = new BaseTable(y, yStartNewPage, margin, tableWidth, margin, document, page, true, true);
