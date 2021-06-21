@@ -156,9 +156,13 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         DirectoryChooser chooser = new DirectoryChooser();
         File selectedDirectory = chooser.showDialog(stage);
 
-        PDFCreator creator = new PDFCreator(selectedDirectory.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
-        creator.addProducts();
-        creator.save();
+        if(selectedDirectory != null){
+            PDFCreator creator = new PDFCreator(selectedDirectory.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
+            creator.addProducts();
+            creator.save();
+        }else{
+            System.out.println("The process was cancelled");
+        }
 
     }
 
