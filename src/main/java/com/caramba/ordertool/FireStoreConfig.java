@@ -223,7 +223,6 @@ public class FireStoreConfig {
         LocalDate now = LocalDate.now();
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int month = localDate.getMonthValue();
         for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
             String k = entry.getKey();
             Product p = entry.getValue();
@@ -342,6 +341,9 @@ public class FireStoreConfig {
 
     /**
      * @return The amount of products sold in a certain YearMonth according to the db
+     * Goes through the database to retrieve years and months for each product
+     * For each month the product's supply is beind retreived
+     * This will be used in the graph and table of the program
      */
     public Map<YearMonth, Integer> getProductHistoryQuantity(String productId) {
         dbConnect();

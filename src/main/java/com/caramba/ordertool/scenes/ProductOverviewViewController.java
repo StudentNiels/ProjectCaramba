@@ -199,7 +199,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     /**
-     *Shows the stock of a product at the end of the month
+     * Shows the supply of a product at the end of the month
+     *
+     * Inserts the data from the database into the table underneath the graph.
      */
     private ProductDetailsTableData getProductQuantity(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
         ProductDetailsTableData productQuantity = createProductDetailsTableData(displayName, color, isDashed);
