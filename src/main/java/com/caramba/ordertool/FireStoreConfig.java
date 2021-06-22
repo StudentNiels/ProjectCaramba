@@ -357,11 +357,15 @@ public class FireStoreConfig {
                 try {
                     DocumentSnapshot docSnapshot = promise.get();
                     if (docSnapshot.exists()){
-                        int month = Integer.parseInt(monthDocReference.getId());
-                        int year = Integer.parseInt(yearDocReference.getId());
-                        Long quantity = docSnapshot.getLong("quantity");
-                        if(quantity != null) {
-                            result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
+                        try {
+                            int month = Integer.parseInt(monthDocReference.getId());
+                            int year = Integer.parseInt(yearDocReference.getId());
+                            Long quantity = docSnapshot.getLong("quantity");
+                            if(quantity != null) {
+                                result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
+                            }
+                        }catch (NumberFormatException e){
+                            e.printStackTrace();
                         }
                     }
                 } catch (InterruptedException | ExecutionException e) {
