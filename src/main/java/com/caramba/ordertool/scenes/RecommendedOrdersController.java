@@ -8,13 +8,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -33,6 +38,8 @@ import java.util.ResourceBundle;
 
 public class RecommendedOrdersController implements Initializable, ViewController {
 
+    @FXML
+    private ScrollPane scrollPaneMain;
     @FXML
     private Accordion accordionNewRecommendations;
 
@@ -54,7 +61,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
     @Override
     public void update() {
-
+        scrollPaneMain.setStyle("-fx-background: white;");
         //clear the accordions before refreshing
         accordionCheckedRecommendations.getPanes().clear();
         accordionNewRecommendations.getPanes().clear();
@@ -70,6 +77,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
             try {
                 TitledPane pane = FXMLLoader.load(res);
                 pane.setText("");
+                pane.setStyle("-fx-background: #f0f0f0;");
                 //created date
                 LocalDateTime creationDate = recommendation.getCreationDate();
                 String date = creationDate.format(creationDateFormatter);
