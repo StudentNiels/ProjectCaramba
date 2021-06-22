@@ -26,7 +26,10 @@ public class OrderAlgorithm {
                 //if the arrival date is not the first of the month, then it's to late to get the products for this month and we have to make a recommendation for the month after
                 yearMonthToOrderFor = yearMonthToOrderFor.plusMonths(1);
             }
-            result.addRecommendation(createRecommendation(supplier, yearMonthToOrderFor));
+            Recommendation rec = createRecommendation(supplier, yearMonthToOrderFor);
+            if(rec != null){
+                result.addRecommendation(rec);
+            }
         }
         return result;
     }
@@ -55,7 +58,13 @@ public class OrderAlgorithm {
                 }
             }
         }
-        return result;
+        //do not create empty recommendations
+        if(result.getProductRecommendation().size() > 0){
+            return result;
+        }else{
+            return null;
+        }
+
     }
 
     /**
