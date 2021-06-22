@@ -1,20 +1,30 @@
 package com.caramba.ordertool.scenes;
 
 import com.caramba.ordertool.*;
+import com.google.firestore.v1.StructuredQuery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -27,12 +37,18 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
     @FXML
     private Accordion accordionCheckedRecommendations;
 
+    @FXML
+    private Button savePDF_button;
+
+    @FXML
+    private Label recommendation_label;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
-
 
     @Override
     public void update() {
@@ -43,7 +59,11 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
         URL res = getClass().getResource("/scenes/recommendation.fxml");
         RecommendationList recommendations = OrderTool.getRecommendations();
+        recommendations.sortRecommendationsByDate();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+
+        int i = 0;
         for (Recommendation recommendation : recommendations.getRecommendations()) {
             try {
                 TitledPane pane = FXMLLoader.load(res);
@@ -118,11 +138,34 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                     accordionNewRecommendations.getPanes().add(pane);
                 }
 
+
+                savePDF_button = new Button();
+                Node recommendationID = pane.getContent().lookup("#recommendation_label");
+                recommendationID.setId(Integer.toString(i));
+
+                i++;
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
+    }
+
+
+    public void savePDF(){
+        Stage stage = OrderTool.getMainStage();
+        DirectoryChooser chooser = new DirectoryChooser();
+        File selectedDirectory = chooser.showDialog(stage);
+
+        if(selectedDirectory != null){
+            PDFCreator creator = new PDFCreator(selectedDirectory.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
+            creator.addProducts();
+            creator.save();
+        }else{
+            System.out.println("The process was cancelled");
+        }
+
     }
 
     public class productQuantityPair {
