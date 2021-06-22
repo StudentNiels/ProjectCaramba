@@ -8,7 +8,6 @@ import java.util.HashMap;
 public class Recommendation {
     private LocalDateTime creationDate;
     private Supplier supplier;
-    //TODO: find a use for this or delete this when the time is ripe
     private final YearMonth yearMonthToOrderFor;
     private HashMap<Product, Integer> productRecommendation = new HashMap<>();
     private boolean confirmed = false;
@@ -24,7 +23,6 @@ public class Recommendation {
         this.supplier = supplier;
         this.yearMonthToOrderFor = yearMonthToOrderFor;
     }
-
 
     public void addProductToRecommendation(Product product, int amount){
         this.productRecommendation.put(product, amount);
