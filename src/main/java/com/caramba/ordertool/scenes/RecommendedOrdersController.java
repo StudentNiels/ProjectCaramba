@@ -43,6 +43,12 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
     @FXML
     private Label recommendation_label;
 
+    @FXML
+    private Button addProduct;
+
+    @FXML
+    private DialogPane productToRecommend;
+
 
 
     @Override
@@ -157,15 +163,33 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         Stage stage = OrderTool.getMainStage();
         DirectoryChooser chooser = new DirectoryChooser();
         File selectedDirectory = chooser.showDialog(stage);
+        RecommendationList recommendations = OrderTool.getRecommendations();
+        recommendations.sortRecommendationsByDate();
 
         if(selectedDirectory != null){
-            PDFCreator creator = new PDFCreator(selectedDirectory.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
+            PDFCreator creator = new PDFCreator(selectedDirectory.getAbsolutePath(), recommendations.getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
             creator.addProducts();
             creator.save();
         }else{
             System.out.println("The process was cancelled");
         }
 
+    }
+
+    public void addProductToRecommendation(){
+        RecommendationList recommendations = OrderTool.getRecommendations();
+        recommendations.sortRecommendationsByDate();
+        int recommendationID = Integer.parseInt(this.recommendation_label.getText());
+        Recommendation recommendation = recommendations.getRecommendations().get(recommendationID);
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("ProoductToRecommendation.fxml"));
+        DialogPane productPane = loader.load();
+
+
+
+        //recommendation.addProductToRecommendation();
+        update();
     }
 
     public class productQuantityPair {
