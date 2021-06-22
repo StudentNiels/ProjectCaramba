@@ -7,6 +7,7 @@ import com.google.cloud.firestore.*;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -356,11 +357,15 @@ public class FireStoreConfig {
                 try {
                     DocumentSnapshot docSnapshot = promise.get();
                     if (docSnapshot.exists()){
-                        int month = Integer.parseInt(monthDocReference.getId());
-                        int year = Integer.parseInt(yearDocReference.getId());
-                        Long quantity = docSnapshot.getLong("quantity");
-                        if(quantity != null) {
-                            result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
+                        try {
+                            int month = Integer.parseInt(monthDocReference.getId());
+                            int year = Integer.parseInt(yearDocReference.getId());
+                            Long quantity = docSnapshot.getLong("quantity");
+                            if(quantity != null) {
+                                result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
+                            }
+                        }catch (NumberFormatException e){
+                            e.printStackTrace();
                         }
                     }
                 } catch (InterruptedException | ExecutionException e) {
@@ -369,6 +374,98 @@ public class FireStoreConfig {
             }
         }
         return result;
+    }
+                //Suppliers and products need to be loaded before recommendations!
+    public RecommendationList getRecommendations(){
+        SupplierList suppliers = OrderTool.getSuppliers();
+        ProductList products = OrderTool.getProducts();
+        RecommendationList result = new RecommendationList();
+        dbConnect();
+        for (Map.Entry<String, Supplier> supplierEntry : suppliers.getSuppliers().entrySet()) {
+            String supplierKey = supplierEntry.getKey();
+            Supplier supplier = supplierEntry.getValue();
+            Iterable<DocumentReference> yearDocumentReferences = db.collection("Suppliers").document(supplierKey).collection("recommendations").listDocuments();
+            for (DocumentReference yearDocumentReference : yearDocumentReferences) {
+                int year = Integer.parseInt(yearDocumentReference.getId());
+                Iterable<DocumentReference> monthDocumentReferences = yearDocumentReference.collection("months").listDocuments();
+                for (DocumentReference monthDocumentReference : monthDocumentReferences) {
+                    int month = Integer.parseInt(monthDocumentReference.getId());
+                    ApiFuture<DocumentSnapshot> monthDoc = monthDocumentReference.get();
+                    Date creationDate = null;
+                    try {
+                        com.google.cloud.Timestamp timestamp = (com.google.cloud.Timestamp) monthDoc.get().get("creationDate");
+                        creationDate = timestamp.toDate();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    LocalDateTime creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    Recommendation rec = new Recommendation(supplier, YearMonth.of(year, month), creationLocalDateTime);
+                    Iterable<DocumentReference> productDocumentReferences = monthDocumentReference.collection("products").listDocuments();
+                    for (DocumentReference productDocumentReference : productDocumentReferences) {
+                        String productID = productDocumentReference.getId();
+                        Integer productQuantity = null;
+                        try {
+                            productQuantity = Math.toIntExact((Long) productDocumentReference.get().get().get("quantity"));
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        if(productQuantity != null && productQuantity != 0){
+                            Product p = products.get(productID);
+                            rec.addProductToRecommendation(p, productQuantity);
+                        }
+                    }
+                    result.addRecommendation(rec);
+                }
+            }
+        }
+        closeDb();
+        return result;
+    }
+
+
+    /**
+     * Adds a recommendationList to the database. Does not overwrite if a recommendation of the Supplier and YearMonth already exist.
+     */
+    public void addRecommendations(RecommendationList recommendationList){
+        dbConnect();
+        for (Recommendation recommendation : recommendationList.getRecommendations()) {
+            //get key of the supplier
+            String supplierKey = null;
+            for (Map.Entry<String, Supplier> supplierEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
+                if(supplierEntry.getValue() == recommendation.getSupplier()){
+                    supplierKey = supplierEntry.getKey();
+                    break;
+                }
+            }
+            if(supplierKey == null){
+                break;
+            }
+            YearMonth date = recommendation.getYearMonthToOrderFor();
+            Map<String, Object> data = new HashMap<>();
+            LocalDateTime creationLocalDateTime = recommendation.getCreationDate();
+            Date creationDate = Date.from(creationLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
+            data.put("creationDate", creationDate);
+            //don't overwrite existing documents
+            ApiFuture<DocumentSnapshot> promise = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).get();
+            try {
+                DocumentSnapshot doc = promise.get();
+                if(!doc.exists()){
+                    db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).set(data);
+                    for (Map.Entry<Product, Integer> entry : recommendation.getProductRecommendation().entrySet()) {
+                        data.clear();
+                        String productID = OrderTool.getProducts().getIDbyProduct(entry.getKey());
+                        data.put("quantity", entry.getValue());
+                        ApiFuture<WriteResult> writeResult = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).collection("products").document(productID).set(data);
+                        //wait until the write is finished
+                        writeResult.get();
+                    }
+                    System.out.println("recommendation added");
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        closeDb();
     }
 
 

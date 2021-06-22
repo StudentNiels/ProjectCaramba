@@ -22,7 +22,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -60,17 +62,17 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         URL res = getClass().getResource("/scenes/recommendation.fxml");
         RecommendationList recommendations = OrderTool.getRecommendations();
         recommendations.sortRecommendationsByDate();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-
-
         int i = 0;
+        DateTimeFormatter creationDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        DateTimeFormatter finalOrderDateDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
         for (Recommendation recommendation : recommendations.getRecommendations()) {
             try {
                 TitledPane pane = FXMLLoader.load(res);
                 pane.setText("");
                 //created date
                 LocalDateTime creationDate = recommendation.getCreationDate();
-                String date = creationDate.format(dateTimeFormatter);
+                String date = creationDate.format(creationDateFormatter);
                 pane.setText(pane.getText() + date);
                 Text createdDateText = (Text) pane.getContent().lookup("#textCreatedDate");
                 createdDateText.setText(date);
@@ -88,11 +90,22 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 Text supplierText = (Text) pane.getContent().lookup("#textSupplier");
                 supplierText.setText(supplierName);
 
+                //Order for date
+                YearMonth yearMonthToOrderFor = recommendation.getYearMonthToOrderFor();
+                if(yearMonthToOrderFor != null){
+                    Text textYearMonthToOrderFor = (Text) pane.getContent().lookup("#textOrderForDate");
+                    textYearMonthToOrderFor.setText(yearMonthToOrderFor.format(yearMonthFormatter));
+                }
+
                 //Final order date
-                LocalDateTime finalOrderDate = recommendation.getFinalOrderDate();
+                LocalDate finalOrderDate = recommendation.getFinalOrderDate();
                 if(finalOrderDate != null){
                     Text textFinalOrderDate = (Text) pane.getContent().lookup("#textFinalOrderDate");
-                    textFinalOrderDate.setText(finalOrderDate.format(dateTimeFormatter));
+                    String s = finalOrderDate.format(finalOrderDateDateFormatter);
+                    if(supplier != null){
+                        s = s + " (Geschatte levertijd is " + supplier.getAvgDeliveryTime() + " dag(en))";
+                    }
+                    textFinalOrderDate.setText(s);
                 }
 
                 //products

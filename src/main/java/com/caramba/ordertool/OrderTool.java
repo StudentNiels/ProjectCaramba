@@ -25,7 +25,7 @@ public class OrderTool extends javafx.application.Application {
 
     private static Stage mainStage;
 
-    private static final RecommendationList recommendations = new RecommendationList();
+    private static RecommendationList recommendations = new RecommendationList();
     private static final FireStoreConfig config = new FireStoreConfig();
 
     public static void main(String[] args) {
@@ -53,51 +53,21 @@ public class OrderTool extends javafx.application.Application {
         OrderTool.loadFieldsFromDB();
 
         //test for recommendations
-        Recommendation test = new Recommendation();
-        test.setSupplier(suppliers.get("4EnOt6bg2NC6Uj8t0qVR"));
-        test.addProductToRecommendation(products.get("QmuYT34bznQUAc3rN0Xa"), 4);
-        test.addProductToRecommendation(products.get("RgGAlJ7xZI0GbBt1FscH"), 10);
-        test.addProductToRecommendation(products.get("dTZiBgFEIVJY8XGhd08N"), 1);
 
-        Recommendation test2 = new Recommendation();
-        test2.setCreationDate(test2.getCreationDate().plusDays(15));
-        test2.setSupplier(suppliers.get("7OO9OpsX65LjPQpPzoBE"));
-        test2.addProductToRecommendation(products.get("nidDfiYlO2JbEb1JuCfu"), 40);
-        test2.addProductToRecommendation(products.get("mZBqigkeFLYYBy9gkQMh"), 30);
-
-        Recommendation test3 = new Recommendation();
-        test3.setCreationDate(test3.getCreationDate().plusDays(3));
-        test3.setSupplier(suppliers.get("7OO9OpsX65LjPQpPzoBE"));
-        test3.addProductToRecommendation(products.get("nidDfiYlO2JbEb1JuCfu"), 40);
-        test3.addProductToRecommendation(products.get("mZBqigkeFLYYBy9gkQMh"), 30);
-
-        Recommendation test4 = new Recommendation();
-        test4.setFinalOrderDate(LocalDateTime.now().plusMonths(1));
-        test4.setSupplier(suppliers.get("4EnOt6bg2NC6Uj8t0qVR"));
-        test4.addProductToRecommendation(products.get("nidDfiYlO2JbEb1JuCfu"), 40);
-        test4.addProductToRecommendation(products.get("mZBqigkeFLYYBy9gkQMh"), 30);
-
-        Recommendation test5 = new Recommendation();
-        test5.setCreationDate(test5.getCreationDate().plusDays(8));
-        test5.setFinalOrderDate(LocalDateTime.now().plusMonths(2));
-        test5.setSupplier(suppliers.get("7OO9OpsX65LjPQpPzoBE"));
-        test5.addProductToRecommendation(products.get("nidDfiYlO2JbEb1JuCfu"), 40);
-        test5.addProductToRecommendation(products.get("mZBqigkeFLYYBy9gkQMh"), 30);
-
-        recommendations.addRecommendation(test);
-        recommendations.addRecommendation(test2);
-        recommendations.addRecommendation(test3);
-        recommendations.addRecommendation(test4);
-        recommendations.addRecommendation(test5);
         //send data to controllers
         viewController.update();
     }
 
     private static void loadFieldsFromDB(){
+        System.out.println("Retrieving data from firebase...");
         config.fireStoreConfig();
         products = config.retrieveAllProducts();
         sales = config.retrieveAllSales();
         suppliers = config.retrieveAllSuppliers();
+        OrderAlgorithm algo = new OrderAlgorithm();
+        config.addRecommendations(algo.createRecommendations());
+        recommendations = config.getRecommendations();
+        System.out.println("Finished loading from firebase");
     }
 
     public static ProductList getProducts() {
