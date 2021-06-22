@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         RecommendationList recommendations = OrderTool.getRecommendations();
         DateTimeFormatter creationDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         DateTimeFormatter finalOrderDateDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter yearMonthFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
         for (Recommendation recommendation : recommendations.getRecommendations()) {
             try {
                 TitledPane pane = FXMLLoader.load(res);
@@ -70,11 +72,22 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 Text supplierText = (Text) pane.getContent().lookup("#textSupplier");
                 supplierText.setText(supplierName);
 
+                //Order for date
+                YearMonth yearMonthToOrderFor = recommendation.getYearMonthToOrderFor();
+                if(yearMonthToOrderFor != null){
+                    Text textYearMonthToOrderFor = (Text) pane.getContent().lookup("#textOrderForDate");
+                    textYearMonthToOrderFor.setText(yearMonthToOrderFor.format(yearMonthFormatter));
+                }
+
                 //Final order date
                 LocalDate finalOrderDate = recommendation.getFinalOrderDate();
                 if(finalOrderDate != null){
                     Text textFinalOrderDate = (Text) pane.getContent().lookup("#textFinalOrderDate");
-                    textFinalOrderDate.setText(finalOrderDate.format(finalOrderDateDateFormatter));
+                    String s = finalOrderDate.format(finalOrderDateDateFormatter);
+                    if(supplier != null){
+                        s = s + " (Geschatte levertijd is " + supplier.getAvgDeliveryTime() + " dag(en))";
+                    }
+                    textFinalOrderDate.setText(s);
                 }
 
                 //products

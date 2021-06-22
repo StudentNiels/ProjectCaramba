@@ -54,32 +54,24 @@
          <children>
             <GridPane alignment="TOP_CENTER" prefHeight="50.0">
                <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.0" minWidth="10.0" prefWidth="120.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="403.0" minWidth="10.0" prefWidth="360.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="288.0" minWidth="10.0" prefWidth="277.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="403.0" minWidth="10.0" prefWidth="303.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="NEVER" />
                   <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="NEVER" />
                   <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="NEVER" />
+                  <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="30.0" vgrow="NEVER" />
                </rowConstraints>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Aangemaakt op:" textAlignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Aaangemaakt op:" textAlignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ter voorbereiding voor verwachte verkopen in:" textAlignment="CENTER" GridPane.rowIndex="2" />
                   <Text fx:id="textCreatedDate" strokeType="OUTSIDE" strokeWidth="0.0" text="(Datum niet beschikbaar)" GridPane.columnIndex="1" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Leverancier:" GridPane.rowIndex="1" />
                   <Text fx:id="textSupplier" strokeType="OUTSIDE" strokeWidth="0.0" text="(Leverancier onbekend)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uiterste besteldatum:" GridPane.rowIndex="2" />
-                  <Text fx:id="textFinalOrderDate" strokeType="OUTSIDE" strokeWidth="0.0" text="Onbekend (Levertijd onbekend)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <GridPane>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                  </GridPane>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uiterste besteldatum:" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                  <Text fx:id="textFinalOrderDate" strokeType="OUTSIDE" strokeWidth="0.0" text="Onbekend (Levertijd onbekend)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Text fx:id="textOrderForDate" strokeType="OUTSIDE" strokeWidth="0.0" text="(Onbekend)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
             <Separator prefWidth="200.0" />
