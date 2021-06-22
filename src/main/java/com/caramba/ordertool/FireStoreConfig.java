@@ -451,7 +451,9 @@ public class FireStoreConfig {
                         data.clear();
                         String productID = OrderTool.getProducts().getIDbyProduct(entry.getKey());
                         data.put("quantity", entry.getValue());
-                        db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).collection("products").document(productID).set(data);
+                        ApiFuture<WriteResult> writeResult = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).collection("products").document(productID).set(data);
+                        //wait until the write is finished
+                        writeResult.get();
                     }
                     System.out.println("recommendation added");
                 }
