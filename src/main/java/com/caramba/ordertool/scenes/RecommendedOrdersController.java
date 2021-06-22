@@ -52,8 +52,6 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
     @FXML
     private Label recommendation_label;
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -145,8 +143,10 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 checkConfirm.setOnAction((ActionEvent event) -> {
                     if(recommendation.isConfirmed()){
                         recommendation.setConfirmed(false);
+                        OrderTool.getConfig().confirmRecommendation(recommendation, false);
                     }else{
                         recommendation.setConfirmed(true);
+                        OrderTool.getConfig().confirmRecommendation(recommendation, true);
                     }
                     update();
                 });
