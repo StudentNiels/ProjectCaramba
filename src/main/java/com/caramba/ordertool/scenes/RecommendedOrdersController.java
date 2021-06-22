@@ -44,14 +44,15 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
         URL res = getClass().getResource("/scenes/recommendation.fxml");
         RecommendationList recommendations = OrderTool.getRecommendations();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        DateTimeFormatter creationDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        DateTimeFormatter finalOrderDateDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         for (Recommendation recommendation : recommendations.getRecommendations()) {
             try {
                 TitledPane pane = FXMLLoader.load(res);
                 pane.setText("");
                 //created date
                 LocalDateTime creationDate = recommendation.getCreationDate();
-                String date = creationDate.format(dateTimeFormatter);
+                String date = creationDate.format(creationDateFormatter);
                 pane.setText(pane.getText() + date);
                 Text createdDateText = (Text) pane.getContent().lookup("#textCreatedDate");
                 createdDateText.setText(date);
@@ -73,7 +74,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 LocalDate finalOrderDate = recommendation.getFinalOrderDate();
                 if(finalOrderDate != null){
                     Text textFinalOrderDate = (Text) pane.getContent().lookup("#textFinalOrderDate");
-                    textFinalOrderDate.setText(finalOrderDate.format(dateTimeFormatter));
+                    textFinalOrderDate.setText(finalOrderDate.format(finalOrderDateDateFormatter));
                 }
 
                 //products

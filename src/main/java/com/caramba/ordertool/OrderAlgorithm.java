@@ -13,9 +13,6 @@ public class OrderAlgorithm {
     //Should be higher than 0
     private final int PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK = 6;
 
-
-;
-
     public RecommendationList createRecommendations(){
         RecommendationList result = new RecommendationList();
         SupplierList suppliers = OrderTool.getSuppliers();

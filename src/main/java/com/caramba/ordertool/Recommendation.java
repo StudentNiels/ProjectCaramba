@@ -9,7 +9,7 @@ public class Recommendation {
     private LocalDateTime creationDate;
     private Supplier supplier;
     //TODO: find a use for this or delete this when the time is ripe
-    private YearMonth yearMonthToOrderFor;
+    private final YearMonth yearMonthToOrderFor;
     private HashMap<Product, Integer> productRecommendation = new HashMap<>();
     private boolean confirmed = false;
 
@@ -18,6 +18,13 @@ public class Recommendation {
         this.supplier = supplier;
         this.yearMonthToOrderFor = yearMonthToOrderFor;
     }
+
+    public Recommendation(Supplier supplier, YearMonth yearMonthToOrderFor, LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+        this.supplier = supplier;
+        this.yearMonthToOrderFor = yearMonthToOrderFor;
+    }
+
 
     public void addProductToRecommendation(Product product, int amount){
         this.productRecommendation.put(product, amount);
@@ -44,6 +51,9 @@ public class Recommendation {
         return LocalDate.of(yearMonthToOrderFor.getYear(), yearMonthToOrderFor.getMonth(), 1).minusDays(supplier.getAvgDeliveryTime());
     }
 
+    public YearMonth getYearMonthToOrderFor() {
+        return yearMonthToOrderFor;
+    }
 
     public HashMap<Product, Integer> getProductRecommendation() {
         return productRecommendation;

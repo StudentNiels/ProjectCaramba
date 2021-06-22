@@ -1,6 +1,7 @@
 package com.caramba.ordertool;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class ProductList {
@@ -40,6 +41,16 @@ public class ProductList {
         return products.containsKey(id);
     }
     //#endregion
+
+    public String getIDbyProduct(Product product){
+        for (Map.Entry<String, Product> entry : products.entrySet()) {
+           Product p  = entry.getValue();
+           if(product.equals(p)){
+               return entry.getKey();
+           }
+        }
+        return null;
+    }
 
     public void add(Product product) {
         //add with auto generated id
