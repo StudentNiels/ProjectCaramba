@@ -50,8 +50,8 @@ public class OrderAlgorithm {
      */
     public int getAverageSoldLast12Months(String productID) {
         Saleslist saleslist = OrderTool.getSales().getSalesByProduct(productID);
-
         int averageSoldLast12Months = 0;
+
         for (Sale sale : saleslist.getSales()) {
             int amount = sale.getAmountByID(productID);
 
@@ -63,6 +63,60 @@ public class OrderAlgorithm {
         }
         averageSoldLast12Months = averageSoldLast12Months / 12;
         return averageSoldLast12Months;
+    }
+
+    /**
+     * What is the average sold products for the last 12 months
+     */
+    public int getSoldLast12Months(String productID, YearMonth month) {
+        Saleslist saleslist = OrderTool.getSales().getSalesByProduct(productID);
+        int averageSoldLast12Months = 0;
+        for (Sale sale : saleslist.getSales()) {
+            int amount = sale.getAmountByID(productID);
+            for (int i = 0; i < 12; i++) {
+                if(YearMonth.from(sale.getDate()).equals(month.minusMonths(i))){
+                    averageSoldLast12Months = averageSoldLast12Months + amount;
+                }
+            }
+        }
+        averageSoldLast12Months = averageSoldLast12Months / 12;
+        return averageSoldLast12Months;
+    }
+
+    /**
+     * What is the average sold products for the last 6 months
+     */
+    public int getSoldLast6Months(String productID, YearMonth month) {
+        Saleslist saleslist = OrderTool.getSales().getSalesByProduct(productID);
+        int averageSoldLast6Months = 0;
+        for (Sale sale : saleslist.getSales()) {
+            int amount = sale.getAmountByID(productID);
+            for (int i = 0; i < 6; i++) {
+                if(YearMonth.from(sale.getDate()).equals(month.minusMonths(i))){
+                    averageSoldLast6Months = averageSoldLast6Months + amount;
+                }
+            }
+        }
+        averageSoldLast6Months = averageSoldLast6Months / 6;
+        return averageSoldLast6Months;
+    }
+
+    /**
+     * What is the average sold products for the last 3 months
+     */
+    public int getSoldLast3Months(String productID, YearMonth month) {
+        Saleslist saleslist = OrderTool.getSales().getSalesByProduct(productID);
+        int averageSoldLast3Months = 0;
+        for (Sale sale : saleslist.getSales()) {
+            int amount = sale.getAmountByID(productID);
+            for (int i = 0; i < 3; i++) {
+                if(YearMonth.from(sale.getDate()).equals(month.minusMonths(i))){
+                    averageSoldLast3Months = averageSoldLast3Months + amount;
+                }
+            }
+        }
+        averageSoldLast3Months = averageSoldLast3Months / 3;
+        return averageSoldLast3Months;
     }
 
     /**
