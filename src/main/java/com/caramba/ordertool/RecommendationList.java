@@ -1,6 +1,7 @@
 package com.caramba.ordertool;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 public class RecommendationList {
@@ -29,7 +30,7 @@ public class RecommendationList {
 
         for(Recommendation recommendation : this.recommendations){
             if(recommendation.getFinalOrderDate() != null){
-                finalOrderDates.add(recommendation.getFinalOrderDate());
+                finalOrderDates.add(LocalDateTime.of(recommendation.getFinalOrderDate(), LocalTime.MAX));
             }else{
                 creationDates.add(recommendation.getCreationDate());
             }
@@ -72,7 +73,7 @@ public class RecommendationList {
             for(LocalDateTime dateTime : finalOrderDates){
                 for(Recommendation recommendation : tempList){
                     if(recommendation.getFinalOrderDate() != null){
-                        if(recommendation.getFinalOrderDate().equals(dateTime)){
+                        if(recommendation.getFinalOrderDate().equals(dateTime.toLocalDate())){
                             sortedList.add(recommendation);
                         }
                     }
