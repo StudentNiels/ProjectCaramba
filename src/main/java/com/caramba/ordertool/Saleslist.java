@@ -8,6 +8,7 @@ Wil ik: op basis van het seizoen, verkoop trends, geschatte levertijd en beschik
 Zodat ik: tijd kan besparen bij het kiezen van producten om te bestellen.
 */
 
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,16 @@ public class Saleslist {
             }
         }
         return result;
+    }
+
+    /**
+     *
+     * @param year
+     * @return Saleslist including all the sales made up to and including the given year
+     */
+    public Saleslist getSalesUpToYear(Year year){
+        YearMonth oneMonthAfter = YearMonth.of(year.plusYears(1).getValue(), 1);
+        return getSalesBeforeYearMonth(oneMonthAfter);
     }
 
     /**
