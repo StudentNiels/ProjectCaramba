@@ -177,9 +177,8 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         chooser.getExtensionFilters().add(pdfFilter);
         chooser.setInitialFileName("Orderadvies " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")));
         File selectedFile = chooser.showSaveDialog(stage);
-        String selectedFileType = chooser.getSelectedExtensionFilter().getDescription();
-
         if (selectedFile != null) {
+            String selectedFileType = chooser.getSelectedExtensionFilter().getDescription();
             if (selectedFileType.equals(pdfFileDescription)) {
                 PDFCreator creator = new PDFCreator(selectedFile.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
                 creator.addProducts();
