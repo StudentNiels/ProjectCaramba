@@ -1,6 +1,9 @@
 package com.caramba.ordertool.scenes;
 
 import com.caramba.ordertool.*;
+import com.caramba.ordertool.notifications.Notification;
+import com.caramba.ordertool.notifications.NotificationManager;
+import com.caramba.ordertool.notifications.NotificationType;
 import com.caramba.ordertool.scenes.displayModels.ProductQuantityPair;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -151,7 +154,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 i++;
 
             } catch (IOException e) {
-                e.printStackTrace();
+                NotificationManager.addExceptionError(e);
             }
 
         }
@@ -181,8 +184,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 creator.saveRecommendation(selectedFile.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
             }
         } else {
-            System.out.println("The process was cancelled");
+            NotificationManager.add(new Notification(NotificationType.ERROR, "The selected path is invalid"));
         }
-
     }
 }

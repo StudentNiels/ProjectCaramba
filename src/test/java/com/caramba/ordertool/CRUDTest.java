@@ -36,7 +36,7 @@ class CRUDTest {
             options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            NotificationManager.addExceptionError(e);
         }
         FirebaseApp.initializeApp(options);
         dbConnect();

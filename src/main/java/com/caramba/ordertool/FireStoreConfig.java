@@ -107,7 +107,7 @@ public class FireStoreConfig {
                     result.add(collRef.getId(), p);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                NotificationManager.addExceptionError(e);
             }
         }
         //save to history
@@ -155,7 +155,7 @@ public class FireStoreConfig {
                         products.put(subRef.getId(), docSnapshot.getLong("amount").intValue());
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                    NotificationManager.addExceptionError(e);
                 }
             }
 
@@ -169,7 +169,7 @@ public class FireStoreConfig {
                     result.addToSalesList(s);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                NotificationManager.addExceptionError(e);
             }
         }
         closeDb();
@@ -199,7 +199,7 @@ public class FireStoreConfig {
                         products.add(product);
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                    NotificationManager.addExceptionError(e);
                 }
             }
 
@@ -219,7 +219,7 @@ public class FireStoreConfig {
                     result.add(collRef.getId(), s);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                NotificationManager.addExceptionError(e);
             }
         }
         closeDb();
@@ -255,7 +255,7 @@ public class FireStoreConfig {
                         }
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                    NotificationManager.addExceptionError(e);
                 }
             }
         }
@@ -282,7 +282,7 @@ public class FireStoreConfig {
                         com.google.cloud.Timestamp timestamp = (com.google.cloud.Timestamp) monthDoc.get().get("creationDate");
                         creationDate = timestamp.toDate();
                     } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
+                        NotificationManager.addExceptionError(e);
                     }
                     LocalDateTime creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     Recommendation rec = new Recommendation(supplier, YearMonth.of(year, month), creationLocalDateTime);
@@ -293,7 +293,7 @@ public class FireStoreConfig {
                         try {
                             productQuantity = Math.toIntExact((Long) productDocumentReference.get().get().get("quantity"));
                         } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
+                            NotificationManager.addExceptionError(e);
                         }
                         if(productQuantity != null && productQuantity != 0){
                             Product p = products.get(productID);
@@ -345,7 +345,7 @@ public class FireStoreConfig {
                         //wait until the write is finished
                         writeResult.get();
                     }
-                    System.out.println("recommendation added");
+                    NotificationManager.add(new Notification(NotificationType.INFO, "Recommendation Added"));
                 }
             } catch (ExecutionException e) {
                 NotificationManager.addExceptionError(e);

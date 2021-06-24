@@ -1,4 +1,7 @@
 package com.caramba.ordertool;
+import com.caramba.ordertool.notifications.Notification;
+import com.caramba.ordertool.notifications.NotificationManager;
+import com.caramba.ordertool.notifications.NotificationType;
 import com.caramba.ordertool.scenes.ViewController;
 import com.google.cloud.Timestamp;
 import javafx.fxml.FXMLLoader;
@@ -58,7 +61,7 @@ public class OrderTool extends javafx.application.Application {
     }
 
     private static void loadFieldsFromDB(){
-        System.out.println("Retrieving data from firebase...");
+        NotificationManager.add(new Notification(NotificationType.INFO, "Retrieving data from firebase..."));
         config.fireStoreConfig();
         products = config.retrieveAllProducts();
         sales = config.retrieveAllSales();
@@ -66,7 +69,7 @@ public class OrderTool extends javafx.application.Application {
         OrderAlgorithm algo = new OrderAlgorithm();
         config.addRecommendations(algo.createRecommendations());
         recommendations = config.getRecommendations();
-        System.out.println("Finished loading from firebase");
+        NotificationManager.add(new Notification(NotificationType.INFO, "Finished loading from firebase"));
     }
 
     public static ProductList getProducts() {
@@ -102,7 +105,7 @@ public class OrderTool extends javafx.application.Application {
 //            Timestamp time = Timestamp.of(format.parse(date));
 //            config.addSale(time, productID, amount);
 //        } catch (ParseException e) {
-//            e.printStackTrace();
+//            NotificationManager.addExceptionError(e);
 //        }
 //    }
 // --Commented out by Inspection STOP (24-6-2021 13:26)

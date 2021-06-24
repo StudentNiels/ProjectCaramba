@@ -37,7 +37,7 @@ public class NotificationManager {
     }
 
     public static void addExceptionError(Exception e){
-        e.printStackTrace();
+        NotificationManager.addExceptionError(e);
         add(new Notification(NotificationType.ERROR, Arrays.toString(e.getStackTrace())));
     }
 
