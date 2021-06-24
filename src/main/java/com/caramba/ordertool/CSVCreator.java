@@ -11,8 +11,17 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+/**
+ * Saves recommendations as CSV files
+ */
 public class CSVCreator {
 
+    /**
+     * Save the specified recommendation as a csv file in the chosen path
+     *
+     * @param path           path to save the file to
+     * @param recommendation recommendation to export
+     */
     public void saveRecommendation(String path, Recommendation recommendation) {
         DateTimeFormatter creationDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         DateTimeFormatter finalOrderDateDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

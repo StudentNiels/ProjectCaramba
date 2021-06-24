@@ -27,11 +27,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Manages the connection to firebase
+ */
 public class FireStoreConfig {
 
     private Firestore db;
 
     /**
+     * Establish the connection
      * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
      */
     public void fireStoreConfig() {
@@ -47,23 +51,19 @@ public class FireStoreConfig {
                     System.exit(1);
                 }
             }
-
             FirebaseOptions options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
             FirebaseApp.initializeApp(options);
         } catch (IOException e) {
             NotificationManager.showExceptionError(e);
         }
         db = FirestoreClient.getFirestore();
-        //region Template interactions
-        // endregion
-
-        //Read individual
-        //readFromDB("Products", "c1dd2174-c207-11eb-8529-0242ac130003");
     }
 
 
     /**
      * Make a list of all the products
+     *
+     * @return ProductList with all products in firebase
      */
     public ProductList retrieveAllProducts() {
         ProductList result = new ProductList();
@@ -87,11 +87,12 @@ public class FireStoreConfig {
 
     /**
      * Saves the current quantity of the product to the history of this year and month.
-     * <p>
      * This is currently run every time the products are retrieved
      * Ideally this should be run automatically once at the end of the month instead
      * This could be probably be done using firebase's 'scheduled functions' feature
      * However this feature is exclusive to the paid plan of firebase, which we don't currently have access to
+     *
+     * @param productList products to save stock history of
      */
     public void saveProductQuantityHistory(ProductList productList) {
         LocalDate now = LocalDate.now();
@@ -106,6 +107,8 @@ public class FireStoreConfig {
 
     /**
      * Make a list of all the Sales
+     *
+     * @return SalesList with all sales in firebase
      */
     public SalesList retrieveAllSales() {
         SalesList result = new SalesList();
@@ -152,6 +155,8 @@ public class FireStoreConfig {
 
     /**
      * Make a list of all the suppliers
+     *
+     * @return SupplierList with all suppliers in firebase
      */
     public SupplierList retrieveAllSuppliers() {
         SupplierList result = new SupplierList();
@@ -200,10 +205,13 @@ public class FireStoreConfig {
     }
 
     /**
-     * @return The amount of products sold in a certain YearMonth according to the db
+     * Returns the amount of products in stock in certain YearMonth according to the db
      * Goes through the database to retrieve years and months for each product
-     * For each month the product's supply is beind retreived
+     * For each month the product's supply is behind retrieved
      * This will be used in the graph and table of the program
+     *
+     * @param productId the id of the product to get the stock quantity history of
+     * @return hashmap with the YearMonth of the product's history as key and the amount of units in stock at that point as value
      */
     public Map<YearMonth, Integer> getProductHistoryQuantity(String productId) {
         Map<YearMonth, Integer> result = new HashMap<>();
@@ -234,7 +242,12 @@ public class FireStoreConfig {
         return result;
     }
 
-    //Suppliers and products need to be loaded before recommendations!
+    /**
+     * Retrieves all recommendations from the database
+     * Suppliers and products need to be loaded before recommendations!
+     *
+     * @return recommendationList containing all recommendations from firebase
+     */
     public RecommendationList getRecommendations() {
         SupplierList suppliers = OrderTool.getSuppliers();
         ProductList products = OrderTool.getProducts();
@@ -294,6 +307,12 @@ public class FireStoreConfig {
         return result;
     }
 
+    /**
+     * Set a recommendation to confirmed or not confirmed in the database, without overwriting the entire entry
+     *
+     * @param recommendation the recommendation to change the confirmed field of
+     * @param isConfirmed    value to set the confirmed field to
+     */
     public void confirmRecommendation(Recommendation recommendation, boolean isConfirmed) {
         //get key of the supplier
         String supplierKey = null;
@@ -323,6 +342,8 @@ public class FireStoreConfig {
 
     /**
      * Adds a recommendationList to the database. Does not overwrite if a recommendation of the Supplier and YearMonth already exist.
+     *
+     * @param recommendationList recommendations to add
      */
     public void addRecommendations(RecommendationList recommendationList) {
         for (Recommendation recommendation : recommendationList.getRecommendations()) {

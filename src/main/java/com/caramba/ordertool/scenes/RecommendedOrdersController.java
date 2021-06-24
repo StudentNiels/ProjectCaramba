@@ -56,6 +56,9 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
     }
 
+    /**
+     * Creates all the recommendations and adds their data.
+     */
     @Override
     public void update() {
         scrollPaneMain.setStyle("-fx-background: white;");
@@ -175,7 +178,9 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         }
     }
 
-
+    /**
+     * Save the recommendation to a file. The user is shown a filepieken to choose a path to save to and to pick between csv or pdf.
+     */
     public void saveFile() {
         Stage stage = OrderTool.getMainStage();
         FileChooser chooser = new FileChooser();

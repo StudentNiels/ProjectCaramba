@@ -6,6 +6,9 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Viewcontroller for the main app window. Keeps track of the controllers of it's children.
+ */
 public class AppViewController implements Initializable, ViewController {
     //these controllers are automatically loaded from the fxml but IntelliJ doesn't recognize this, so we suppress the warnings.
     @SuppressWarnings("unused")
@@ -24,7 +27,9 @@ public class AppViewController implements Initializable, ViewController {
 
     }
 
-
+    /**
+     * Updates the data in the controllers
+     */
     @Override
     public void update() {
         productOverviewController.update();

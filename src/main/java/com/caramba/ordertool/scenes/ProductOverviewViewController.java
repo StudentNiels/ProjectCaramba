@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * Viewcontroller of the product Overview. This view contains a list of all registered products. When a product is clicked on you can see details about it's past and projected sales among other statistics in a table and graph.
+ */
 public class ProductOverviewViewController implements Initializable, ViewController {
     private final static String[] MONTH_NAME = {"jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"};
     private final OrderAlgorithm orderAlgo = new OrderAlgorithm();
@@ -89,6 +92,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     private DisplayProduct selectedProduct = null;
     private Year selectedYear = null;
 
+    /**
+     * Initialize the scene. Formats tickLabels for the graph, Creates cellValueFactories, binds click events and sets up the year selector.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -172,6 +178,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         comboYearSelector.setOnAction((ActionEvent event) -> updateProductData());
     }
 
+    /**
+     * Updates the data in the main product list and the product details
+     */
     public void update() {
         //Product List
         //Load products and create display products
@@ -259,7 +268,6 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
     /**
      * Shows the supply of a product at the end of the month
-     * <p>
      * Inserts the data from the database into the table underneath the graph.
      */
     private ProductDetailsTableData getProductQuantity(String productID, Year year) {

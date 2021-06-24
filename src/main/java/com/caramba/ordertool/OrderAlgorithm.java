@@ -10,6 +10,11 @@ import java.util.Map;
 
 public class OrderAlgorithm {
 
+    /**
+     * Generates a recommendation list based on projected sales, estimated delivery times, current stock, sales in the past 12 months and seasonal trends.
+     *
+     * @return a RecommendationList with the recommend orders
+     */
     public RecommendationList createRecommendations() {
         RecommendationList result = new RecommendationList();
         SupplierList suppliers = OrderTool.getSuppliers();
@@ -67,6 +72,10 @@ public class OrderAlgorithm {
 
     /**
      * Calculates how many products to order based on current stock and expected sales
+     *
+     * @param productID the id of the product to recommend an order for
+     * @param date      the yearMonth in wich the products are expected to be sold
+     * @return the amount of units that are recommended to order before the start of the specified yearMonth
      */
     public int RecommendOrderAmount(String productID, YearMonth date) {
         int minStock = getAverageSoldLast12Months(productID);
@@ -82,7 +91,10 @@ public class OrderAlgorithm {
     }
 
     /**
-     * What is the average sold products for the last 12 months
+     * Returns the average sold units for the last 12 months
+     *
+     * @param productID the id of the product to get the average of
+     * @return the average amount of units sold
      */
     public int getAverageSoldLast12Months(String productID) {
         SalesList saleslist = OrderTool.getSales().getSalesByProduct(productID);
@@ -104,6 +116,10 @@ public class OrderAlgorithm {
     /**
      * Returns the expected stock of the given product at the start of the given yearMonth
      * This assumes that the full projected sales amount is sold every month, and no extra products are ordered
+     *
+     * @param productID the id of the product to estimate the future stock for
+     * @param date      the date to predict the stock for
+     * @return the amount of units expected to be in stock
      */
     public int getProjectedStock(String productID, YearMonth date) {
         if (date.isBefore(YearMonth.now())) {
@@ -131,9 +147,9 @@ public class OrderAlgorithm {
      * Calculates how many units of a certain product is expected to be sold in the given month
      * based on the median of sales per month on record.
      *
-     * @param productID The uuid of the product to check
+     * @param productID The id of the product to check
      * @param date      The yearMonth to get the projected sales for. Must be in the future.
-     * @return The amount to order
+     * @return The amount expected to be sold
      */
     public int getProjectedSaleAmount(String productID, YearMonth date) {
         if (date.isBefore(YearMonth.now())) {

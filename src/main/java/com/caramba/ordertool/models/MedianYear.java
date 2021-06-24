@@ -12,18 +12,17 @@ import java.util.Map;
 public class MedianYear {
     private final int[] saleQuantities;
 
-    private MedianYear(int[] saleQuantities) {
+    /**
+     * Private constructor for MedianYear
+     *
+     * @param saleQuantities int array representing the amount of units sold in a certain month. The month corresponds to the index of the array: i=0 is january, i=1 february ect.
+     * @throws IllegalArgumentException if the array size is not 12
+     */
+    private MedianYear(int[] saleQuantities) throws IllegalArgumentException {
         if (saleQuantities.length != 12) {
             throw new IllegalArgumentException();
         }
         this.saleQuantities = saleQuantities;
-    }
-
-    public int getByMonthNumber(int monthNumber) {
-        if (monthNumber < 1 || monthNumber > 12) {
-            throw new IllegalArgumentException();
-        }
-        return saleQuantities[monthNumber - 1];
     }
 
     /**
@@ -78,6 +77,12 @@ public class MedianYear {
         return new MedianYear(median);
     }
 
+    /**
+     * Calculates the median from an arraylist with integers. If there are an even amount of numbers, the average between the two middle values is returned.
+     *
+     * @param arrayList the numbers to get the median of
+     * @return the median of the array
+     */
     private static int getMedianFromArrayList(ArrayList<Integer> arrayList) {
         Collections.sort(arrayList);
         if (arrayList.size() == 0) {
@@ -92,6 +97,20 @@ public class MedianYear {
             //odd
             return arrayList.get((int) Math.ceil((float) arrayList.size() / 2) - 1);
         }
+    }
+
+    /**
+     * Getter for salesQuantity.
+     *
+     * @param monthNumber month number to get the sales quantity for ( 1 = january, ect.)
+     * @return amount of units sold
+     * @throws IllegalArgumentException if the specified month number is outside the 1 - 12 range
+     */
+    public int getByMonthNumber(int monthNumber) {
+        if (monthNumber < 1 || monthNumber > 12) {
+            throw new IllegalArgumentException();
+        }
+        return saleQuantities[monthNumber - 1];
     }
 
 }

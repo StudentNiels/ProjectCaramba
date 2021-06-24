@@ -35,6 +35,9 @@ public class SupplierController implements Initializable, ViewController {
     private TableColumn<Product, Integer> colProductDescription;
 
 
+    /**
+     * Sets up the supplier view by creating the cellValueFactories and binding the click event
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colSupplierName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -50,6 +53,9 @@ public class SupplierController implements Initializable, ViewController {
         });
     }
 
+    /**
+     * Updates the data in the tables
+     */
     @Override
     public void update() {
         SupplierList suppliers = OrderTool.getSuppliers();
@@ -58,6 +64,11 @@ public class SupplierController implements Initializable, ViewController {
         tableSuppliers.setItems(observableList);
     }
 
+    /**
+     * Shows the products offered by the specified supplier in the table
+     *
+     * @param supplier the supplier of wich to show the products for
+     */
     public void showProducts(Supplier supplier) {
         if (supplier != null) {
             ProductList productList = supplier.getProducts();

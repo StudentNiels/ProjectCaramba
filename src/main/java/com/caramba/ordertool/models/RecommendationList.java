@@ -7,43 +7,42 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A collection of recommendations
+ */
 public class RecommendationList {
-    private ArrayList<Recommendation> recommendations;
+    private ArrayList<Recommendation> recommendations = new ArrayList<>();
 
-    public RecommendationList() {
-        this.recommendations = new ArrayList<>();
-    }
-
+    /**
+     * Add the specified recommendation to this list.
+     *
+     * @param recommendation the recommendation to add
+     */
     public void addRecommendation(Recommendation recommendation) {
         recommendations.add(recommendation);
     }
 
+    /**
+     * Returns an arraylist with all the recommendations in this list
+     *
+     * @return an arraylist with recommendations
+     */
     public ArrayList<Recommendation> getRecommendations() {
         return recommendations;
     }
 
+    /**
+     * Set the arraylist of recommendations directly
+     *
+     * @param recommendations arraylist of recommendations to set
+     */
     public void setRecommendations(ArrayList<Recommendation> recommendations) {
         this.recommendations = recommendations;
     }
 
-    public HashMap<String, ArrayList<LocalDateTime>> getRecommendationDates() {
-        HashMap<String, ArrayList<LocalDateTime>> dateTimes = new HashMap<>();
-        ArrayList<LocalDateTime> finalOrderDates = new ArrayList<>();
-        ArrayList<LocalDateTime> creationDates = new ArrayList<>();
-
-        for (Recommendation recommendation : this.recommendations) {
-            if (recommendation.getFinalOrderDate() != null) {
-                finalOrderDates.add(LocalDateTime.of(recommendation.getFinalOrderDate(), LocalTime.MAX));
-            } else {
-                creationDates.add(recommendation.getCreationDate());
-            }
-        }
-        dateTimes.put("CreationDate", creationDates);
-        dateTimes.put("FinalOrderDate", finalOrderDates);
-
-        return dateTimes;
-    }
-
+    /**
+     * Sorts the recommendations of the recommendationList by final order date and creation date.
+     */
     public void sortRecommendationsByDate() {
         ArrayList<Recommendation> tempList = this.recommendations;
         ArrayList<Recommendation> sortedList = new ArrayList<>();
@@ -96,6 +95,24 @@ public class RecommendationList {
             }
         }
         setRecommendations(sortedList);
+    }
+
+    private HashMap<String, ArrayList<LocalDateTime>> getRecommendationDates() {
+        HashMap<String, ArrayList<LocalDateTime>> dateTimes = new HashMap<>();
+        ArrayList<LocalDateTime> finalOrderDates = new ArrayList<>();
+        ArrayList<LocalDateTime> creationDates = new ArrayList<>();
+
+        for (Recommendation recommendation : this.recommendations) {
+            if (recommendation.getFinalOrderDate() != null) {
+                finalOrderDates.add(LocalDateTime.of(recommendation.getFinalOrderDate(), LocalTime.MAX));
+            } else {
+                creationDates.add(recommendation.getCreationDate());
+            }
+        }
+        dateTimes.put("CreationDate", creationDates);
+        dateTimes.put("FinalOrderDate", finalOrderDates);
+
+        return dateTimes;
     }
 
 }

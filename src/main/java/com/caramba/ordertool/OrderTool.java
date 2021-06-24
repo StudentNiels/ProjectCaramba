@@ -45,47 +45,77 @@ public class OrderTool extends javafx.application.Application {
         NotificationManager.show(new Notification(NotificationType.INFO, "Finished loading from firebase"));
     }
 
+    /**
+     * \
+     * Returns all products registered to the orderTool
+     *
+     * @return ProductList with all products
+     */
     public static ProductList getProducts() {
         return products;
     }
 
+    /**
+     * Returns all suppliers registered to the orderTool
+     *
+     * @return SupplierList with all suppliers
+     */
     public static SupplierList getSuppliers() {
         return suppliers;
     }
 
+    /**
+     * Returns all sales registered to the orderTool
+     *
+     * @return SalesList with all sales
+     */
     public static SalesList getSales() {
         return sales;
     }
 
+    /**
+     * Returns all recommendations registered to the orderTool
+     *
+     * @return RecommendationList with all recommendations
+     */
     public static RecommendationList getRecommendations() {
         return recommendations;
     }
 
+    /**
+     * Returns a hashmap with the history of amount of units sold per month. Uses the YearMonth of the history as key and the amount of units sold as value
+     *
+     * @param productID id of product to get the history of
+     * @return hashmap with the history of amount of units sold per month
+     */
     public static Map<YearMonth, Integer> getProductHistoryQuantity(String productID) {
         return config.getProductHistoryQuantity(productID);
     }
 
+    /**
+     * Returns the FireStoreConfig
+     *
+     * @return the FireStoreConfig
+     */
     public static FireStoreConfig getConfig() {
         return config;
     }
 
+    /**
+     * Returns the main javafx stage of the application
+     *
+     * @return the main stage
+     */
     public static Stage getMainStage() {
         return mainStage;
     }
 
-// --Commented out by Inspection START (24-6-2021 13:26):
-//    public static void addSale(String productID, String date, int amount){
-//        //debug stuff for adding sales quickly
-//        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-//        try {
-//            Timestamp time = Timestamp.of(format.parse(date));
-//            config.addSale(time, productID, amount);
-//        } catch (ParseException e) {
-//            NotificationManager.addExceptionError(e);
-//        }
-//    }
-// --Commented out by Inspection STOP (24-6-2021 13:26)
-
+    /**
+     * Starts the javafx application and loads the app.fxml
+     *
+     * @param stage the main javafx stage of the application
+     * @throws IOException if the app.fxml could not be loaded
+     */
     @Override
     public void start(Stage stage) throws IOException {
         //create the main window
@@ -104,8 +134,6 @@ public class OrderTool extends javafx.application.Application {
 
         //load from db
         OrderTool.loadFieldsFromDB();
-
-        //test for recommendations
 
         //send data to controllers
         viewController.update();

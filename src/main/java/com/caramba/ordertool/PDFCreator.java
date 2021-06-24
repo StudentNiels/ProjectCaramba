@@ -22,6 +22,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Used to save recommendations to PDF files
+ */
 public class PDFCreator {
     private final String path;
     private final String filename;
@@ -30,6 +33,12 @@ public class PDFCreator {
 
     private final PDDocument document = new PDDocument();
 
+    /**
+     * Constructor for the PDFCreator
+     *
+     * @param path           path to save the file to
+     * @param recommendation the recommendation to save
+     */
     public PDFCreator(String path, Recommendation recommendation) {
         this.filename = path.substring(path.lastIndexOf("/") + 1);
         this.path = path;
@@ -48,6 +57,9 @@ public class PDFCreator {
         }
     }
 
+    /**
+     * Writes recommended products to the pdf
+     */
     public void addProducts() {
         PDPage page = new PDPage(PDRectangle.A4);
 
@@ -110,6 +122,9 @@ public class PDFCreator {
         document.addPage(page);
     }
 
+    /**
+     * Attempt to save the file
+     */
     public void save() {
         try {
             document.save(path);
