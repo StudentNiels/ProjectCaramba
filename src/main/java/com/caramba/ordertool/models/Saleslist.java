@@ -1,4 +1,4 @@
-package com.caramba.ordertool;
+package com.caramba.ordertool.models;
 
 /*
 Als: medewerker van de inkoop

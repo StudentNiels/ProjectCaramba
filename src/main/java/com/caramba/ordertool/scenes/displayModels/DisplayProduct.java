@@ -1,7 +1,7 @@
 package com.caramba.ordertool.scenes.displayModels;
 
-import com.caramba.ordertool.Supplier;
-import com.caramba.ordertool.SupplierList;
+import com.caramba.ordertool.models.Supplier;
+import com.caramba.ordertool.models.SupplierList;
 
 /**
  * model used by the main product overview table in the product view

@@ -1,4 +1,4 @@
-package com.caramba.ordertool;
+package com.caramba.ordertool.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

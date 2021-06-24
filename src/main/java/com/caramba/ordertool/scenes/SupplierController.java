@@ -1,6 +1,10 @@
 package com.caramba.ordertool.scenes;
 
 import com.caramba.ordertool.*;
+import com.caramba.ordertool.models.Product;
+import com.caramba.ordertool.models.ProductList;
+import com.caramba.ordertool.models.Supplier;
+import com.caramba.ordertool.models.SupplierList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

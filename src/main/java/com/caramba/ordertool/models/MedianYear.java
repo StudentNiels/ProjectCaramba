@@ -1,4 +1,4 @@
-package com.caramba.ordertool;
+package com.caramba.ordertool.models;
 
 //represents a typical year of sales of a certain product
 public class MedianYear {

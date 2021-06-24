@@ -1,5 +1,7 @@
 package com.caramba.ordertool;
 
+import com.caramba.ordertool.models.Product;
+import com.caramba.ordertool.models.Recommendation;
 import com.caramba.ordertool.notifications.Notification;
 import com.caramba.ordertool.notifications.NotificationManager;
 import com.caramba.ordertool.notifications.NotificationType;

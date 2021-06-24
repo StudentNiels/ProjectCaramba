@@ -1,4 +1,4 @@
-package com.caramba.ordertool;
+package com.caramba.ordertool.models;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;

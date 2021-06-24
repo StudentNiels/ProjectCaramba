@@ -1,5 +1,8 @@
-package com.caramba.ordertool;
+package com.caramba.ordertool.models;
 
+
+import com.caramba.ordertool.models.Product;
+import com.caramba.ordertool.models.ProductList;
 
 import java.util.UUID;
 
