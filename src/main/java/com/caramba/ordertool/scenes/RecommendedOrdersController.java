@@ -1,6 +1,7 @@
 package com.caramba.ordertool.scenes;
 
 import com.caramba.ordertool.*;
+import com.caramba.ordertool.scenes.displayModels.ProductQuantityPair;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -39,7 +40,6 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
     private Label recommendation_label;
 
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -73,10 +73,10 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 //supplier name
                 Supplier supplier = recommendation.getSupplier();
                 String supplierName = null;
-                if(supplier != null){
+                if (supplier != null) {
                     supplierName = supplier.getName();
                 }
-                if(supplierName == null){
+                if (supplierName == null) {
                     supplierName = "(Leverancier onbekend)";
                 }
                 pane.setText(" Order voor: " + supplierName + " " + pane.getText());
@@ -85,17 +85,17 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
                 //Order for date
                 YearMonth yearMonthToOrderFor = recommendation.getYearMonthToOrderFor();
-                if(yearMonthToOrderFor != null){
+                if (yearMonthToOrderFor != null) {
                     Text textYearMonthToOrderFor = (Text) pane.getContent().lookup("#textOrderForDate");
                     textYearMonthToOrderFor.setText(yearMonthToOrderFor.format(yearMonthFormatter));
                 }
 
                 //Final order date
                 LocalDate finalOrderDate = recommendation.getFinalOrderDate();
-                if(finalOrderDate != null){
+                if (finalOrderDate != null) {
                     Text textFinalOrderDate = (Text) pane.getContent().lookup("#textFinalOrderDate");
                     String s = finalOrderDate.format(finalOrderDateDateFormatter);
-                    if(supplier != null){
+                    if (supplier != null) {
                         s = s + " (Geschatte levertijd is " + supplier.getAvgDeliveryTime() + " dag(en))";
                     }
                     textFinalOrderDate.setText(s);
@@ -103,12 +103,12 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
                 //products
                 //create the table and columns
-                TableView<productQuantityPair> table = (TableView<productQuantityPair>) pane.getContent().lookup("#tableRecommendedProducts");
-                TableColumn<productQuantityPair, String> colProductNum = new TableColumn<>("Artikel nummer");
+                TableView<ProductQuantityPair> table = (TableView<ProductQuantityPair>) pane.getContent().lookup("#tableRecommendedProducts");
+                TableColumn<ProductQuantityPair, String> colProductNum = new TableColumn<>("Artikel nummer");
                 colProductNum.setCellValueFactory(new PropertyValueFactory<>("productNum"));
-                TableColumn<productQuantityPair, String> colProductDescription = new TableColumn<>("Artikel beschrijving");
+                TableColumn<ProductQuantityPair, String> colProductDescription = new TableColumn<>("Artikel beschrijving");
                 colProductDescription.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
-                TableColumn<productQuantityPair, String> colAmount = new TableColumn<>("Te bestellen hoeveelheid");
+                TableColumn<ProductQuantityPair, String> colAmount = new TableColumn<>("Te bestellen hoeveelheid");
                 colAmount.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
                 table.getColumns().add(colProductNum);
@@ -116,31 +116,30 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 table.getColumns().add(colAmount);
 
 
-
-                ObservableList<productQuantityPair> quantityPairs = FXCollections.observableArrayList();
+                ObservableList<ProductQuantityPair> quantityPairs = FXCollections.observableArrayList();
                 for (Map.Entry<Product, Integer> entry : recommendation.getProductRecommendation().entrySet()) {
                     Product k = entry.getKey();
                     Integer v = entry.getValue();
-                    quantityPairs.add(new productQuantityPair(k.getProductNum(), k.getDescription(), v));
+                    quantityPairs.add(new ProductQuantityPair(k.getProductNum(), k.getDescription(), v));
                 }
                 table.setItems(quantityPairs);
 
                 //checkbox
                 CheckBox checkConfirm = (CheckBox) pane.getGraphic().lookup("#checkConfirm");
                 checkConfirm.setOnAction((ActionEvent event) -> {
-                    if(recommendation.isConfirmed()){
+                    if (recommendation.isConfirmed()) {
                         recommendation.setConfirmed(false);
-                    }else{
+                    } else {
                         recommendation.setConfirmed(true);
                     }
                     update();
                 });
 
                 //choose which accordion to put the pane in
-                if(recommendation.isConfirmed()){
+                if (recommendation.isConfirmed()) {
                     checkConfirm.setSelected(true);
                     accordionCheckedRecommendations.getPanes().add(pane);
-                }else{
+                } else {
                     accordionNewRecommendations.getPanes().add(pane);
                 }
 
@@ -159,7 +158,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
     }
 
 
-    public void saveFile(){
+    public void saveFile() {
         Stage stage = OrderTool.getMainStage();
         FileChooser chooser = new FileChooser();
         String pdfFileDescription = "PDF file";
@@ -172,45 +171,18 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         File selectedFile = chooser.showSaveDialog(stage);
         String selectedFileType = chooser.getSelectedExtensionFilter().getDescription();
 
-        if(selectedFile != null){
-            if(selectedFileType.equals(pdfFileDescription)){
+        if (selectedFile != null) {
+            if (selectedFileType.equals(pdfFileDescription)) {
                 PDFCreator creator = new PDFCreator(selectedFile.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
                 creator.addProducts();
                 creator.save();
-            }else if(selectedFileType.equals(csvFileDescription)){
+            } else if (selectedFileType.equals(csvFileDescription)) {
                 CSVCreator creator = new CSVCreator();
                 creator.saveRecommendation(selectedFile.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
             }
-        }else{
+        } else {
             System.out.println("The process was cancelled");
         }
 
     }
-    //getters are used by javafx, but IntelliJ doesn't recognize this, so we suppress the warnings
-    //todo use this in the whole app
-    @SuppressWarnings("unused")
-    public class productQuantityPair {
-        String productNum;
-        String productDescription;
-        int quantity;
-
-        public productQuantityPair(String productNum, String productDescription, int quantity) {
-            this.productNum = productNum;
-            this.productDescription = productDescription;
-            this.quantity = quantity;
-        }
-
-        public String getProductNum() {
-            return productNum;
-        }
-
-        public String getProductDescription() {
-            return productDescription;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-    }
 }
-
