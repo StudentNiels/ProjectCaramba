@@ -5,7 +5,10 @@ import com.caramba.ordertool.notifications.NotificationManager;
 import com.caramba.ordertool.notifications.NotificationType;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
@@ -13,8 +16,14 @@ import com.google.firebase.cloud.FirestoreClient;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class FireStoreConfig {
@@ -24,15 +33,15 @@ public class FireStoreConfig {
     /**
      * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
      */
-    public void fireStoreConfig(){
+    public void fireStoreConfig() {
         try {
             FileInputStream serviceAccount = null;
-            try{
+            try {
                 serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
-            }catch (FileNotFoundException e){
+            } catch (FileNotFoundException e) {
                 try {
                     serviceAccount = new FileInputStream("/car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
-                }catch (FileNotFoundException e2){
+                } catch (FileNotFoundException e2) {
                     NotificationManager.add(new Notification(NotificationType.ERROR, "Could not find firebase credentials. Please place the account credentials json in the same directory as the OrderTool jar"));
                     System.exit(1);
                 }
@@ -40,42 +49,11 @@ public class FireStoreConfig {
 
             FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
             FirebaseApp.initializeApp(options);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             NotificationManager.addExceptionError(e);
         }
         db = FirestoreClient.getFirestore();
         //region Template interactions
-        /*
-        //Create product document
-        HashMap<String, Object> setupP = setupProductDocument("Zomer", 10, "Naturado Onbemeste Tuinaarde 20 liter", "1234568", 60);
-        addProductDocument("Products", "1236", setupP);
-
-        //Create sales document
-        HashMap<String, Object> setupS = setupSalesDocument("1234568", getTimeStamp());
-        addSalesDocument("1234", setupS);
-
-        //Create supplier document
-        HashMap<String, Object> setupSup = setupSuppliersDocument(21, "Bremen");
-        addSuppliersDocument("00002", setupSup);
-
-        //Read individual
-        readFromDB("Products", "123456");
-
-        //List all products or sales or suppliers
-        retrieveAllProducts();
-        retrieveAllSales();
-        retrieveAllSuppliers();
-
-        //Update a field of a product, sale, supplier
-        updateDocument("Products", "1234", "Supply", 70);
-
-        //Delete a document from a collection
-        deleteDocument("Sales", "1234");
-
-        //Delete an entire collection in batches
-        deleteCollection("test", 1);
-        */
         // endregion
 
         //Read individual
@@ -86,14 +64,14 @@ public class FireStoreConfig {
     /**
      * Make a list of all the products
      */
-    public ProductList retrieveAllProducts(){
+    public ProductList retrieveAllProducts() {
         ProductList result = new ProductList();
         Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
         for (DocumentReference collRef : collections) {
             ApiFuture<DocumentSnapshot> promise = collRef.get();
             try {
                 DocumentSnapshot docSnapshot = promise.get();
-                if(docSnapshot.exists()){
+                if (docSnapshot.exists()) {
                     Product p = docSnapshot.toObject(Product.class);
                     result.add(collRef.getId(), p);
                 }
@@ -108,13 +86,13 @@ public class FireStoreConfig {
 
     /**
      * Saves the current quantity of the product to the history of this year and month.
-     *
+     * <p>
      * This is currently run every time the products are retrieved
      * Ideally this should be run automatically once at the end of the month instead
      * This could be probably be done using firebase's 'scheduled functions' feature
      * However this feature is exclusive to the paid plan of firebase, which we don't currently have access to
      */
-    public void saveProductQuantityHistory(ProductList productList){
+    public void saveProductQuantityHistory(ProductList productList) {
         LocalDate now = LocalDate.now();
         for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
             String k = entry.getKey();
@@ -128,19 +106,18 @@ public class FireStoreConfig {
     /**
      * Make a list of all the Sales
      */
-    public Saleslist retrieveAllSales(){
+    public Saleslist retrieveAllSales() {
         Saleslist result = new Saleslist();
         Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
-        for (DocumentReference collRef : collections)
-        {
+        for (DocumentReference collRef : collections) {
             //add subcollection to hashmap
             HashMap<String, Integer> products = new HashMap<>();
             Iterable<DocumentReference> subCollections = collRef.collection("SalesList").listDocuments();
-            for(DocumentReference subRef : subCollections){
+            for (DocumentReference subRef : subCollections) {
                 ApiFuture<DocumentSnapshot> promise = subRef.get();
-                try{
+                try {
                     DocumentSnapshot docSnapshot = promise.get();
-                    if(docSnapshot.exists()){
+                    if (docSnapshot.exists()) {
                         products.put(subRef.getId(), docSnapshot.getLong("amount").intValue());
                     }
                 } catch (InterruptedException | ExecutionException e) {
@@ -152,7 +129,7 @@ public class FireStoreConfig {
             ApiFuture<DocumentSnapshot> promise = collRef.get();
             try {
                 DocumentSnapshot docSnapshot = promise.get();
-                if(docSnapshot.exists()){
+                if (docSnapshot.exists()) {
                     Date d = docSnapshot.getDate("date");
                     Sale s = new Sale(products, d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
                     result.addToSalesList(s);
@@ -168,19 +145,18 @@ public class FireStoreConfig {
     /**
      * Make a list of all the suppliers
      */
-    public SupplierList retrieveAllSuppliers(){
+    public SupplierList retrieveAllSuppliers() {
         SupplierList result = new SupplierList();
         Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
-        for (DocumentReference collRef : collections)
-        {
+        for (DocumentReference collRef : collections) {
             //add subcollection to arraylist
             ArrayList<Product> products = new ArrayList<>();
             Iterable<DocumentReference> subCollections = collRef.collection("products").listDocuments();
-            for (DocumentReference subRef : subCollections){
+            for (DocumentReference subRef : subCollections) {
                 ApiFuture<DocumentSnapshot> promise = subRef.get();
-                try{
+                try {
                     DocumentSnapshot docSnapshot = promise.get();
-                    if(docSnapshot.exists()){
+                    if (docSnapshot.exists()) {
                         String id = subRef.getId();
                         Product product = OrderTool.getProducts().get(id);
                         products.add(product);
@@ -194,13 +170,12 @@ public class FireStoreConfig {
             ApiFuture<DocumentSnapshot> promise = collRef.get();
             try {
                 DocumentSnapshot docSnapshot = promise.get();
-                if(docSnapshot.exists()){
-                    Integer avg = docSnapshot.getDouble("avgDeliveryTime").intValue();
+                if (docSnapshot.exists()) {
+                    int avg = docSnapshot.getDouble("avgDeliveryTime").intValue();
                     String n = docSnapshot.getString("name");
                     Supplier s = new Supplier(n, avg);
                     int i;
-                    for(i = 0; i < products.size();i++)
-                    {
+                    for (i = 0; i < products.size(); i++) {
                         s.addProduct(products.get(i));
                     }
                     result.add(collRef.getId(), s);
@@ -227,15 +202,15 @@ public class FireStoreConfig {
                 ApiFuture<DocumentSnapshot> promise = monthDocReference.get();
                 try {
                     DocumentSnapshot docSnapshot = promise.get();
-                    if (docSnapshot.exists()){
+                    if (docSnapshot.exists()) {
                         try {
                             int month = Integer.parseInt(monthDocReference.getId());
                             int year = Integer.parseInt(yearDocReference.getId());
                             Long quantity = docSnapshot.getLong("quantity");
-                            if(quantity != null) {
+                            if (quantity != null) {
                                 result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
                             }
-                        }catch (NumberFormatException e){
+                        } catch (NumberFormatException e) {
                             NotificationManager.add(new Notification(NotificationType.WARNING, "The database contains an invalid value. Please check if the database formatted correctly."));
                         }
                     }
@@ -246,8 +221,9 @@ public class FireStoreConfig {
         }
         return result;
     }
-                //Suppliers and products need to be loaded before recommendations!
-    public RecommendationList getRecommendations(){
+
+    //Suppliers and products need to be loaded before recommendations!
+    public RecommendationList getRecommendations() {
         SupplierList suppliers = OrderTool.getSuppliers();
         ProductList products = OrderTool.getProducts();
         RecommendationList result = new RecommendationList();
@@ -272,7 +248,7 @@ public class FireStoreConfig {
                     }
                     LocalDateTime creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     Recommendation rec = new Recommendation(supplier, YearMonth.of(year, month), creationLocalDateTime);
-                    if(isConfirmed != null){
+                    if (isConfirmed != null) {
                         rec.setConfirmed(isConfirmed);
                     }
                     Iterable<DocumentReference> productDocumentReferences = monthDocumentReference.collection("products").listDocuments();
@@ -284,7 +260,7 @@ public class FireStoreConfig {
                         } catch (InterruptedException | ExecutionException e) {
                             NotificationManager.addExceptionError(e);
                         }
-                        if(productQuantity != null && productQuantity != 0){
+                        if (productQuantity != null && productQuantity != 0) {
                             Product p = products.get(productID);
                             rec.addProductToRecommendation(p, productQuantity);
                         }
@@ -296,11 +272,11 @@ public class FireStoreConfig {
         return result;
     }
 
-    public void confirmRecommendation(Recommendation recommendation, boolean isConfirmed){
+    public void confirmRecommendation(Recommendation recommendation, boolean isConfirmed) {
         //get key of the supplier
         String supplierKey = null;
         for (Map.Entry<String, Supplier> supplierEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
-            if(supplierEntry.getValue() == recommendation.getSupplier()){
+            if (supplierEntry.getValue() == recommendation.getSupplier()) {
                 supplierKey = supplierEntry.getKey();
                 break;
             }
@@ -309,7 +285,7 @@ public class FireStoreConfig {
         ApiFuture<DocumentSnapshot> promise = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(yearMonthToOrderFor.getYear())).collection("months").document(Integer.toString(yearMonthToOrderFor.getMonthValue())).get();
         try {
             Map<String, Object> data = promise.get().getData();
-            if(data != null){
+            if (data != null) {
                 data.put("isConfirmed", isConfirmed);
                 db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(yearMonthToOrderFor.getYear())).collection("months").document(Integer.toString(yearMonthToOrderFor.getMonthValue())).set(data).get();
             }
@@ -322,17 +298,17 @@ public class FireStoreConfig {
     /**
      * Adds a recommendationList to the database. Does not overwrite if a recommendation of the Supplier and YearMonth already exist.
      */
-    public void addRecommendations(RecommendationList recommendationList){
+    public void addRecommendations(RecommendationList recommendationList) {
         for (Recommendation recommendation : recommendationList.getRecommendations()) {
             //get key of the supplier
             String supplierKey = null;
             for (Map.Entry<String, Supplier> supplierEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
-                if(supplierEntry.getValue() == recommendation.getSupplier()){
+                if (supplierEntry.getValue() == recommendation.getSupplier()) {
                     supplierKey = supplierEntry.getKey();
                     break;
                 }
             }
-            if(supplierKey == null){
+            if (supplierKey == null) {
                 break;
             }
             YearMonth date = recommendation.getYearMonthToOrderFor();
@@ -345,7 +321,7 @@ public class FireStoreConfig {
             ApiFuture<DocumentSnapshot> promise = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).get();
             try {
                 DocumentSnapshot doc = promise.get();
-                if(!doc.exists()){
+                if (!doc.exists()) {
                     db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).set(data);
                     for (Map.Entry<Product, Integer> entry : recommendation.getProductRecommendation().entrySet()) {
                         data.clear();
@@ -359,7 +335,7 @@ public class FireStoreConfig {
                 }
             } catch (ExecutionException e) {
                 NotificationManager.addExceptionError(e);
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 NotificationManager.add(new Notification(NotificationType.INFO, "File export was canceled"));
             }
         }

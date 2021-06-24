@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ProductOverviewViewController implements Initializable, ViewController {
+    private final static String[] MONTH_NAME = {"jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"};
+    private final OrderAlgorithm orderAlgo = new OrderAlgorithm();
     @FXML
     private TableView<DisplayProduct> tableProductOverview;
     @FXML
@@ -45,7 +47,6 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     private LineChart<String, Integer> lineChartProductTimeLine;
     @FXML
     private NumberAxis NumberAxisAmount;
-
     @FXML
     private TableView<ProductDetailsTableData> tableProductDetails;
     @FXML
@@ -76,7 +77,6 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     private TableColumn<ProductDetailsTableData, Integer> colProductDetailsNov;
     @FXML
     private TableColumn<ProductDetailsTableData, Integer> colProductDetailsDec;
-
     @FXML
     private TextField search_bar;
     @FXML
@@ -84,25 +84,20 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     @FXML
     private Button reset_button;
     private String search_value = "";
-
-
     private DisplayProduct selectedProduct = null;
     private Year selectedYear = null;
-    private final OrderAlgorithm orderAlgo = new OrderAlgorithm();
-
-    private final static String MONTH_NAME[] = { "jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec" };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         //set tickLabelFormatter
-        StringConverter<Number> tickLabelFormatter = new StringConverter<Number>() {
+        StringConverter<Number> tickLabelFormatter = new StringConverter<>() {
             @Override
             public String toString(Number object) {
                 //make sure all ticks are full ints, so no decimal numbers appear on the axis
-                if(object.doubleValue() == object.intValue()){
+                if (object.doubleValue() == object.intValue()) {
                     return object.intValue() + "";
-                }else{
+                } else {
                     return "";
                 }
             }
@@ -135,9 +130,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         colProductDetailsDec.setCellValueFactory(new PropertyValueFactory<>("decValue"));
 
 
-        tableProductOverview.setRowFactory(tableView -> {
-            return new TableRow<>();
-        });
+        tableProductOverview.setRowFactory(tableView -> new TableRow<>());
 
         tableProductOverview.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
@@ -147,7 +140,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         });
 
         search_bar.setOnKeyPressed((KeyEvent keyEvent) -> {
-            if(keyEvent.getCode().equals(KeyCode.ENTER)){
+            if (keyEvent.getCode().equals(KeyCode.ENTER)) {
                 search_value = search_bar.getCharacters().toString().toLowerCase();
                 update();
             }
@@ -169,14 +162,12 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         });
 
         //create year selector
-        for(int y = LocalDate.now().plusYears(1).getYear(); y >= 1900; y--) {
+        for (int y = LocalDate.now().plusYears(1).getYear(); y >= 1900; y--) {
             comboYearSelector.getItems().add(Year.of(y));
         }
         comboYearSelector.getSelectionModel().select(Year.now());
 
-        comboYearSelector.setOnAction((ActionEvent event) -> {
-            updateProductData();
-        });
+        comboYearSelector.setOnAction((ActionEvent event) -> updateProductData());
     }
 
     public void update() {
@@ -184,19 +175,19 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         //Load products and create display products
         ProductList productList = OrderTool.getProducts();
         ObservableList<DisplayProduct> observableList = FXCollections.observableArrayList();
-        if(search_value.equals("")){
+        if (search_value.equals("")) {
             for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
                 String k = entry.getKey();
                 Product p = entry.getValue();
                 SupplierList sl = OrderTool.getSuppliers();
                 observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
             }
-        }else{
+        } else {
             for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
                 String k = entry.getKey();
                 Product p = entry.getValue();
                 SupplierList sl = OrderTool.getSuppliers();
-                if(p.getDescription().toLowerCase().contains(search_value) || p.getProductNum().toLowerCase().contains(search_value)){
+                if (p.getDescription().toLowerCase().contains(search_value) || p.getProductNum().toLowerCase().contains(search_value)) {
                     observableList.add(new DisplayProduct(k, p.getProductNum(), p.getDescription(), p.getQuantity(), sl.getSuppliersSellingProduct(p)));
                 }
             }
@@ -209,11 +200,11 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     /**
-     *Shows the median sales per month of the selected year
+     * Shows the median sales per month of the selected year
      */
-    private ProductDetailsTableData getMedianYearData(String productID, Year year){
+    private ProductDetailsTableData getMedianYearData(String productID, Year year) {
         MedianYear my = orderAlgo.getMedianYear(OrderTool.getSales().getSalesUpToYear(year).getDateAmountMap(productID));
-        if(my != null) {
+        if (my != null) {
             ProductDetailsTableData medianYearTableData = createProductDetailsTableData("Mediaan verkopen per maand", "#33ccff", false);
             //this series is selected by default
             medianYearTableData.getCheckboxToggleVisible().setSelected(true);
@@ -228,15 +219,15 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     /**
-     *Shows the sales in the given year
+     * Shows the sales in the given year
      */
-    private ProductDetailsTableData getSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color){
+    private ProductDetailsTableData getSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color) {
         ProductDetailsTableData salesTableData = createProductDetailsTableData(displayName, color, false);
         Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
         for (int i = 1; i <= 12; i++) {
             YearMonth date = YearMonth.of(year.getValue(), i);
             //do not add data for the future
-            if(!date.isAfter(YearMonth.now())){
+            if (!date.isAfter(YearMonth.now())) {
                 int amount = sales.getSoldInYearMonth(productID, date);
                 salesTableData.setValue(i, amount);
             }
@@ -246,16 +237,16 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     /**
-     *Shows the amount of projected Sales in the selected year
+     * Shows the amount of projected Sales in the selected year
      */
-    private ProductDetailsTableData getProjectedSalesData(String productID, Year year){
+    private ProductDetailsTableData getProjectedSalesData(String productID, Year year) {
         ProductDetailsTableData projectedSalesTableData = createProductDetailsTableData("Verwachte verkoop", "#eb4034", true);
         Year now = Year.now();
-        if(!selectedYear.isBefore(now)){
+        if (!selectedYear.isBefore(now)) {
             int monthToStart;
-            if(selectedYear.equals(now)){
+            if (selectedYear.equals(now)) {
                 monthToStart = LocalDate.now().getMonth().getValue();
-            }else{
+            } else {
                 monthToStart = 1;
             }
             for (int m = monthToStart; m <= 12; m++) {
@@ -269,10 +260,10 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
     /**
      * Shows the supply of a product at the end of the month
-     *
+     * <p>
      * Inserts the data from the database into the table underneath the graph.
      */
-    private ProductDetailsTableData getProductQuantity(String productID, Year year){
+    private ProductDetailsTableData getProductQuantity(String productID, Year year) {
         ProductDetailsTableData productQuantity = createProductDetailsTableData("Voorraad", "#000f00", false);
         Map<YearMonth, Integer> productHistoryQuantityList = OrderTool.getProductHistoryQuantity(productID);
         for (Map.Entry<YearMonth, Integer> entry : productHistoryQuantityList.entrySet()) {
@@ -280,9 +271,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             Integer p = entry.getValue();
             for (int i = 1; i <= 12; i++) {
                 YearMonth date = YearMonth.of(year.getValue(), i);
-                if(k.equals(date))
-                {
-                    if(!date.isAfter(YearMonth.now())) {
+                if (k.equals(date)) {
+                    if (!date.isAfter(YearMonth.now())) {
                         productQuantity.setValue(i, p);
                     }
                 }
@@ -295,11 +285,12 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     /**
      * Converts table data to an XYseries that can be displayed in the chart
      */
-    private @Nonnull XYChart.Series<String, Integer> convertToChartSeries(ProductDetailsTableData productDetailsTableData){
+    private @Nonnull
+    XYChart.Series<String, Integer> convertToChartSeries(ProductDetailsTableData productDetailsTableData) {
         XYChart.Series<String, Integer> result = new XYChart.Series<>();
-        for(int i = 1; i <= 12; i++){
+        for (int i = 1; i <= 12; i++) {
             Integer value = productDetailsTableData.getMonthValue(i);
-            if(value != null){
+            if (value != null) {
                 result.getData().add(new XYChart.Data<>(MONTH_NAME[i - 1], value));
             }
         }
@@ -307,7 +298,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         return result;
     }
 
-    private void updateProductData(){
+    private void updateProductData() {
         selectedYear = comboYearSelector.getValue();
         if (selectedProduct != null && selectedYear != null) {
             String productID = selectedProduct.getInternalId();
@@ -317,7 +308,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
             //add the data
             tableData.add(getMedianYearData(productID, selectedYear));
-            tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true,"#64b000"));
+            tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true, "#64b000"));
             tableData.add(getProjectedSalesData(productID, selectedYear));
             tableData.add(getSalesData("Verkopen afeglopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false, "#009917"));
             tableData.add(getProductQuantity(productID, selectedYear));
@@ -331,7 +322,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         }
     }
 
-    private void updateChart(){
+    private void updateChart() {
         //clear chart
         lineChartProductTimeLine.getData().clear();
         //get the data from the table
@@ -339,34 +330,32 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         ArrayList<String> colorOrder = new ArrayList();
         for (ProductDetailsTableData ProductDetailsTableData : tableData) {
             //only display selected data
-            if(ProductDetailsTableData.getCheckboxToggleVisible().isSelected()){
+            if (ProductDetailsTableData.getCheckboxToggleVisible().isSelected()) {
                 XYChart.Series<String, Integer> series = convertToChartSeries(ProductDetailsTableData);
                 lineChartProductTimeLine.getData().add(series);
                 String color = ProductDetailsTableData.getColor();
-                if(color != null){
+                if (color != null) {
                     colorOrder.add(color);
                 }
-                if(ProductDetailsTableData.hasDashedLine()) {
+                if (ProductDetailsTableData.hasDashedLine()) {
                     series.getNode().setStyle("-fx-stroke-dash-array: 2 12 12 2;");
                 }
             }
         }
         //set the line colors
-        String styleString = "";
-        for(int i = 1; i <= colorOrder.size(); i++){
-            styleString = styleString + "CHART_COLOR_" + i + ": " + colorOrder.get(i - 1) + ";";
+        StringBuilder styleString = new StringBuilder();
+        for (int i = 1; i <= colorOrder.size(); i++) {
+            styleString.append("CHART_COLOR_").append(i).append(": ").append(colorOrder.get(i - 1)).append(";");
         }
-        if(!styleString.isEmpty()){
-            lineChartProductTimeLine.setStyle(styleString);
+        if (styleString.length() > 0) {
+            lineChartProductTimeLine.setStyle(styleString.toString());
         }
         //lineChartProductTimeLine.setStyle("CHART_COLOR_1: #33ccff ; CHART_COLOR_2: #64b000 ; CHART_COLOR_3: #00b80c;");
     }
 
-    private ProductDetailsTableData createProductDetailsTableData(String displayName, String color, boolean isDashed){
+    private ProductDetailsTableData createProductDetailsTableData(String displayName, String color, boolean isDashed) {
         CheckBox checkBox = new CheckBox();
-        checkBox.setOnAction((ActionEvent event) -> {
-            updateChart();
-        });
+        checkBox.setOnAction((ActionEvent event) -> updateChart());
         return new ProductDetailsTableData(displayName, checkBox, color, isDashed);
     }
 

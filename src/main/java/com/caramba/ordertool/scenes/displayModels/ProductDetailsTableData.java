@@ -10,6 +10,9 @@ import javafx.scene.control.CheckBox;
 public class ProductDetailsTableData {
     private final CheckBox checkboxToggleVisible;
     private final String name;
+    //style
+    private final String color;
+    private final boolean hasDashedLine;
     //the values need to be stored in separate fields like this in order for javafx to place them in a table
     private Integer janValue;
     private Integer febValue;
@@ -23,9 +26,6 @@ public class ProductDetailsTableData {
     private Integer octValue;
     private Integer novValue;
     private Integer decValue;
-    //style
-    private final String color;
-    private final boolean hasDashedLine;
 
     public ProductDetailsTableData(String name, CheckBox checkBox, String color, Boolean hasDashedLine) {
         this.name = name;
@@ -35,34 +35,21 @@ public class ProductDetailsTableData {
     }
 
     public Integer getMonthValue(int monthNumber) {
-        switch (monthNumber) {
-            case 1:
-                return janValue;
-            case 2:
-                return febValue;
-            case 3:
-                return marValue;
-            case 4:
-                return aprValue;
-            case 5:
-                return mayValue;
-            case 6:
-                return junValue;
-            case 7:
-                return julValue;
-            case 8:
-                return augValue;
-            case 9:
-                return septValue;
-            case 10:
-                return octValue;
-            case 11:
-                return novValue;
-            case 12:
-                return decValue;
-            default:
-                throw new IllegalArgumentException();
-        }
+        return switch (monthNumber) {
+            case 1 -> janValue;
+            case 2 -> febValue;
+            case 3 -> marValue;
+            case 4 -> aprValue;
+            case 5 -> mayValue;
+            case 6 -> junValue;
+            case 7 -> julValue;
+            case 8 -> augValue;
+            case 9 -> septValue;
+            case 10 -> octValue;
+            case 11 -> novValue;
+            case 12 -> decValue;
+            default -> throw new IllegalArgumentException();
+        };
     }
 
     public Integer getJanValue() {
@@ -131,44 +118,19 @@ public class ProductDetailsTableData {
 
     public void setValue(int monthToSet, Integer value) {
         switch (monthToSet) {
-            case 1:
-                this.janValue = value;
-                break;
-            case 2:
-                this.febValue = value;
-                break;
-            case 3:
-                this.marValue = value;
-                break;
-            case 4:
-                this.aprValue = value;
-                break;
-            case 5:
-                this.mayValue = value;
-                break;
-            case 6:
-                this.junValue = value;
-                break;
-            case 7:
-                this.julValue = value;
-                break;
-            case 8:
-                this.augValue = value;
-                break;
-            case 9:
-                this.septValue = value;
-                break;
-            case 10:
-                this.octValue = value;
-                break;
-            case 11:
-                this.novValue = value;
-                break;
-            case 12:
-                this.decValue = value;
-                break;
-            default:
-                throw new IllegalArgumentException();
+            case 1 -> this.janValue = value;
+            case 2 -> this.febValue = value;
+            case 3 -> this.marValue = value;
+            case 4 -> this.aprValue = value;
+            case 5 -> this.mayValue = value;
+            case 6 -> this.junValue = value;
+            case 7 -> this.julValue = value;
+            case 8 -> this.augValue = value;
+            case 9 -> this.septValue = value;
+            case 10 -> this.octValue = value;
+            case 11 -> this.novValue = value;
+            case 12 -> this.decValue = value;
+            default -> throw new IllegalArgumentException();
         }
     }
 

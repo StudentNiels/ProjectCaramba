@@ -79,10 +79,10 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 //supplier name
                 Supplier supplier = recommendation.getSupplier();
                 String supplierName = null;
-                if(supplier != null){
+                if (supplier != null) {
                     supplierName = supplier.getName();
                 }
-                if(supplierName == null){
+                if (supplierName == null) {
                     supplierName = "(Leverancier onbekend)";
                 }
                 pane.setText(" Order voor: " + supplierName + " " + pane.getText());
@@ -91,17 +91,17 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
                 //Order for date
                 YearMonth yearMonthToOrderFor = recommendation.getYearMonthToOrderFor();
-                if(yearMonthToOrderFor != null){
+                if (yearMonthToOrderFor != null) {
                     Text textYearMonthToOrderFor = (Text) pane.getContent().lookup("#textOrderForDate");
                     textYearMonthToOrderFor.setText(yearMonthToOrderFor.format(yearMonthFormatter));
                 }
 
                 //Final order date
                 LocalDate finalOrderDate = recommendation.getFinalOrderDate();
-                if(finalOrderDate != null){
+                if (finalOrderDate != null) {
                     Text textFinalOrderDate = (Text) pane.getContent().lookup("#textFinalOrderDate");
                     String s = finalOrderDate.format(finalOrderDateDateFormatter);
-                    if(supplier != null){
+                    if (supplier != null) {
                         s = s + " (Geschatte levertijd is " + supplier.getAvgDeliveryTime() + " dag(en))";
                     }
                     textFinalOrderDate.setText(s);
@@ -133,10 +133,10 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 //checkbox
                 CheckBox checkConfirm = (CheckBox) pane.getGraphic().lookup("#checkConfirm");
                 checkConfirm.setOnAction((ActionEvent event) -> {
-                    if(recommendation.isConfirmed()){
+                    if (recommendation.isConfirmed()) {
                         recommendation.setConfirmed(false);
                         OrderTool.getConfig().confirmRecommendation(recommendation, false);
-                    }else{
+                    } else {
                         recommendation.setConfirmed(true);
                         OrderTool.getConfig().confirmRecommendation(recommendation, true);
                     }
@@ -144,10 +144,10 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 });
 
                 //choose which accordion to put the pane in
-                if(recommendation.isConfirmed()){
+                if (recommendation.isConfirmed()) {
                     checkConfirm.setSelected(true);
                     accordionCheckedRecommendations.getPanes().add(pane);
-                }else{
+                } else {
                     accordionNewRecommendations.getPanes().add(pane);
                 }
 

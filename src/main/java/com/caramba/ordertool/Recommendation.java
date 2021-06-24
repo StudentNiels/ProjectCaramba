@@ -24,7 +24,7 @@ public class Recommendation {
         this.yearMonthToOrderFor = yearMonthToOrderFor;
     }
 
-    public void addProductToRecommendation(Product product, int amount){
+    public void addProductToRecommendation(Product product, int amount) {
         this.productRecommendation.put(product, amount);
     }
 

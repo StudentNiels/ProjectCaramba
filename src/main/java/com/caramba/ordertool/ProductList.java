@@ -18,7 +18,6 @@ public class ProductList {
         products.put(id, product);
     }
 
-    @SuppressWarnings("SuspiciousMethodCalls")
     public boolean contains(Product p) {
         return products.containsValue(p);
     }
@@ -28,12 +27,12 @@ public class ProductList {
     }
     //#endregion
 
-    public String getIDbyProduct(Product product){
+    public String getIDbyProduct(Product product) {
         for (Map.Entry<String, Product> entry : products.entrySet()) {
-           Product p  = entry.getValue();
-           if(product.equals(p)){
-               return entry.getKey();
-           }
+            Product p = entry.getValue();
+            if (product.equals(p)) {
+                return entry.getKey();
+            }
         }
         return null;
     }

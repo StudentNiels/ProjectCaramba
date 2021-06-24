@@ -11,7 +11,7 @@ public class Product {
         this.quantity = 0;
     }
 
-    public Product(){
+    public Product() {
 
     }
 

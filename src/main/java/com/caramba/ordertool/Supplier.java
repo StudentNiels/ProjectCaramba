@@ -1,8 +1,6 @@
 package com.caramba.ordertool;
 
 
-
-
 import java.util.UUID;
 
 public class Supplier {
@@ -17,7 +15,7 @@ public class Supplier {
     private final ProductList products = new ProductList();
 
 
-    public Supplier(String name, int avgDeliveryTime){
+    public Supplier(String name, int avgDeliveryTime) {
         this.name = name;
         this.avgDeliveryTime = avgDeliveryTime;
     }
@@ -35,15 +33,15 @@ public class Supplier {
         return products;
     }
 
-    public boolean containsProductWithKey(String k){
+    public boolean containsProductWithKey(String k) {
         return products.containsKey(k);
     }
 
     //endregion
 
-    public void addProduct(Product product){
+    public void addProduct(Product product) {
         String id = null;
-        while(id == null || containsProductWithKey(id)){
+        while (id == null || containsProductWithKey(id)) {
             //reroll key if there is a collision
             id = UUID.randomUUID().toString();
         }

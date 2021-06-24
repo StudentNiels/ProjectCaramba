@@ -31,7 +31,6 @@ public class SupplierController implements Initializable, ViewController {
     private TableColumn<Product, Integer> colProductDescription;
 
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colSupplierName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -42,7 +41,7 @@ public class SupplierController implements Initializable, ViewController {
 
         tableSuppliers.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                 showProducts(tableSuppliers.getSelectionModel().getSelectedItem());
+                showProducts(tableSuppliers.getSelectionModel().getSelectedItem());
             }
         });
     }
@@ -51,21 +50,17 @@ public class SupplierController implements Initializable, ViewController {
     public void update() {
         SupplierList suppliers = OrderTool.getSuppliers();
         ObservableList<Supplier> observableList = FXCollections.observableArrayList();
-        for (Supplier supplier : suppliers.getSuppliers().values()) {
-            observableList.add(supplier);
-        }
-        tableSuppliers.setItems(observableList);;
+        observableList.addAll(suppliers.getSuppliers().values());
+        tableSuppliers.setItems(observableList);
     }
 
-    public void showProducts(Supplier supplier){
-        if(supplier != null){
+    public void showProducts(Supplier supplier) {
+        if (supplier != null) {
             ProductList productList = supplier.getProducts();
             ObservableList<Product> observableList = FXCollections.observableArrayList();
-            for (Product product : productList.getProducts().values()) {
-                observableList.add(product);
-            }
+            observableList.addAll(productList.getProducts().values());
             tableProducts.setItems(observableList);
-        }else{
+        } else {
             tableProducts.setItems(null);
         }
     }

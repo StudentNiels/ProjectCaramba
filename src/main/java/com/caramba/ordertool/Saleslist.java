@@ -17,11 +17,11 @@ public class Saleslist {
 
     private final ArrayList<Sale> sales;
 
-    public Saleslist(){
+    public Saleslist() {
         this.sales = new ArrayList<>();
     }
 
-    public void addToSalesList(Sale sale){
+    public void addToSalesList(Sale sale) {
         this.sales.add(sale);
     }
 
@@ -32,10 +32,10 @@ public class Saleslist {
     /**
      * @return A new sales list that only includes sales with the given product. Unrelated products are removed from the sale entry
      */
-    public Saleslist getSalesByProduct(String productID){
+    public Saleslist getSalesByProduct(String productID) {
         Saleslist soldProducts = new Saleslist();
         for (Sale sale : this.sales) {
-            if(sale.getProducts().containsKey(productID)){
+            if (sale.getProducts().containsKey(productID)) {
                 Sale newSale = new Sale(sale.getDate());
                 newSale.addToProducts(productID, sale.getAmountByID(productID));
                 soldProducts.addToSalesList(newSale);
@@ -45,14 +45,13 @@ public class Saleslist {
     }
 
     /**
-     *
      * @return A new salelist with all the sales before the given year
      */
-    public Saleslist getSalesBeforeYearMonth(YearMonth yearMonth){
+    public Saleslist getSalesBeforeYearMonth(YearMonth yearMonth) {
         Saleslist result = new Saleslist();
         for (Sale sale : this.sales) {
             YearMonth saleYearMonth = YearMonth.of(sale.getDate().getYear(), sale.getDate().getMonthValue());
-            if(saleYearMonth.isBefore(yearMonth)){
+            if (saleYearMonth.isBefore(yearMonth)) {
                 result.addToSalesList(sale);
             }
         }
@@ -60,11 +59,9 @@ public class Saleslist {
     }
 
     /**
-     *
-     * @param year
      * @return Saleslist including all the sales made up to and including the given year
      */
-    public Saleslist getSalesUpToYear(Year year){
+    public Saleslist getSalesUpToYear(Year year) {
         YearMonth oneMonthAfter = YearMonth.of(year.plusYears(1).getValue(), 1);
         return getSalesBeforeYearMonth(oneMonthAfter);
     }
@@ -72,33 +69,33 @@ public class Saleslist {
     /**
      * @return How many of the product were sold in a certain yearMonth
      */
-    public int getSoldInYearMonth(String productID, YearMonth date){
+    public int getSoldInYearMonth(String productID, YearMonth date) {
         Saleslist salesList = getSalesByProduct(productID);
         int SoldThisMonth = 0;
-        for(Sale sale : salesList.getSales()){
+        for (Sale sale : salesList.getSales()) {
             int amount = sale.getAmountByID(productID);
-            if(YearMonth.from(sale.getDate()).equals(date)){
+            if (YearMonth.from(sale.getDate()).equals(date)) {
                 SoldThisMonth = SoldThisMonth + amount;
             }
         }
-        return  SoldThisMonth;
+        return SoldThisMonth;
     }
 
     /**
      * Looks trough the sales of the product and adds them up to the total sold per YearMonth
      */
-    public HashMap<YearMonth, Integer> getDateAmountMap(String productID){
+    public HashMap<YearMonth, Integer> getDateAmountMap(String productID) {
         Saleslist salesList = getSalesByProduct(productID);
         HashMap<YearMonth, Integer> dateAmountMap = new HashMap<>();
-        for(Sale sale : salesList.getSales()){
+        for (Sale sale : salesList.getSales()) {
             int amount = sale.getAmountByID(productID);
             YearMonth yearMonth = YearMonth.from(sale.getDate());
-            if(dateAmountMap.containsKey(yearMonth)){
+            if (dateAmountMap.containsKey(yearMonth)) {
                 dateAmountMap.put(yearMonth, amount + dateAmountMap.get(yearMonth));
-            }else{
+            } else {
                 dateAmountMap.put(yearMonth, amount);
             }
         }
-        return  dateAmountMap;
+        return dateAmountMap;
     }
 }

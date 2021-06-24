@@ -49,27 +49,27 @@
 
 <BorderPane prefHeight="600.0" prefWidth="1530.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.caramba.ordertool.scenes.ProductOverviewViewController">
    <top>
-      <HBox BorderPane.alignment="CENTER">
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Artikel overzicht" wrappingWidth="344.13671875">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Text>
-            <TextField fx:id="search_bar" prefHeight="25.0" prefWidth="170.0" promptText="Zoeken naar producten" />
-            <Button fx:id="search_button" mnemonicParsing="false" text="Zoeken">
-               <HBox.margin>
-                  <Insets left="10.0" />
-               </HBox.margin></Button>
-            <Button fx:id="reset_button" mnemonicParsing="false" text="Reset">
-               <HBox.margin>
-                  <Insets left="10.0" />
-               </HBox.margin></Button>
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </HBox>
+       <HBox BorderPane.alignment="CENTER">
+           <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+           </padding>
+           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Artikel overzicht" wrappingWidth="344.13671875">
+              <font>
+                  <Font size="16.0"/>
+              </font>
+           </Text>
+           <TextField fx:id="search_bar" prefHeight="25.0" prefWidth="170.0" promptText="Zoeken naar producten"/>
+           <Button fx:id="search_button" mnemonicParsing="false" text="Zoeken">
+              <HBox.margin>
+                  <Insets left="10.0"/>
+              </HBox.margin>
+           </Button>
+           <Button fx:id="reset_button" mnemonicParsing="false" text="Reset">
+              <HBox.margin>
+                  <Insets left="10.0"/>
+              </HBox.margin>
+           </Button>
+       </HBox>
    </top>
    <left>
       <TableView fx:id="tableProductOverview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="500.0" prefHeight="400.0" prefWidth="500.0" BorderPane.alignment="CENTER">
@@ -85,54 +85,50 @@
       </TableView>
    </left>
    <center>
-      <VBox prefWidth="750.0" BorderPane.alignment="CENTER">
-         <children>
-            <HBox>
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Jaar:">
-                     <HBox.margin>
-                        <Insets right="15.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Text>
-                  <ComboBox fx:id="comboYearSelector" prefWidth="150.0" />
-               </children>
-            </HBox>
-            <LineChart fx:id="lineChartProductTimeLine" animated="false" title="Tijdlijn">
-              <xAxis>
-                <CategoryAxis animated="false" label="Datum" />
-              </xAxis>
-              <yAxis>
-                <NumberAxis fx:id="NumberAxisAmount" animated="false" label="Aantal" side="LEFT" />
-              </yAxis>
-            </LineChart>
-            <TableView fx:id="tableProductDetails">
-              <columns>
-                  <TableColumn fx:id="colProductDetailsVisible" prefWidth="60.0" text="Zichtbaar" />
-                <TableColumn fx:id="colProductDetailsName" prefWidth="190.0" text="Gegeven" />
-                <TableColumn fx:id="colProductDetailsJan" prefWidth="50.0" text="jan" />
-                  <TableColumn fx:id="colProductDetailsFeb" prefWidth="50.0" text="feb" />
-                  <TableColumn fx:id="colProductDetailsMar" prefWidth="50.0" text="mrt" />
-                  <TableColumn fx:id="colProductDetailsApr" prefWidth="50.0" text="apr" />
-                  <TableColumn fx:id="colProductDetailsMay" prefWidth="50.0" text="mei" />
-                  <TableColumn fx:id="colProductDetailsJun" prefWidth="50.0" text="jun" />
-                  <TableColumn fx:id="colProductDetailsJul" prefWidth="50.0" text="jul" />
-                  <TableColumn fx:id="colProductDetailsAug" prefWidth="50.0" text="aug" />
-                  <TableColumn fx:id="colProductDetailsSept" prefWidth="50.0" text="sept" />
-                  <TableColumn fx:id="colProductDetailsOct" prefWidth="50.0" text="okt" />
-                  <TableColumn fx:id="colProductDetailsNov" prefWidth="50.0" text="nov" />
-                  <TableColumn fx:id="colProductDetailsDec" prefWidth="50.0" text="dec" />
-              </columns>
-            </TableView>
-         </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" />
-         </padding>
-      </VBox>
+       <VBox prefWidth="750.0" BorderPane.alignment="CENTER">
+           <BorderPane.margin>
+               <Insets/>
+           </BorderPane.margin>
+           <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0"/>
+           </padding>
+           <HBox>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Jaar:">
+                   <HBox.margin>
+                       <Insets right="15.0"/>
+                   </HBox.margin>
+                   <font>
+                       <Font size="15.0"/>
+                   </font>
+               </Text>
+               <ComboBox fx:id="comboYearSelector" prefWidth="150.0"/>
+           </HBox>
+           <LineChart fx:id="lineChartProductTimeLine" animated="false" title="Tijdlijn">
+               <xAxis>
+                   <CategoryAxis animated="false" label="Datum"/>
+               </xAxis>
+               <yAxis>
+                   <NumberAxis fx:id="NumberAxisAmount" animated="false" label="Aantal" side="LEFT"/>
+               </yAxis>
+           </LineChart>
+           <TableView fx:id="tableProductDetails">
+               <columns>
+                   <TableColumn fx:id="colProductDetailsVisible" prefWidth="60.0" text="Zichtbaar"/>
+                   <TableColumn fx:id="colProductDetailsName" prefWidth="190.0" text="Gegeven"/>
+                   <TableColumn fx:id="colProductDetailsJan" prefWidth="50.0" text="jan"/>
+                   <TableColumn fx:id="colProductDetailsFeb" prefWidth="50.0" text="feb"/>
+                   <TableColumn fx:id="colProductDetailsMar" prefWidth="50.0" text="mrt"/>
+                   <TableColumn fx:id="colProductDetailsApr" prefWidth="50.0" text="apr"/>
+                   <TableColumn fx:id="colProductDetailsMay" prefWidth="50.0" text="mei"/>
+                   <TableColumn fx:id="colProductDetailsJun" prefWidth="50.0" text="jun"/>
+                   <TableColumn fx:id="colProductDetailsJul" prefWidth="50.0" text="jul"/>
+                   <TableColumn fx:id="colProductDetailsAug" prefWidth="50.0" text="aug"/>
+                   <TableColumn fx:id="colProductDetailsSept" prefWidth="50.0" text="sept"/>
+                   <TableColumn fx:id="colProductDetailsOct" prefWidth="50.0" text="okt"/>
+                   <TableColumn fx:id="colProductDetailsNov" prefWidth="50.0" text="nov"/>
+                   <TableColumn fx:id="colProductDetailsDec" prefWidth="50.0" text="dec"/>
+               </columns>
+           </TableView>
+       </VBox>
    </center>
 </BorderPane>

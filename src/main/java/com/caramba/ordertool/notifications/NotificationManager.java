@@ -13,19 +13,19 @@ public class NotificationManager {
     public static void add(Notification notification) {
         notifications.add(notification);
         NotificationType t = notification.getType();
-        if(t.printToConsole){
+        if (t.printToConsole) {
             printToConsole(notification);
         }
-        if(t.showPopUp){
+        if (t.showPopUp) {
             showPopUp(notification);
         }
     }
 
-    public static void addExceptionError(Exception e){
+    public static void addExceptionError(Exception e) {
         add(new Notification(NotificationType.ERROR, Arrays.toString(e.getStackTrace())));
     }
 
-    public static void printToConsole(Notification n){
+    public static void printToConsole(Notification n) {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String s = "[" + n.getTimestamp().format(f) + "] " +
                 n.getType().toString() + ": " +
@@ -33,10 +33,10 @@ public class NotificationManager {
         System.out.println(s);
     }
 
-    public static void showPopUp(Notification n){
+    public static void showPopUp(Notification n) {
         NotificationType type = n.getType();
         Alert.AlertType alertType = Alert.AlertType.NONE;
-        switch (type){
+        switch (type) {
             case ERROR -> alertType = Alert.AlertType.ERROR;
             case INFO -> alertType = Alert.AlertType.INFORMATION;
             case WARNING -> alertType = Alert.AlertType.WARNING;

@@ -2,7 +2,8 @@ package com.caramba.ordertool;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Sale {
 
@@ -20,9 +21,9 @@ public class Sale {
     }
 
     //region Getters and Setters
-    public int getAmountByID(String uuid) throws InvalidParameterException{
+    public int getAmountByID(String uuid) throws InvalidParameterException {
         for (Map.Entry<String, Integer> entry : products.entrySet()) {
-            if(entry.getKey().equals(uuid)){
+            if (entry.getKey().equals(uuid)) {
                 return entry.getValue();
             }
         }
@@ -38,11 +39,10 @@ public class Sale {
     }
 
     //endregion
-    public void addToProducts(String uuid, int amount){
-        if(products.containsKey(uuid)){
-            products.replace(uuid,(products.get(uuid) + amount));
-        }
-        else{
+    public void addToProducts(String uuid, int amount) {
+        if (products.containsKey(uuid)) {
+            products.replace(uuid, (products.get(uuid) + amount));
+        } else {
             products.put(uuid, amount);
         }
     }

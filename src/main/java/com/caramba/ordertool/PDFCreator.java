@@ -16,7 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PDFCreator {
     private final String path;
@@ -25,54 +26,32 @@ public class PDFCreator {
     private final Recommendation recommendation;
 
     private final PDDocument document = new PDDocument();
-    /*
-    private PDFCreator(String path, String filename, SupplierList suppliers){
-        this.filename = filename;
-        this.path = path;
-        this.suppliers = suppliers;
-        //create the file
-        try{
-            File f = new File(getFullPath());
-            if(f.getParentFile().mkdirs()){
-                NotificationManager.add(new Notification(NotificationType.INFO, "Created new directory"));
-            }
-            if(!f.createNewFile()){
-                NotificationManager.add(new Notification(NotificationType.WARNING, "The file " + filename + " already exists. Saving will overwrite it's contents."));
-            }
-        }catch (IOException e){
-            NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
-        }
-    }
-*/
-    public PDFCreator(String path, Recommendation recommendation){
+
+    public PDFCreator(String path, Recommendation recommendation) {
         this.filename = path.substring(path.lastIndexOf("/") + 1);
         this.path = path;
         this.recommendation = recommendation;
         //create the file
-        try{
+        try {
             File f = new File(path);
-            if(f.getParentFile().mkdirs()){
+            if (f.getParentFile().mkdirs()) {
                 NotificationManager.add(new Notification(NotificationType.INFO, "Created new directory"));
             }
-            if(!f.createNewFile()){
+            if (!f.createNewFile()) {
                 NotificationManager.add(new Notification(NotificationType.WARNING, "The file " + filename + " already exists. Saving will overwrite it's contents."));
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
         }
     }
-/*
-    public PDFCreator(String path, SupplierList suppliers){
-        this(path, "Orderlist-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", suppliers);
-    }
-*/
-    public void addProducts(){
+
+    public void addProducts() {
         PDPage page = new PDPage(PDRectangle.A4);
 
         RecommendationList recommendations = OrderTool.getRecommendations();
         recommendations.sortRecommendationsByDate();
 
-        try{
+        try {
             float margin = 50;
             float lineSpace = 20;
             float yStartNewPage = page.getMediaBox().getHeight() - (2 * margin);
@@ -95,47 +74,47 @@ public class PDFCreator {
             cs.endText();
             //add a table per supplier
             int tableCount = 1;
-                BaseTable table = new BaseTable(y, yStartNewPage, margin, tableWidth, margin, document, page, true, true);
-                Row<PDPage> headerRow = table.createRow(15f);
-                headerRow.createCell(100, "ORDER #" + tableCount);
-                table.addHeaderRow(headerRow);
-                Row<PDPage> row = table.createRow(12);
-                row.createCell(100, "Order for: " + recommendation.getSupplier().getName()); //Supplier name
-                row = table.createRow(12);
-                row.createCell(4, "#");
-                row.createCell(32, "Product Number");
-                row.createCell(32, "Description");
-                row.createCell(32, "Quantity");
-                int productCount = 1;
-                HashMap<Product, Integer> productQuantityMap = recommendation.getProductRecommendation(); // Product HashMap
-                for (Map.Entry<Product, Integer> productQuantityEntry : productQuantityMap.entrySet()) {
-                    Product p = productQuantityEntry.getKey(); // Product from Product HashMap
-                    int amount = productQuantityEntry.getValue(); // Amount from Product HashMap
+            BaseTable table = new BaseTable(y, yStartNewPage, margin, tableWidth, margin, document, page, true, true);
+            Row<PDPage> headerRow = table.createRow(15f);
+            headerRow.createCell(100, "ORDER #" + tableCount);
+            table.addHeaderRow(headerRow);
+            Row<PDPage> row = table.createRow(12);
+            row.createCell(100, "Order for: " + recommendation.getSupplier().getName()); //Supplier name
+            row = table.createRow(12);
+            row.createCell(4, "#");
+            row.createCell(32, "Product Number");
+            row.createCell(32, "Description");
+            row.createCell(32, "Quantity");
+            int productCount = 1;
+            HashMap<Product, Integer> productQuantityMap = recommendation.getProductRecommendation(); // Product HashMap
+            for (Map.Entry<Product, Integer> productQuantityEntry : productQuantityMap.entrySet()) {
+                Product p = productQuantityEntry.getKey(); // Product from Product HashMap
+                int amount = productQuantityEntry.getValue(); // Amount from Product HashMap
 
-                    //add the cells for this product
-                    row = table.createRow(12);
-                    row.createCell(4, Integer.toString(productCount));
-                    row.createCell(32, p.getProductNum()); // Product number
-                    row.createCell(32, p.getDescription()); // Product description
-                    row.createCell(32, String.valueOf(amount));
-                    productCount = productCount +  1;
-                }
-                y = table.draw() - lineSpace;
-                tableCount = tableCount + 1;
+                //add the cells for this product
+                row = table.createRow(12);
+                row.createCell(4, Integer.toString(productCount));
+                row.createCell(32, p.getProductNum()); // Product number
+                row.createCell(32, p.getDescription()); // Product description
+                row.createCell(32, String.valueOf(amount));
+                productCount = productCount + 1;
+            }
+            y = table.draw() - lineSpace;
+            tableCount = tableCount + 1;
             cs.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             NotificationManager.addExceptionError(e);
         }
 
         document.addPage(page);
     }
 
-    public void save(){
-        try{
+    public void save() {
+        try {
             document.save(path);
             document.close();
             NotificationManager.add(new Notification(NotificationType.INFO, filename + " was saved successfully"));
-        }catch (IOException e) {
+        } catch (IOException e) {
             NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to save pdf file"));
             NotificationManager.addExceptionError(e);
         }
