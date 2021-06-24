@@ -11,25 +11,12 @@ public class ProductList {
         return products;
     }
 
-    //#region delegate functions
-    public int size() {
-        return products.size();
-    }
-
     public Product get(String id) {
         return products.get(id);
     }
 
     public void add(String id, Product product) {
         products.put(id, product);
-    }
-
-    public void remove(String id) {
-        products.remove(id);
-    }
-
-    public void clear() {
-        products.clear();
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
@@ -52,13 +39,4 @@ public class ProductList {
         return null;
     }
 
-    public void add(Product product) {
-        //add with auto generated id
-        String id = null;
-        while(id == null || containsKey(id)){
-            //reroll key if there is a collision
-            id = UUID.randomUUID().toString();
-        }
-        add(id, product);
-    }
 }

@@ -20,11 +20,6 @@ public class NotificationManager {
     }
 
     //#endregion
-
-    public static Notification getLast(){
-        return get(size() - 1);
-    }
-
     public static void add(Notification notification) {
         notifications.add(notification);
         NotificationType t = notification.getType();
