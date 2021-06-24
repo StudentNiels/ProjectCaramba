@@ -119,7 +119,12 @@ public class FireStoreConfig {
                 try {
                     DocumentSnapshot docSnapshot = promise.get();
                     if (docSnapshot.exists()) {
-                        products.put(subRef.getId(), docSnapshot.getLong("amount").intValue());
+                        Long amountLong = docSnapshot.getLong("amount");
+                        int amount = 0;
+                        if(amountLong != null){
+                            amount = amountLong.intValue();
+                        }
+                        products.put(subRef.getId(), amount);
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     NotificationManager.showExceptionError(e);
@@ -132,8 +137,10 @@ public class FireStoreConfig {
                 DocumentSnapshot docSnapshot = promise.get();
                 if (docSnapshot.exists()) {
                     Date d = docSnapshot.getDate("date");
-                    Sale s = new Sale(products, d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                    result.addToSalesList(s);
+                    if(d != null){
+                        Sale s = new Sale(products, d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                        result.addToSalesList(s);
+                    }
                 }
             } catch (InterruptedException | ExecutionException e) {
                 NotificationManager.showExceptionError(e);
@@ -172,7 +179,11 @@ public class FireStoreConfig {
             try {
                 DocumentSnapshot docSnapshot = promise.get();
                 if (docSnapshot.exists()) {
-                    int avg = docSnapshot.getDouble("avgDeliveryTime").intValue();
+                    Double avgDouble = docSnapshot.getDouble("avgDeliveryTime");
+                    int avg = 0;
+                    if(avgDouble != null){
+                        avg = avgDouble.intValue();
+                    }
                     String n = docSnapshot.getString("name");
                     Supplier s = new Supplier(n, avg);
                     int i;
@@ -243,11 +254,16 @@ public class FireStoreConfig {
                     try {
                         com.google.cloud.Timestamp timestamp = (com.google.cloud.Timestamp) monthDoc.get().get("creationDate");
                         isConfirmed = (Boolean) monthDoc.get().get("isConfirmed");
-                        creationDate = timestamp.toDate();
+                        if (timestamp != null) {
+                            creationDate = timestamp.toDate();
+                        }
                     } catch (InterruptedException | ExecutionException e) {
                         NotificationManager.showExceptionError(e);
                     }
-                    LocalDateTime creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    LocalDateTime creationLocalDateTime = null;
+                    if (creationDate != null) {
+                        creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    }
                     Recommendation rec = new Recommendation(supplier, YearMonth.of(year, month), creationLocalDateTime);
                     if (isConfirmed != null) {
                         rec.setConfirmed(isConfirmed);
@@ -257,7 +273,12 @@ public class FireStoreConfig {
                         String productID = productDocumentReference.getId();
                         Integer productQuantity = null;
                         try {
-                            productQuantity = Math.toIntExact((Long) productDocumentReference.get().get().get("quantity"));
+                            ApiFuture<DocumentSnapshot> promise = productDocumentReference.get();
+                            DocumentSnapshot docSnapshot = promise.get();
+                            Long quantityLong = docSnapshot.getLong("quantity");
+                            if(quantityLong != null){
+                                productQuantity = quantityLong.intValue();
+                            }
                         } catch (InterruptedException | ExecutionException e) {
                             NotificationManager.showExceptionError(e);
                         }
@@ -281,6 +302,10 @@ public class FireStoreConfig {
                 supplierKey = supplierEntry.getKey();
                 break;
             }
+        }
+        if(supplierKey == null){
+            NotificationManager.show(new Notification(NotificationType.ERROR, "This recommendation is coupled to a supplier that doesn't exist."));
+            return;
         }
         YearMonth yearMonthToOrderFor = recommendation.getYearMonthToOrderFor();
         ApiFuture<DocumentSnapshot> promise = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(yearMonthToOrderFor.getYear())).collection("months").document(Integer.toString(yearMonthToOrderFor.getMonthValue())).get();
