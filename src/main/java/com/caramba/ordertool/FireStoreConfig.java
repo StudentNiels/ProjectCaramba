@@ -43,7 +43,7 @@ public class FireStoreConfig {
         catch (IOException e) {
             NotificationManager.addExceptionError(e);
         }
-
+        db = FirestoreClient.getFirestore();
         //region Template interactions
         /*
         //Create product document
@@ -83,20 +83,10 @@ public class FireStoreConfig {
 
 
     /**
-     * A connection method to create an often used variable to prevent duplicate code
-     * @return the database data which is use by most of the methods in the class
-     */
-    public Firestore dbConnect() {
-        db = FirestoreClient.getFirestore();
-        return db;
-    }
-
-    /**
      * Make a list of all the products
      */
     public ProductList retrieveAllProducts(){
         ProductList result = new ProductList();
-        dbConnect();
         Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
         for (DocumentReference collRef : collections) {
             ApiFuture<DocumentSnapshot> promise = collRef.get();
@@ -112,7 +102,6 @@ public class FireStoreConfig {
         }
         //save to history
         saveProductQuantityHistory(result);
-        closeDb();
         return result;
     }
 
@@ -140,7 +129,6 @@ public class FireStoreConfig {
      */
     public Saleslist retrieveAllSales(){
         Saleslist result = new Saleslist();
-        dbConnect();
         Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
         for (DocumentReference collRef : collections)
         {
@@ -172,7 +160,6 @@ public class FireStoreConfig {
                 NotificationManager.addExceptionError(e);
             }
         }
-        closeDb();
         return result;
     }
 
@@ -182,7 +169,6 @@ public class FireStoreConfig {
      */
     public SupplierList retrieveAllSuppliers(){
         SupplierList result = new SupplierList();
-        dbConnect();
         Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
         for (DocumentReference collRef : collections)
         {
@@ -222,7 +208,6 @@ public class FireStoreConfig {
                 NotificationManager.addExceptionError(e);
             }
         }
-        closeDb();
         return result;
     }
 
@@ -233,7 +218,6 @@ public class FireStoreConfig {
      * This will be used in the graph and table of the program
      */
     public Map<YearMonth, Integer> getProductHistoryQuantity(String productId) {
-        dbConnect();
         Map<YearMonth, Integer> result = new HashMap<>();
         Iterable<DocumentReference> years = db.collection("Products").document(productId).collection("History").listDocuments();
         for (DocumentReference yearDocReference : years) {
@@ -266,7 +250,6 @@ public class FireStoreConfig {
         SupplierList suppliers = OrderTool.getSuppliers();
         ProductList products = OrderTool.getProducts();
         RecommendationList result = new RecommendationList();
-        dbConnect();
         for (Map.Entry<String, Supplier> supplierEntry : suppliers.getSuppliers().entrySet()) {
             String supplierKey = supplierEntry.getKey();
             Supplier supplier = supplierEntry.getValue();
@@ -309,7 +292,6 @@ public class FireStoreConfig {
                 }
             }
         }
-        closeDb();
         return result;
     }
 
@@ -340,7 +322,6 @@ public class FireStoreConfig {
      * Adds a recommendationList to the database. Does not overwrite if a recommendation of the Supplier and YearMonth already exist.
      */
     public void addRecommendations(RecommendationList recommendationList){
-        dbConnect();
         for (Recommendation recommendation : recommendationList.getRecommendations()) {
             //get key of the supplier
             String supplierKey = null;
@@ -380,16 +361,6 @@ public class FireStoreConfig {
             } catch (InterruptedException e){
                 NotificationManager.add(new Notification(NotificationType.INFO, "File export was canceled"));
             }
-        }
-        closeDb();
-    }
-
-
-    private void closeDb(){
-        try{
-            //db.close();
-        }catch(Exception e){
-            NotificationManager.addExceptionError(e);
         }
     }
 }
