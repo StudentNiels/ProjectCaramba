@@ -62,6 +62,10 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         accordionNewRecommendations.getPanes().clear();
 
         URL res = getClass().getResource("/scenes/recommendation.fxml");
+        if(res == null){
+            NotificationManager.show(new Notification(NotificationType.ERROR, "failed to load recommendation.fxml"));
+            return;
+        }
         RecommendationList recommendations = OrderTool.getRecommendations();
         recommendations.sortRecommendationsByDate();
         int i = 0;
@@ -163,7 +167,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 i++;
 
             } catch (IOException e) {
-                NotificationManager.addExceptionError(e);
+                NotificationManager.showExceptionError(e);
             }
 
         }
@@ -192,7 +196,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 creator.saveRecommendation(selectedFile.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
             }
         } else {
-            NotificationManager.add(new Notification(NotificationType.ERROR, "The selected path is invalid"));
+            NotificationManager.show(new Notification(NotificationType.ERROR, "The selected path is invalid"));
         }
     }
 }

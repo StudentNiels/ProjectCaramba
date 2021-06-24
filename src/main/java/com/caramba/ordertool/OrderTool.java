@@ -34,7 +34,7 @@ public class OrderTool extends javafx.application.Application {
     }
 
     private static void loadFieldsFromDB() {
-        NotificationManager.add(new Notification(NotificationType.INFO, "Retrieving data from firebase..."));
+        NotificationManager.show(new Notification(NotificationType.INFO, "Retrieving data from firebase..."));
         config.fireStoreConfig();
         products = config.retrieveAllProducts();
         sales = config.retrieveAllSales();
@@ -42,7 +42,7 @@ public class OrderTool extends javafx.application.Application {
         OrderAlgorithm algo = new OrderAlgorithm();
         config.addRecommendations(algo.createRecommendations());
         recommendations = config.getRecommendations();
-        NotificationManager.add(new Notification(NotificationType.INFO, "Finished loading from firebase"));
+        NotificationManager.show(new Notification(NotificationType.INFO, "Finished loading from firebase"));
     }
 
     public static ProductList getProducts() {

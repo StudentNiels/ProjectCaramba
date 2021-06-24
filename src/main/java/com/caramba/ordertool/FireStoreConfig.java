@@ -43,7 +43,7 @@ public class FireStoreConfig {
                 try {
                     serviceAccount = new FileInputStream("/car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
                 } catch (FileNotFoundException e2) {
-                    NotificationManager.add(new Notification(NotificationType.ERROR, "Could not find firebase credentials. Please place the account credentials json in the same directory as the OrderTool jar"));
+                    NotificationManager.show(new Notification(NotificationType.ERROR, "Could not find firebase credentials. Please place the account credentials json in the same directory as the OrderTool jar"));
                     System.exit(1);
                 }
             }
@@ -51,7 +51,7 @@ public class FireStoreConfig {
             FirebaseOptions options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
             FirebaseApp.initializeApp(options);
         } catch (IOException e) {
-            NotificationManager.addExceptionError(e);
+            NotificationManager.showExceptionError(e);
         }
         db = FirestoreClient.getFirestore();
         //region Template interactions
@@ -77,7 +77,7 @@ public class FireStoreConfig {
                     result.add(collRef.getId(), p);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                NotificationManager.addExceptionError(e);
+                NotificationManager.showExceptionError(e);
             }
         }
         //save to history
@@ -122,7 +122,7 @@ public class FireStoreConfig {
                         products.put(subRef.getId(), docSnapshot.getLong("amount").intValue());
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    NotificationManager.addExceptionError(e);
+                    NotificationManager.showExceptionError(e);
                 }
             }
 
@@ -136,7 +136,7 @@ public class FireStoreConfig {
                     result.addToSalesList(s);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                NotificationManager.addExceptionError(e);
+                NotificationManager.showExceptionError(e);
             }
         }
         return result;
@@ -163,7 +163,7 @@ public class FireStoreConfig {
                         products.add(product);
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    NotificationManager.addExceptionError(e);
+                    NotificationManager.showExceptionError(e);
                 }
             }
 
@@ -182,7 +182,7 @@ public class FireStoreConfig {
                     result.add(collRef.getId(), s);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                NotificationManager.addExceptionError(e);
+                NotificationManager.showExceptionError(e);
             }
         }
         return result;
@@ -212,11 +212,11 @@ public class FireStoreConfig {
                                 result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
                             }
                         } catch (NumberFormatException e) {
-                            NotificationManager.add(new Notification(NotificationType.WARNING, "The database contains an invalid value. Please check if the database formatted correctly."));
+                            NotificationManager.show(new Notification(NotificationType.WARNING, "The database contains an invalid value. Please check if the database formatted correctly."));
                         }
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    NotificationManager.addExceptionError(e);
+                    NotificationManager.showExceptionError(e);
                 }
             }
         }
@@ -245,7 +245,7 @@ public class FireStoreConfig {
                         isConfirmed = (Boolean) monthDoc.get().get("isConfirmed");
                         creationDate = timestamp.toDate();
                     } catch (InterruptedException | ExecutionException e) {
-                        NotificationManager.addExceptionError(e);
+                        NotificationManager.showExceptionError(e);
                     }
                     LocalDateTime creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     Recommendation rec = new Recommendation(supplier, YearMonth.of(year, month), creationLocalDateTime);
@@ -259,7 +259,7 @@ public class FireStoreConfig {
                         try {
                             productQuantity = Math.toIntExact((Long) productDocumentReference.get().get().get("quantity"));
                         } catch (InterruptedException | ExecutionException e) {
-                            NotificationManager.addExceptionError(e);
+                            NotificationManager.showExceptionError(e);
                         }
                         if (productQuantity != null && productQuantity != 0) {
                             Product p = products.get(productID);
@@ -332,12 +332,12 @@ public class FireStoreConfig {
                         //wait until the write is finished
                         writeResult.get();
                     }
-                    NotificationManager.add(new Notification(NotificationType.INFO, "Recommendation Added"));
+                    NotificationManager.show(new Notification(NotificationType.INFO, "Recommendation Added"));
                 }
             } catch (ExecutionException e) {
-                NotificationManager.addExceptionError(e);
+                NotificationManager.showExceptionError(e);
             } catch (InterruptedException e) {
-                NotificationManager.add(new Notification(NotificationType.INFO, "File export was canceled"));
+                NotificationManager.show(new Notification(NotificationType.INFO, "File export was canceled"));
             }
         }
     }

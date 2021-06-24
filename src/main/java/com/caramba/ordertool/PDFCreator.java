@@ -38,13 +38,13 @@ public class PDFCreator {
         try {
             File f = new File(path);
             if (f.getParentFile().mkdirs()) {
-                NotificationManager.add(new Notification(NotificationType.INFO, "Created new directory"));
+                NotificationManager.show(new Notification(NotificationType.INFO, "Created new directory"));
             }
             if (!f.createNewFile()) {
-                NotificationManager.add(new Notification(NotificationType.WARNING, "The file " + filename + " already exists. Saving will overwrite it's contents."));
+                NotificationManager.show(new Notification(NotificationType.WARNING, "The file " + filename + " already exists. Saving will overwrite it's contents."));
             }
         } catch (IOException e) {
-            NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
+            NotificationManager.show(new Notification(NotificationType.ERROR, "Failed to create file " + filename));
         }
     }
 
@@ -104,7 +104,7 @@ public class PDFCreator {
             }
             cs.close();
         } catch (IOException e) {
-            NotificationManager.addExceptionError(e);
+            NotificationManager.showExceptionError(e);
         }
 
         document.addPage(page);
@@ -114,10 +114,10 @@ public class PDFCreator {
         try {
             document.save(path);
             document.close();
-            NotificationManager.add(new Notification(NotificationType.INFO, filename + " was saved successfully"));
+            NotificationManager.show(new Notification(NotificationType.INFO, filename + " was saved successfully"));
         } catch (IOException e) {
-            NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to save pdf file"));
-            NotificationManager.addExceptionError(e);
+            NotificationManager.show(new Notification(NotificationType.ERROR, "Failed to save pdf file"));
+            NotificationManager.showExceptionError(e);
         }
     }
 }

@@ -34,10 +34,10 @@ public class CSVCreator {
                 writer.append(String.valueOf(q)).append(";\n");
             }
             writer.close();
-            NotificationManager.add(new Notification(NotificationType.INFO, path + " saved successfully"));
+            NotificationManager.show(new Notification(NotificationType.INFO, path + " saved successfully"));
         } catch (IOException e) {
-            NotificationManager.add(new Notification(NotificationType.ERROR, "Failed to save csv file"));
-            NotificationManager.addExceptionError(e);
+            NotificationManager.show(new Notification(NotificationType.ERROR, "Failed to save csv file"));
+            NotificationManager.showExceptionError(e);
         }
     }
 }
