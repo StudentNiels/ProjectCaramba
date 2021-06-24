@@ -14,14 +14,6 @@ public class SupplierList {
         return suppliers.get(id);
     }
 
-    public void remove(String id){
-        suppliers.remove(id);
-    }
-
-    public void clear(){
-        suppliers.clear();
-    }
-
     public void add(String id, Supplier supplier){
         suppliers.put(id, supplier);
     }
@@ -34,10 +26,6 @@ public class SupplierList {
             id = UUID.randomUUID().toString();
         }
         add(id, supplier);
-    }
-
-    public int size(){
-        return suppliers.size();
     }
 
     public boolean contains(Supplier o) {

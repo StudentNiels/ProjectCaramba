@@ -11,8 +11,6 @@ import com.google.firebase.cloud.FirestoreClient;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -20,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 public class FireStoreConfig {
 
     private Firestore db;
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
@@ -93,100 +90,6 @@ public class FireStoreConfig {
     }
 
     /**
-     * Get timestamp in a fitting format
-     */
-    private String getTimeStamp(){
-        Date date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        return dateFormat.format(timestamp);
-    }
-
-    /**
-     * A method to setup a product to be added to the database
-     * param attention required - starts out FALSE
-     * @return the hashmap which can be added to the database with the correct method
-     */
-    public HashMap setupProductDocument(String description, String productNum, int quantity) {
-        HashMap<String, Object> docData = new HashMap<>();
-        docData.put("description", description);
-        docData.put("productNum", productNum);
-        docData.put("quantity", quantity);
-        return docData;
-    }
-
-    /**
-     * A method to setup a product to be added to the database
-     * param attention required - starts out FALSE
-     * @return the hashmap which can be added to the database with the correct method
-     */
-    public HashMap<String, Object> setupSalesDocument(String product_nr, String timeStamp) {
-        HashMap<String, Object> docData = new HashMap<>();
-        docData.put("Product_NR", product_nr);
-        docData.put("Sell_Date", timeStamp);
-        return docData;
-    }
-
-    /**
-     * A method to setup a product to be added to the database
-     * param attention required - starts out FALSE
-     * @return the hashmap which can be added to the database with the correct method
-     */
-    public HashMap setupSuppliersDocument(int avgDeliveryTime, String name) {
-        HashMap<String, Object> docData = new HashMap<>();
-        docData.put("avgDeliveryTime", avgDeliveryTime);
-        docData.put("name", name);
-        return docData;
-    }
-
-    /**
-     * Adds a document of information about a product to the database
-     * @param productDocument
-     * @param docData
-     * 
-     */
-    public void addProductDocument(String collection, String productDocument, HashMap docData){
-        dbConnect();
-        ApiFuture<WriteResult> future = db.collection(collection).document(productDocument).set(docData);
-        try{
-            System.out.println("Update time : " + future.get().getUpdateTime());
-        }catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
-     * Adds a document of information about a product to the database
-     * 
-     */
-    public void addSalesDocument(String salesDocument, HashMap docData) {
-        dbConnect();
-        ApiFuture<WriteResult> future = db.collection("Sales").document(salesDocument).set(docData);
-        try {
-            System.out.println("Update time : " + future.get().getUpdateTime());
-        }catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
-     * Adds a document of information about a product to the database
-     * @param suppliersDocument insert the supplier number
-     * 
-     */
-    public void addSuppliersDocument(String suppliersDocument, HashMap docData){
-        dbConnect();
-        ApiFuture<WriteResult> future = db.collection("Suppliers").document(suppliersDocument).set(docData);
-        try{
-            System.out.println("Update time : " + future.get().getUpdateTime());
-        }catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
      * Make a list of all the products
      */
     public ProductList retrieveAllProducts(){
@@ -222,7 +125,6 @@ public class FireStoreConfig {
     public void saveProductQuantityHistory(ProductList productList){
         LocalDate now = LocalDate.now();
         Date date = new Date();
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
             String k = entry.getKey();
             Product p = entry.getValue();
@@ -467,81 +369,6 @@ public class FireStoreConfig {
         closeDb();
     }
 
-
-    /**
-     * Read out a specific product, product's sales date or supplier
-     */
-    public void readFromDB(String collection, String documentNumber){
-        dbConnect();
-        DocumentReference docRef = db.collection(collection).document(documentNumber);
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-        DocumentSnapshot document = null;
-        try {
-            document = future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        try {
-            System.out.println("Document: " + document.getData());
-        } catch(Exception e) {
-            System.out.println("No document found");
-        }
-        closeDb();
-    }
-
-    /**
-     * Update a field inside a product or supplier or sales data
-     */
-    public void updateDocument(String collectionName, String documentNumber, String fieldType, Object value){
-    dbConnect();
-    DocumentReference docRef = db.collection(collectionName).document(documentNumber);
-    HashMap<String, Object> update = new HashMap<>();
-    update.put(fieldType, value);
-
-    ApiFuture<WriteResult> updateData = docRef.update(update);
-        try {
-            System.out.println("Update time : " + updateData.get().getUpdateTime());
-        } catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
-     * Delete a document from one of the collections
-     */
-    public void deleteDocument(String collection, String documentNumber){
-    dbConnect();
-    ApiFuture<WriteResult> writeResult = db.collection(collection).document(documentNumber).delete();
-        try {
-            System.out.println("Update time : " + writeResult.get().getUpdateTime());
-        } catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
-     * Delete a collection in batches to prevent out-of-memory errors
-     */
-    public void deleteCollection(String collection, int batchSize){
-        try {
-            dbConnect();
-            CollectionReference colRef = db.collection(collection);
-            // retrieve a small batch of documents to avoid out-of-memory errors
-            ApiFuture<QuerySnapshot> future = colRef.limit(batchSize).get();
-            int deleted = 0;
-            // future.get() blocks on document retrieval
-            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            for (QueryDocumentSnapshot document : documents) {
-                document.getReference().delete();
-                ++deleted;
-            }
-        } catch (Exception e) {
-            System.err.println("Error deleting collection : " + e.getMessage());
-        }
-        closeDb();
-    }
 
     private void closeDb(){
         try{

@@ -20,36 +20,14 @@ public class Product {
         return productNum;
     }
 
-    public void setProductNum(String productNum) {
-        this.productNum = productNum;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
     //endregion
 
-    public void decrease(){
-        this.quantity--;
-    }
-
-    public void decrease(int amount){
-        this.quantity -= amount;
-    }
-
-    public void increase(int amount){
-        this.quantity =+ amount;
-    }
 }

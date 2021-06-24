@@ -13,10 +13,6 @@ public class Notification {
         timestamp = LocalDateTime.now();
     }
 
-    public Notification(String contents) {
-        this(NotificationType.INFO, contents);
-    }
-
     public NotificationType getType() {
         return type;
     }
@@ -29,8 +25,5 @@ public class Notification {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
 }
 

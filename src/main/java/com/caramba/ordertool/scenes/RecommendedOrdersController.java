@@ -186,7 +186,9 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         }
 
     }
-
+    //getters are used by javafx, but IntelliJ doesn't recognize this, so we suppress the warnings
+    //todo use this in the whole app
+    @SuppressWarnings("unused")
     public class productQuantityPair {
         String productNum;
         String productDescription;

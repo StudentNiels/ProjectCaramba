@@ -210,6 +210,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      *Shows the median sales per month of the selected year
      */
     private ProductDetailsTableData getMedianYearData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
+        //todo this should use year
         MedianYear my = orderAlgo.getMedianYear(OrderTool.getSales().getDateAmountMap(productID));
         if(my != null) {
             ProductDetailsTableData medianYearTableData = createProductDetailsTableData(displayName, color, isDashed);
@@ -368,6 +369,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         return new ProductDetailsTableData(displayName, checkBox, color, isDashed);
     }
 
+    //getters are used by javafx, but IntelliJ doesn't recognize this, so we suppress the warnings
+    @SuppressWarnings("unused")
     public class DisplayProduct {
         private final String internalId;
         private final String productNum;
@@ -419,6 +422,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             return supplierNames;
         }
     }
+    //getters are used by javafx, but IntelliJ doesn't recognize this, so we suppress the warnings
+    @SuppressWarnings("unused")
     public class ProductDetailsTableData{
         private final CheckBox checkboxToggleVisible;
         private final String name;

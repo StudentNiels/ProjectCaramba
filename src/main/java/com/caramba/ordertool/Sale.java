@@ -33,16 +33,8 @@ public class Sale {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
     public HashMap<String, Integer> getProducts() {
         return products;
-    }
-
-    public void setProducts(HashMap<String, Integer> products) {
-        this.products = products;
     }
 
     //endregion

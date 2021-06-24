@@ -33,10 +33,6 @@ public class Recommendation {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
     public Supplier getSupplier() {
         return supplier;
     }

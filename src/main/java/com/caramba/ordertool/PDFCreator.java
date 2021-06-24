@@ -2,7 +2,6 @@ package com.caramba.ordertool;
 
 
 import be.quodlibet.boxable.BaseTable;
-import be.quodlibet.boxable.Cell;
 import be.quodlibet.boxable.Row;
 import com.caramba.ordertool.notifications.Notification;
 import com.caramba.ordertool.notifications.NotificationManager;
@@ -98,15 +97,15 @@ public class PDFCreator {
             int tableCount = 1;
                 BaseTable table = new BaseTable(y, yStartNewPage, margin, tableWidth, margin, document, page, true, true);
                 Row<PDPage> headerRow = table.createRow(15f);
-                Cell<PDPage> cell = headerRow.createCell(100, "ORDER #" + tableCount);
+                headerRow.createCell(100, "ORDER #" + tableCount);
                 table.addHeaderRow(headerRow);
                 Row<PDPage> row = table.createRow(12);
-                cell = row.createCell(100, "Order for: " + recommendation.getSupplier().getName()); //Supplier name
+                row.createCell(100, "Order for: " + recommendation.getSupplier().getName()); //Supplier name
                 row = table.createRow(12);
-                cell = row.createCell(4, "#");
-                cell = row.createCell(32, "Product Number");
-                cell = row.createCell(32, "Description");
-                cell = row.createCell(32, "Quantity");
+                row.createCell(4, "#");
+                row.createCell(32, "Product Number");
+                row.createCell(32, "Description");
+                row.createCell(32, "Quantity");
                 int productCount = 1;
                 HashMap<Product, Integer> productQuantityMap = recommendation.getProductRecommendation(); // Product HashMap
                 for (Map.Entry<Product, Integer> productQuantityEntry : productQuantityMap.entrySet()) {
@@ -115,10 +114,10 @@ public class PDFCreator {
 
                     //add the cells for this product
                     row = table.createRow(12);
-                    cell = row.createCell(4, Integer.toString(productCount));
-                    cell = row.createCell(32, p.getProductNum()); // Product number
-                    cell = row.createCell(32, p.getDescription()); // Product description
-                    cell = row.createCell(32, String.valueOf(amount));
+                    row.createCell(4, Integer.toString(productCount));
+                    row.createCell(32, p.getProductNum()); // Product number
+                    row.createCell(32, p.getDescription()); // Product description
+                    row.createCell(32, String.valueOf(amount));
                     productCount = productCount +  1;
                 }
                 y = table.draw() - lineSpace;
@@ -129,50 +128,6 @@ public class PDFCreator {
         }
 
         document.addPage(page);
-    }
-
-    private ArrayList<Recommendation> getRecommendation(HashMap<Product, Integer> products){
-        ArrayList<Recommendation> recommendations = new ArrayList<>();
-        HashMap<String, HashMap<Product, Integer>> productsPerSupplier = separateProductQuantityMapPerSupplier(products);
-        SupplierList sl = OrderTool.getSuppliers();
-
-        for (Map.Entry<String, HashMap<Product, Integer>> sEntry : productsPerSupplier.entrySet()) {
-            Recommendation recommendation = new Recommendation(null, null);
-            for(Map.Entry<String, Supplier> supplier : sl.getSuppliers().entrySet()){
-                if(sEntry.getKey().equals(supplier.getValue().getName())){
-                    recommendation.setSupplier(supplier.getValue());
-                }
-            }
-            recommendation.setProductRecommendation(sEntry.getValue());
-            recommendations.add(recommendation);
-        }
-
-        return recommendations;
-    }
-
-    private HashMap<String, HashMap<Product, Integer>> separateProductQuantityMapPerSupplier(HashMap<Product, Integer> products){
-        HashMap<String, HashMap<Product, Integer>> result = new HashMap<>();
-        //check all known suppliers
-        for (Map.Entry<String, Supplier> sEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
-            HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
-            Iterator<Map.Entry<Product, Integer>> itP = products.entrySet().iterator();
-            while (itP.hasNext()) {
-                Map.Entry<Product, Integer> pEntry = itP.next();
-                if (sEntry.getValue().containsProduct(pEntry.getKey())) {
-                    ProductQuantityMap.put(pEntry.getKey(), pEntry.getValue());
-                    itP.remove();
-                }
-            }
-            result.put(sEntry.getValue().getName(), ProductQuantityMap);
-        }
-        if(!products.isEmpty()){
-            HashMap<Product, Integer> ProductQuantityMap = new HashMap<>();
-            for (Map.Entry<Product, Integer> productQuantityEntry : products.entrySet()) {
-                ProductQuantityMap.put(productQuantityEntry.getKey(), productQuantityEntry.getValue());
-            }
-            result.put("Unknown supplier", ProductQuantityMap);
-        }
-        return result;
     }
 
     public void save(){

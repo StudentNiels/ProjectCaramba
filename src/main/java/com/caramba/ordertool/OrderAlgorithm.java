@@ -68,7 +68,6 @@ public class OrderAlgorithm {
      * Calculates how many products to order based on current stock and expected sales
      */
     public int RecommendOrderAmount(String productID, YearMonth date){
-        Product p = OrderTool.getProducts().get(productID);
         int minStock = getAverageSoldLast12Months(productID);
         int projectedSales = getProjectedSaleAmount(productID, date);
         int projectedStock = getProjectedStock(productID, date);
@@ -165,23 +164,6 @@ public class OrderAlgorithm {
 
         //Finally, we calculate the percentages back to a number based on the median year
         return Math.max((int) Math.round(medianYear.getByMonthNumber(date.getMonthValue()) * avgDifferenceInPercentage), 0);
-    }
-
-    /**
-     * @param productID product to get sales projection of.
-     * @param amountOfMonths The amount of months to check
-     * @return Array with the projected sales of the next x months
-     */
-    public int[] getProjectedSalesInComingMonths(String productID, int amountOfMonths){
-        int[] result = new int[amountOfMonths];
-        for(int i = 0; i < amountOfMonths; i++){
-            result[i] = getProjectedSaleAmount(productID, YearMonth.now().plusMonths(1 + i));
-        }
-        return result;
-    }
-
-    public int getProjectedSalesNextMonth(String productID){
-        return getProjectedSalesInComingMonths(productID, 1)[0];
     }
 
     /**
