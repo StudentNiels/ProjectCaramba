@@ -6,10 +6,7 @@ import com.caramba.ordertool.notifications.NotificationType;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Map;
 
 public class CSVCreator {

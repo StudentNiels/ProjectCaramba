@@ -7,7 +7,6 @@ import com.google.cloud.firestore.*;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
