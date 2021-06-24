@@ -268,7 +268,7 @@ public class FireStoreConfig {
                                 result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
                             }
                         }catch (NumberFormatException e){
-                            e.printStackTrace();
+                            NotificationManager.add(new Notification(NotificationType.WARNING, "The database contains an invalid value. Please check if the database formatted correctly."));
                         }
                     }
                 } catch (InterruptedException | ExecutionException e) {
