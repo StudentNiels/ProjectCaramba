@@ -45,7 +45,7 @@ public class Supplier {
     public void addProduct(Product product) {
         String id = null;
         while (id == null || containsProductWithKey(id)) {
-            //reroll key if there is a collision
+            //roll again if there is a collision
             id = UUID.randomUUID().toString();
         }
         products.add(id, product);

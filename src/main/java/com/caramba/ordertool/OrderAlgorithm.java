@@ -87,7 +87,7 @@ public class OrderAlgorithm {
      * What is the average sold products for the last 12 months
      */
     public int getAverageSoldLast12Months(String productID) {
-        Saleslist saleslist = OrderTool.getSales().getSalesByProduct(productID);
+        SalesList saleslist = OrderTool.getSales().getSalesByProduct(productID);
 
         int averageSoldLast12Months = 0;
         for (Sale sale : saleslist.getSales()) {
@@ -112,7 +112,7 @@ public class OrderAlgorithm {
             throw new InvalidParameterException("The given date is not in the future");
         }
         Product p = OrderTool.getProducts().get(productID);
-        Saleslist sales = OrderTool.getSales();
+        SalesList sales = OrderTool.getSales();
         YearMonth now = YearMonth.now();
         //the expected stock at the end of the current month is based on the current stock and projected sales minus sales already made this month
         int result = p.getQuantity() - (getProjectedSaleAmount(productID, now) - sales.getSoldInYearMonth(productID, now));
@@ -141,7 +141,7 @@ public class OrderAlgorithm {
         if (date.isBefore(YearMonth.now())) {
             throw new InvalidParameterException("The given date is not in the future");
         }
-        Saleslist allSales = OrderTool.getSales();
+        SalesList allSales = OrderTool.getSales();
         YearMonth now = YearMonth.now();
         HashMap<YearMonth, Integer> dateAmountMap = allSales.getDateAmountMap(productID);
         //we use all the sales of this product so far to get the median amount of sales in a certain month.

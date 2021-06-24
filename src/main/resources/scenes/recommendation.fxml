@@ -68,7 +68,7 @@
                 <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="30.0"
                                 vgrow="NEVER"/>
             </rowConstraints>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Aaangemaakt op:" textAlignment="CENTER"/>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Aangemaakt op:" textAlignment="CENTER"/>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ter voorbereiding voor verwachte verkopen in:"
                   textAlignment="CENTER" GridPane.rowIndex="2"/>
             <Text fx:id="textCreatedDate" strokeType="OUTSIDE" strokeWidth="0.0" text="(Datum niet beschikbaar)"

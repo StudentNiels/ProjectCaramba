@@ -19,7 +19,7 @@ public class SupplierList {
         //add with auto generated id
         String id = null;
         while (id == null || containsKey(id)) {
-            //reroll key if there is a collision
+            //roll again if there is a collision
             id = UUID.randomUUID().toString();
         }
         add(id, supplier);

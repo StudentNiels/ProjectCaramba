@@ -13,11 +13,11 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Saleslist {
+public class SalesList {
 
     private final ArrayList<Sale> sales;
 
-    public Saleslist() {
+    public SalesList() {
         this.sales = new ArrayList<>();
     }
 
@@ -32,8 +32,8 @@ public class Saleslist {
     /**
      * @return A new sales list that only includes sales with the given product. Unrelated products are removed from the sale entry
      */
-    public Saleslist getSalesByProduct(String productID) {
-        Saleslist soldProducts = new Saleslist();
+    public SalesList getSalesByProduct(String productID) {
+        SalesList soldProducts = new SalesList();
         for (Sale sale : this.sales) {
             if (sale.getProducts().containsKey(productID)) {
                 Sale newSale = new Sale(sale.getDate());
@@ -45,10 +45,10 @@ public class Saleslist {
     }
 
     /**
-     * @return A new salelist with all the sales before the given year
+     * @return A new SalesList with all the sales before the given year
      */
-    public Saleslist getSalesBeforeYearMonth(YearMonth yearMonth) {
-        Saleslist result = new Saleslist();
+    public SalesList getSalesBeforeYearMonth(YearMonth yearMonth) {
+        SalesList result = new SalesList();
         for (Sale sale : this.sales) {
             YearMonth saleYearMonth = YearMonth.of(sale.getDate().getYear(), sale.getDate().getMonthValue());
             if (saleYearMonth.isBefore(yearMonth)) {
@@ -59,9 +59,9 @@ public class Saleslist {
     }
 
     /**
-     * @return Saleslist including all the sales made up to and including the given year
+     * @return SalesList including all the sales made up to and including the given year
      */
-    public Saleslist getSalesUpToYear(Year year) {
+    public SalesList getSalesUpToYear(Year year) {
         YearMonth oneMonthAfter = YearMonth.of(year.plusYears(1).getValue(), 1);
         return getSalesBeforeYearMonth(oneMonthAfter);
     }
@@ -70,7 +70,7 @@ public class Saleslist {
      * @return How many of the product were sold in a certain yearMonth
      */
     public int getSoldInYearMonth(String productID, YearMonth date) {
-        Saleslist salesList = getSalesByProduct(productID);
+        SalesList salesList = getSalesByProduct(productID);
         int SoldThisMonth = 0;
         for (Sale sale : salesList.getSales()) {
             int amount = sale.getAmountByID(productID);
@@ -85,7 +85,7 @@ public class Saleslist {
      * Looks trough the sales of the product and adds them up to the total sold per YearMonth
      */
     public HashMap<YearMonth, Integer> getDateAmountMap(String productID) {
-        Saleslist salesList = getSalesByProduct(productID);
+        SalesList salesList = getSalesByProduct(productID);
         HashMap<YearMonth, Integer> dateAmountMap = new HashMap<>();
         for (Sale sale : salesList.getSales()) {
             int amount = sale.getAmountByID(productID);

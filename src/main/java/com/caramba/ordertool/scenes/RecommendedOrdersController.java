@@ -179,7 +179,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter(pdfFileDescription, "*.pdf");
         chooser.getExtensionFilters().add(csvFilter);
         chooser.getExtensionFilters().add(pdfFilter);
-        chooser.setInitialFileName("Orderadvies " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")));
+        chooser.setInitialFileName("Order advies " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")));
         File selectedFile = chooser.showSaveDialog(stage);
         if (selectedFile != null) {
             String selectedFileType = chooser.getSelectedExtensionFilter().getDescription();

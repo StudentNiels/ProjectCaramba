@@ -224,7 +224,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      */
     private ProductDetailsTableData getSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color) {
         ProductDetailsTableData salesTableData = createProductDetailsTableData(displayName, color, false);
-        Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
+        SalesList sales = OrderTool.getSales().getSalesByProduct(productID);
         for (int i = 1; i <= 12; i++) {
             YearMonth date = YearMonth.of(year.getValue(), i);
             //do not add data for the future
@@ -284,7 +284,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     /**
-     * Converts table data to an XYseries that can be displayed in the chart
+     * Converts table data to an XYSeries that can be displayed in the chart
      */
     private @Nonnull
     XYChart.Series<String, Integer> convertToChartSeries(ProductDetailsTableData productDetailsTableData) {

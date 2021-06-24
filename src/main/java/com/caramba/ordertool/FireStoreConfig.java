@@ -107,8 +107,8 @@ public class FireStoreConfig {
     /**
      * Make a list of all the Sales
      */
-    public Saleslist retrieveAllSales() {
-        Saleslist result = new Saleslist();
+    public SalesList retrieveAllSales() {
+        SalesList result = new SalesList();
         Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
         for (DocumentReference collRef : collections) {
             //add subcollection to hashmap

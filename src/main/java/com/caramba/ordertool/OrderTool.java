@@ -2,7 +2,7 @@ package com.caramba.ordertool;
 
 import com.caramba.ordertool.models.ProductList;
 import com.caramba.ordertool.models.RecommendationList;
-import com.caramba.ordertool.models.Saleslist;
+import com.caramba.ordertool.models.SalesList;
 import com.caramba.ordertool.models.SupplierList;
 import com.caramba.ordertool.notifications.Notification;
 import com.caramba.ordertool.notifications.NotificationManager;
@@ -25,7 +25,7 @@ public class OrderTool extends javafx.application.Application {
     //Keeps track of all known suppliers
     private static SupplierList suppliers = new SupplierList();
     //Keeps track of all known sales
-    private static Saleslist sales = new Saleslist();
+    private static SalesList sales = new SalesList();
     private static Stage mainStage;
     private static RecommendationList recommendations = new RecommendationList();
 
@@ -53,7 +53,7 @@ public class OrderTool extends javafx.application.Application {
         return suppliers;
     }
 
-    public static Saleslist getSales() {
+    public static SalesList getSales() {
         return sales;
     }
 

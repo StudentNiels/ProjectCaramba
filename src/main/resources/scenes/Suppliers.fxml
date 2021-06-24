@@ -22,7 +22,7 @@
            </Text>
            <TableView fx:id="tableProducts">
                <columns>
-                   <TableColumn fx:id="colProductId" prefWidth="150.0" text="Artiekel Nummer"/>
+                   <TableColumn fx:id="colProductId" prefWidth="150.0" text="Artikel Nummer"/>
                    <TableColumn fx:id="colProductDescription" prefWidth="435.0" text="Beschrijving"/>
                </columns>
            </TableView>
