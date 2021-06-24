@@ -39,6 +39,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
 
+<!--suppress JavaFxUnresolvedFxIdReference -->
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.caramba.ordertool.scenes.AppViewController">
    <center>
        <TabPane fx:id="tabPaneMain" prefHeight="600.0" prefWidth="1530.0" tabClosingPolicy="UNAVAILABLE"
