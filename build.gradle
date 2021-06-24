@@ -28,6 +28,7 @@ test {
 }
 
 jar{
+    //noinspection GroovyAssignabilityCheck
     manifest {
         attributes "Main-Class": "com.caramba.ordertool.Launcher"
     }
