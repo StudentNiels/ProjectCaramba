@@ -6,11 +6,11 @@ package com.caramba.ordertool;
 import java.util.UUID;
 
 public class Supplier {
-    private String name;
+    private final String name;
     /**
      * Estimated delivery time in days
      */
-    private Integer avgDeliveryTime;
+    private final Integer avgDeliveryTime;
     /**
      * Products sold by this supplier
      */

@@ -24,8 +24,8 @@ public class ProductDetailsTableData {
     private Integer novValue;
     private Integer decValue;
     //style
-    private String color;
-    private boolean hasDashedLine;
+    private final String color;
+    private final boolean hasDashedLine;
 
     public ProductDetailsTableData(String name, CheckBox checkBox, String color, Boolean hasDashedLine) {
         this.name = name;

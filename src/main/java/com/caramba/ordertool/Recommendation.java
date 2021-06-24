@@ -6,10 +6,10 @@ import java.time.YearMonth;
 import java.util.HashMap;
 
 public class Recommendation {
-    private LocalDateTime creationDate;
-    private Supplier supplier;
+    private final LocalDateTime creationDate;
+    private final Supplier supplier;
     private final YearMonth yearMonthToOrderFor;
-    private HashMap<Product, Integer> productRecommendation = new HashMap<>();
+    private final HashMap<Product, Integer> productRecommendation = new HashMap<>();
     private boolean confirmed = false;
 
     public Recommendation(Supplier supplier, YearMonth yearMonthToOrderFor) {

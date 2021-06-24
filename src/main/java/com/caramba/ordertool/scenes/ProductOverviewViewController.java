@@ -88,7 +88,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
     private DisplayProduct selectedProduct = null;
     private Year selectedYear = null;
-    private OrderAlgorithm orderAlgo = new OrderAlgorithm();
+    private final OrderAlgorithm orderAlgo = new OrderAlgorithm();
 
     private final static String MONTH_NAME[] = { "jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec" };
 
@@ -211,17 +211,17 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     /**
      *Shows the median sales per month of the selected year
      */
-    private ProductDetailsTableData getMedianYearData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
+    private ProductDetailsTableData getMedianYearData(String productID, Year year){
         MedianYear my = orderAlgo.getMedianYear(OrderTool.getSales().getSalesUpToYear(year).getDateAmountMap(productID));
         if(my != null) {
-            ProductDetailsTableData medianYearTableData = createProductDetailsTableData(displayName, color, isDashed);
+            ProductDetailsTableData medianYearTableData = createProductDetailsTableData("Mediaan verkopen per maand", "#33ccff", false);
             //this series is selected by default
             medianYearTableData.getCheckboxToggleVisible().setSelected(true);
             for (int i = 1; i <= 12; i++) {
                 int amount = my.getByMonthNumber(i);
                 medianYearTableData.setValue(i, amount);
             }
-            medianYearTableData.getCheckboxToggleVisible().setSelected(selectedByDefault);
+            medianYearTableData.getCheckboxToggleVisible().setSelected(true);
             return medianYearTableData;
         }
         return null;
@@ -230,8 +230,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     /**
      *Shows the sales in the given year
      */
-    private ProductDetailsTableData getSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
-        ProductDetailsTableData salesTableData = createProductDetailsTableData(displayName, color, isDashed);
+    private ProductDetailsTableData getSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color){
+        ProductDetailsTableData salesTableData = createProductDetailsTableData(displayName, color, false);
         Saleslist sales = OrderTool.getSales().getSalesByProduct(productID);
         for (int i = 1; i <= 12; i++) {
             YearMonth date = YearMonth.of(year.getValue(), i);
@@ -248,8 +248,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     /**
      *Shows the amount of projected Sales in the selected year
      */
-    private ProductDetailsTableData getProjectedSalesData(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
-        ProductDetailsTableData projectedSalesTableData = createProductDetailsTableData(displayName, color, isDashed);
+    private ProductDetailsTableData getProjectedSalesData(String productID, Year year){
+        ProductDetailsTableData projectedSalesTableData = createProductDetailsTableData("Verwachte verkoop", "#eb4034", true);
         Year now = Year.now();
         if(!selectedYear.isBefore(now)){
             int monthToStart;
@@ -263,7 +263,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 projectedSalesTableData.setValue(m, amount);
             }
         }
-        projectedSalesTableData.getCheckboxToggleVisible().setSelected(selectedByDefault);
+        projectedSalesTableData.getCheckboxToggleVisible().setSelected(true);
         return projectedSalesTableData;
     }
 
@@ -272,8 +272,8 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      *
      * Inserts the data from the database into the table underneath the graph.
      */
-    private ProductDetailsTableData getProductQuantity(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
-        ProductDetailsTableData productQuantity = createProductDetailsTableData(displayName, color, isDashed);
+    private ProductDetailsTableData getProductQuantity(String productID, Year year){
+        ProductDetailsTableData productQuantity = createProductDetailsTableData("Voorraad", "#000f00", false);
         Map<YearMonth, Integer> productHistoryQuantityList = OrderTool.getProductHistoryQuantity(productID);
         for (Map.Entry<YearMonth, Integer> entry : productHistoryQuantityList.entrySet()) {
             YearMonth k = entry.getKey();
@@ -288,7 +288,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 }
             }
         }
-        productQuantity.getCheckboxToggleVisible().setSelected(selectedByDefault);
+        productQuantity.getCheckboxToggleVisible().setSelected(false);
         return productQuantity;
     }
 
@@ -316,11 +316,11 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             ObservableList<ProductDetailsTableData> tableData = FXCollections.observableArrayList();
 
             //add the data
-            tableData.add(getMedianYearData("Mediaan verkopen per maand", productID, selectedYear, true, "#33ccff", false));
-            tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true,"#64b000", false));
-            tableData.add(getProjectedSalesData("Verwachte verkoop", productID, selectedYear, true, "#eb4034", true));
-            tableData.add(getSalesData("Verkopen afeglopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false, "#009917", false));
-            tableData.add(getProductQuantity("Voorraad", productID, selectedYear, false, "#000f00", false));
+            tableData.add(getMedianYearData(productID, selectedYear));
+            tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true,"#64b000"));
+            tableData.add(getProjectedSalesData(productID, selectedYear));
+            tableData.add(getSalesData("Verkopen afeglopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false, "#009917"));
+            tableData.add(getProductQuantity(productID, selectedYear));
 
             //update the table
             tableProductDetails.getItems().clear();

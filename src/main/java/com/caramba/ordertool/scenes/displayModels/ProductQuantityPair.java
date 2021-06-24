@@ -6,9 +6,9 @@ package com.caramba.ordertool.scenes.displayModels;
 //getters are used by javafx, but IntelliJ doesn't recognize this, so we suppress the warnings
 @SuppressWarnings("unused")
 public class ProductQuantityPair {
-    String productNum;
-    String productDescription;
-    int quantity;
+    final String productNum;
+    final String productDescription;
+    final int quantity;
 
     public ProductQuantityPair(String productNum, String productDescription, int quantity) {
         this.productNum = productNum;

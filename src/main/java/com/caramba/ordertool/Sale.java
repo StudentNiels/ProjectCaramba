@@ -6,8 +6,8 @@ import java.util.*;
 
 public class Sale {
 
-    private LocalDateTime date;
-    private HashMap<String, Integer> products;
+    private final LocalDateTime date;
+    private final HashMap<String, Integer> products;
 
     public Sale(LocalDateTime date) {
         this.date = date;

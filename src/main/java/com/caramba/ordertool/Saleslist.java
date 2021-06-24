@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class Saleslist {
 
-    private ArrayList<Sale> sales;
+    private final ArrayList<Sale> sales;
 
     public Saleslist(){
         this.sales = new ArrayList<>();

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Notification {
     private final NotificationType type;
     private final String contents;
-    private LocalDateTime timestamp;
+    private final LocalDateTime timestamp;
 
     public Notification(NotificationType type, String contents) {
         this.type = type;
