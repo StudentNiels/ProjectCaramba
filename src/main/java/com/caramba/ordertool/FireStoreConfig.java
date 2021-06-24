@@ -278,14 +278,19 @@ public class FireStoreConfig {
                     int month = Integer.parseInt(monthDocumentReference.getId());
                     ApiFuture<DocumentSnapshot> monthDoc = monthDocumentReference.get();
                     Date creationDate = null;
+                    Boolean isConfirmed = true;
                     try {
                         com.google.cloud.Timestamp timestamp = (com.google.cloud.Timestamp) monthDoc.get().get("creationDate");
+                        isConfirmed = (Boolean) monthDoc.get().get("isConfirmed");
                         creationDate = timestamp.toDate();
                     } catch (InterruptedException | ExecutionException e) {
                         NotificationManager.addExceptionError(e);
                     }
                     LocalDateTime creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     Recommendation rec = new Recommendation(supplier, YearMonth.of(year, month), creationLocalDateTime);
+                    if(isConfirmed != null){
+                        rec.setConfirmed(isConfirmed);
+                    }
                     Iterable<DocumentReference> productDocumentReferences = monthDocumentReference.collection("products").listDocuments();
                     for (DocumentReference productDocumentReference : productDocumentReferences) {
                         String productID = productDocumentReference.getId();
@@ -306,6 +311,28 @@ public class FireStoreConfig {
         }
         closeDb();
         return result;
+    }
+
+    public void confirmRecommendation(Recommendation recommendation, boolean isConfirmed){
+        //get key of the supplier
+        String supplierKey = null;
+        for (Map.Entry<String, Supplier> supplierEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
+            if(supplierEntry.getValue() == recommendation.getSupplier()){
+                supplierKey = supplierEntry.getKey();
+                break;
+            }
+        }
+        YearMonth yearMonthToOrderFor = recommendation.getYearMonthToOrderFor();
+        ApiFuture<DocumentSnapshot> promise = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(yearMonthToOrderFor.getYear())).collection("months").document(Integer.toString(yearMonthToOrderFor.getMonthValue())).get();
+        try {
+            Map<String, Object> data = promise.get().getData();
+            if(data != null){
+                data.put("isConfirmed", isConfirmed);
+                db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(yearMonthToOrderFor.getYear())).collection("months").document(Integer.toString(yearMonthToOrderFor.getMonthValue())).set(data).get();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -331,6 +358,7 @@ public class FireStoreConfig {
             LocalDateTime creationLocalDateTime = recommendation.getCreationDate();
             Date creationDate = Date.from(creationLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
             data.put("creationDate", creationDate);
+            data.put("isConfirmed", false);
             //don't overwrite existing documents
             ApiFuture<DocumentSnapshot> promise = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).get();
             try {

@@ -27,8 +27,8 @@
          </padding>
       </HBox>
    </top>
-   <left>
-      <ScrollPane BorderPane.alignment="CENTER">
+   <center>
+      <ScrollPane fx:id="scrollPaneMain" maxWidth="600.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <content>
             <VBox prefWidth="600.0">
                <children>
@@ -48,19 +48,9 @@
                      </padding>
                   </VBox>
                   <Accordion fx:id="accordionNewRecommendations" maxWidth="-Infinity" prefWidth="600.0" />
-               </children>
-            </VBox>
-         </content>
-      </ScrollPane>
-   </left>
-   <right>
-      <ScrollPane BorderPane.alignment="CENTER">
-         <content>
-            <VBox prefWidth="600.0">
-               <children>
                   <VBox alignment="TOP_CENTER">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Afgevinkt" textAlignment="CENTER">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Behandeld" textAlignment="CENTER">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -78,5 +68,5 @@
             </VBox>
          </content>
       </ScrollPane>
-   </right>
+   </center>
 </BorderPane>

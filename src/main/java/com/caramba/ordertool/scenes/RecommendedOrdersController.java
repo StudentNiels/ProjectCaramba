@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 public class RecommendedOrdersController implements Initializable, ViewController {
 
     @FXML
+    private ScrollPane scrollPaneMain;
+    @FXML
     private Accordion accordionNewRecommendations;
 
     @FXML
@@ -50,7 +52,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
     @Override
     public void update() {
-
+        scrollPaneMain.setStyle("-fx-background: white;");
         //clear the accordions before refreshing
         accordionCheckedRecommendations.getPanes().clear();
         accordionNewRecommendations.getPanes().clear();
@@ -66,6 +68,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
             try {
                 TitledPane pane = FXMLLoader.load(res);
                 pane.setText("");
+                pane.setStyle("-fx-background: #f0f0f0;");
                 //created date
                 LocalDateTime creationDate = recommendation.getCreationDate();
                 String date = creationDate.format(creationDateFormatter);
@@ -76,10 +79,10 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 //supplier name
                 Supplier supplier = recommendation.getSupplier();
                 String supplierName = null;
-                if (supplier != null) {
+                if(supplier != null){
                     supplierName = supplier.getName();
                 }
-                if (supplierName == null) {
+                if(supplierName == null){
                     supplierName = "(Leverancier onbekend)";
                 }
                 pane.setText(" Order voor: " + supplierName + " " + pane.getText());
@@ -88,17 +91,17 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
                 //Order for date
                 YearMonth yearMonthToOrderFor = recommendation.getYearMonthToOrderFor();
-                if (yearMonthToOrderFor != null) {
+                if(yearMonthToOrderFor != null){
                     Text textYearMonthToOrderFor = (Text) pane.getContent().lookup("#textOrderForDate");
                     textYearMonthToOrderFor.setText(yearMonthToOrderFor.format(yearMonthFormatter));
                 }
 
                 //Final order date
                 LocalDate finalOrderDate = recommendation.getFinalOrderDate();
-                if (finalOrderDate != null) {
+                if(finalOrderDate != null){
                     Text textFinalOrderDate = (Text) pane.getContent().lookup("#textFinalOrderDate");
                     String s = finalOrderDate.format(finalOrderDateDateFormatter);
-                    if (supplier != null) {
+                    if(supplier != null){
                         s = s + " (Geschatte levertijd is " + supplier.getAvgDeliveryTime() + " dag(en))";
                     }
                     textFinalOrderDate.setText(s);
@@ -130,19 +133,21 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
                 //checkbox
                 CheckBox checkConfirm = (CheckBox) pane.getGraphic().lookup("#checkConfirm");
                 checkConfirm.setOnAction((ActionEvent event) -> {
-                    if (recommendation.isConfirmed()) {
+                    if(recommendation.isConfirmed()){
                         recommendation.setConfirmed(false);
-                    } else {
+                        OrderTool.getConfig().confirmRecommendation(recommendation, false);
+                    }else{
                         recommendation.setConfirmed(true);
+                        OrderTool.getConfig().confirmRecommendation(recommendation, true);
                     }
                     update();
                 });
 
                 //choose which accordion to put the pane in
-                if (recommendation.isConfirmed()) {
+                if(recommendation.isConfirmed()){
                     checkConfirm.setSelected(true);
                     accordionCheckedRecommendations.getPanes().add(pane);
-                } else {
+                }else{
                     accordionNewRecommendations.getPanes().add(pane);
                 }
 
