@@ -37,10 +37,6 @@ public class Recommendation {
         return supplier;
     }
 
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
     public LocalDate getFinalOrderDate() {
         return LocalDate.of(yearMonthToOrderFor.getYear(), yearMonthToOrderFor.getMonth(), 1).minusDays(supplier.getAvgDeliveryTime());
     }
@@ -51,10 +47,6 @@ public class Recommendation {
 
     public HashMap<Product, Integer> getProductRecommendation() {
         return productRecommendation;
-    }
-
-    public void setProductRecommendation(HashMap<Product, Integer> productRecommendation) {
-        this.productRecommendation = productRecommendation;
     }
 
     public boolean isConfirmed() {

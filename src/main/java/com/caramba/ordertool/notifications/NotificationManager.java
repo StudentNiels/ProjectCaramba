@@ -10,15 +10,6 @@ import java.util.Collection;
 public class NotificationManager {
     private static final ArrayList<Notification> notifications = new ArrayList<>();
 
-    //#region delegate methods
-    public static int size() {
-        return notifications.size();
-    }
-
-    public static Notification get(int index) {
-        return notifications.get(index);
-    }
-
     //#endregion
     public static void add(Notification notification) {
         notifications.add(notification);

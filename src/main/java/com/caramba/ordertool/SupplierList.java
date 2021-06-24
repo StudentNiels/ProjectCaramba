@@ -9,11 +9,6 @@ public class SupplierList {
         return suppliers;
     }
 
-//#region delegate functions
-    public Supplier get(String id){
-        return suppliers.get(id);
-    }
-
     public void add(String id, Supplier supplier){
         suppliers.put(id, supplier);
     }
@@ -26,10 +21,6 @@ public class SupplierList {
             id = UUID.randomUUID().toString();
         }
         add(id, supplier);
-    }
-
-    public boolean contains(Supplier o) {
-        return suppliers.containsValue(o);
     }
 
     public boolean containsKey(String k) {

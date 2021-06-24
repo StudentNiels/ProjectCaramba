@@ -39,9 +39,6 @@ public class Supplier {
         return products.containsKey(k);
     }
 
-    public boolean containsProduct(Product p){
-        return products.contains(p);
-    }
     //endregion
 
     public void addProduct(Product product){
