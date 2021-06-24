@@ -5,8 +5,6 @@ import com.caramba.ordertool.models.*;
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -151,7 +149,7 @@ public class OrderAlgorithm {
         //Amount of months that the projected sales method extrapolates from
         //Should be higher than 0
         int PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK = 6;
-        MedianYear medianYear = getMedianYear(allSales.getSalesBeforeYearMonth(date.minusMonths(PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK)).getDateAmountMap(productID));
+        MedianYear medianYear = MedianYear.getMedianYear(allSales.getSalesBeforeYearMonth(date.minusMonths(PROJECTED_SALES_NUMBER_OF_MONTHS_TO_LOOK_BACK)).getDateAmountMap(productID));
 
         //then we look back at the past X months and see how much they differ from a typical year.
         //the average of the difference is used to project future sales
@@ -171,73 +169,5 @@ public class OrderAlgorithm {
 
         //Finally, we calculate the percentages back to a number based on the median year
         return Math.max((int) Math.round(medianYear.getByMonthNumber(date.getMonthValue()) * avgDifferenceInPercentage), 0);
-    }
-
-    /**
-     * Analyzes the sales of the product in previous years to calculate a 'median year'.
-     * The median year includes the median of products sold in per month of the year.
-     *
-     * @param dateAmountList hashmap with quantity sold in a certain YearMonth
-     * @return array with the median of amount sold where i = the month of the year
-     */
-    public MedianYear getMedianYear(HashMap<YearMonth, Integer> dateAmountList) {
-        int[] median = new int[12];
-        ArrayList<Integer> januaryAmount = new ArrayList<>();
-        ArrayList<Integer> februaryAmount = new ArrayList<>();
-        ArrayList<Integer> marchAmount = new ArrayList<>();
-        ArrayList<Integer> aprilAmount = new ArrayList<>();
-        ArrayList<Integer> mayAmount = new ArrayList<>();
-        ArrayList<Integer> juneAmount = new ArrayList<>();
-        ArrayList<Integer> julyAmount = new ArrayList<>();
-        ArrayList<Integer> augustAmount = new ArrayList<>();
-        ArrayList<Integer> septemberAmount = new ArrayList<>();
-        ArrayList<Integer> octoberAmount = new ArrayList<>();
-        ArrayList<Integer> novemberAmount = new ArrayList<>();
-        ArrayList<Integer> decemberAmount = new ArrayList<>();
-        for (Map.Entry<YearMonth, Integer> entry : dateAmountList.entrySet()) {
-            switch (entry.getKey().getMonth()) {
-                case JANUARY -> januaryAmount.add(entry.getValue());
-                case FEBRUARY -> februaryAmount.add(entry.getValue());
-                case MARCH -> marchAmount.add(entry.getValue());
-                case APRIL -> aprilAmount.add(entry.getValue());
-                case MAY -> mayAmount.add(entry.getValue());
-                case JUNE -> juneAmount.add(entry.getValue());
-                case JULY -> julyAmount.add(entry.getValue());
-                case AUGUST -> augustAmount.add(entry.getValue());
-                case SEPTEMBER -> septemberAmount.add(entry.getValue());
-                case OCTOBER -> octoberAmount.add(entry.getValue());
-                case NOVEMBER -> novemberAmount.add(entry.getValue());
-                case DECEMBER -> decemberAmount.add(entry.getValue());
-            }
-        }
-        median[0] = getMedianFromArrayList(januaryAmount);
-        median[1] = getMedianFromArrayList(februaryAmount);
-        median[2] = getMedianFromArrayList(marchAmount);
-        median[3] = getMedianFromArrayList(aprilAmount);
-        median[4] = getMedianFromArrayList(mayAmount);
-        median[5] = getMedianFromArrayList(juneAmount);
-        median[6] = getMedianFromArrayList(julyAmount);
-        median[7] = getMedianFromArrayList(augustAmount);
-        median[8] = getMedianFromArrayList(septemberAmount);
-        median[9] = getMedianFromArrayList(octoberAmount);
-        median[10] = getMedianFromArrayList(novemberAmount);
-        median[11] = getMedianFromArrayList(decemberAmount);
-        return new MedianYear(median);
-    }
-
-    public int getMedianFromArrayList(ArrayList<Integer> arrayList) {
-        Collections.sort(arrayList);
-        if (arrayList.size() == 0) {
-            return 0;
-        } else if (arrayList.size() == 1) {
-            return arrayList.get(0);
-        } else if ((arrayList.size() % 2) == 0) {
-            //even
-            int centerIndex = (arrayList.size() / 2) - 1;
-            return (arrayList.get(centerIndex) + arrayList.get(centerIndex + 1)) / 2;
-        } else {
-            //odd
-            return arrayList.get((int) Math.ceil((float) arrayList.size() / 2) - 1);
-        }
     }
 }

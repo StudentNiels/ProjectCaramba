@@ -205,19 +205,16 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      * Shows the median sales per month of the selected year
      */
     private ProductDetailsTableData getMedianYearData(String productID, Year year) {
-        MedianYear my = orderAlgo.getMedianYear(OrderTool.getSales().getSalesUpToYear(year).getDateAmountMap(productID));
-        if (my != null) {
-            ProductDetailsTableData medianYearTableData = createProductDetailsTableData("Mediaan verkopen per maand", "#33ccff", false);
-            //this series is selected by default
-            medianYearTableData.getCheckboxToggleVisible().setSelected(true);
-            for (int i = 1; i <= 12; i++) {
-                int amount = my.getByMonthNumber(i);
-                medianYearTableData.setValue(i, amount);
-            }
-            medianYearTableData.getCheckboxToggleVisible().setSelected(true);
-            return medianYearTableData;
+        MedianYear my = MedianYear.getMedianYear(OrderTool.getSales().getSalesUpToYear(year).getDateAmountMap(productID));
+        ProductDetailsTableData medianYearTableData = createProductDetailsTableData("Mediaan verkopen per maand", "#33ccff", false);
+        //this series is selected by default
+        medianYearTableData.getCheckboxToggleVisible().setSelected(true);
+        for (int i = 1; i <= 12; i++) {
+            int amount = my.getByMonthNumber(i);
+            medianYearTableData.setValue(i, amount);
         }
-        return null;
+        medianYearTableData.getCheckboxToggleVisible().setSelected(true);
+        return medianYearTableData;
     }
 
     /**
