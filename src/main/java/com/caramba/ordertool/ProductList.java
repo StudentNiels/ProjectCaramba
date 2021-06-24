@@ -2,7 +2,6 @@ package com.caramba.ordertool;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class ProductList {
     private final HashMap<String, Product> products = new HashMap<>();

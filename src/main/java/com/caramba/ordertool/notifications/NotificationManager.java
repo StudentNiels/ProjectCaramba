@@ -5,7 +5,6 @@ import javafx.scene.control.Alert;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 public class NotificationManager {
     private static final ArrayList<Notification> notifications = new ArrayList<>();

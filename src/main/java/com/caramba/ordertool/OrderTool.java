@@ -3,7 +3,6 @@ import com.caramba.ordertool.notifications.Notification;
 import com.caramba.ordertool.notifications.NotificationManager;
 import com.caramba.ordertool.notifications.NotificationType;
 import com.caramba.ordertool.scenes.ViewController;
-import com.google.cloud.Timestamp;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,9 +10,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.Map;
 
