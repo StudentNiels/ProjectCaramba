@@ -121,7 +121,7 @@ public class FireStoreConfig {
                     if (docSnapshot.exists()) {
                         Long amountLong = docSnapshot.getLong("amount");
                         int amount = 0;
-                        if(amountLong != null){
+                        if (amountLong != null) {
                             amount = amountLong.intValue();
                         }
                         products.put(subRef.getId(), amount);
@@ -137,7 +137,7 @@ public class FireStoreConfig {
                 DocumentSnapshot docSnapshot = promise.get();
                 if (docSnapshot.exists()) {
                     Date d = docSnapshot.getDate("date");
-                    if(d != null){
+                    if (d != null) {
                         Sale s = new Sale(products, d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
                         result.addToSalesList(s);
                     }
@@ -181,7 +181,7 @@ public class FireStoreConfig {
                 if (docSnapshot.exists()) {
                     Double avgDouble = docSnapshot.getDouble("avgDeliveryTime");
                     int avg = 0;
-                    if(avgDouble != null){
+                    if (avgDouble != null) {
                         avg = avgDouble.intValue();
                     }
                     String n = docSnapshot.getString("name");
@@ -276,7 +276,7 @@ public class FireStoreConfig {
                             ApiFuture<DocumentSnapshot> promise = productDocumentReference.get();
                             DocumentSnapshot docSnapshot = promise.get();
                             Long quantityLong = docSnapshot.getLong("quantity");
-                            if(quantityLong != null){
+                            if (quantityLong != null) {
                                 productQuantity = quantityLong.intValue();
                             }
                         } catch (InterruptedException | ExecutionException e) {
@@ -303,7 +303,7 @@ public class FireStoreConfig {
                 break;
             }
         }
-        if(supplierKey == null){
+        if (supplierKey == null) {
             NotificationManager.show(new Notification(NotificationType.ERROR, "This recommendation is coupled to a supplier that doesn't exist."));
             return;
         }

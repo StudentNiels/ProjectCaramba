@@ -1,9 +1,6 @@
 package com.caramba.ordertool.models;
 
 
-import com.caramba.ordertool.models.Product;
-import com.caramba.ordertool.models.ProductList;
-
 import java.util.UUID;
 
 public class Supplier {

@@ -1,6 +1,8 @@
 package com.caramba.ordertool.scenes;
 
-import com.caramba.ordertool.*;
+import com.caramba.ordertool.CSVCreator;
+import com.caramba.ordertool.OrderTool;
+import com.caramba.ordertool.PDFCreator;
 import com.caramba.ordertool.models.Product;
 import com.caramba.ordertool.models.Recommendation;
 import com.caramba.ordertool.models.RecommendationList;
@@ -62,7 +64,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
         accordionNewRecommendations.getPanes().clear();
 
         URL res = getClass().getResource("/scenes/recommendation.fxml");
-        if(res == null){
+        if (res == null) {
             NotificationManager.show(new Notification(NotificationType.ERROR, "failed to load recommendation.fxml"));
             return;
         }

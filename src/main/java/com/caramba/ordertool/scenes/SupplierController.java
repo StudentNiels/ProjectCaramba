@@ -1,6 +1,6 @@
 package com.caramba.ordertool.scenes;
 
-import com.caramba.ordertool.*;
+import com.caramba.ordertool.OrderTool;
 import com.caramba.ordertool.models.Product;
 import com.caramba.ordertool.models.ProductList;
 import com.caramba.ordertool.models.Supplier;
