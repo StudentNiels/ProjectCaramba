@@ -46,22 +46,4 @@ public class Sale {
             products.put(uuid, amount);
         }
     }
-
-    public void listProducts(){
-        System.out.println("SalesList items:");
-        HashMap<String, Product> allProducts = OrderTool.getProducts().getProducts();
-        Product selectedProduct = null;
-
-        for(Map.Entry<String, Integer> product : this.products.entrySet()){
-            String productID = product.getKey();
-            int amount = product.getValue();
-
-            if(allProducts.containsKey(productID)){
-                selectedProduct = allProducts.get(productID);
-                System.out.println(selectedProduct.getProductNum() + " " + selectedProduct.getDescription() + "/" + amount);
-            }else{
-                System.out.println("invalid product id");
-            }
-        }
-    }
 }
