@@ -1,6 +1,8 @@
 package com.caramba.ordertool;
 
+import com.caramba.ordertool.notifications.Notification;
 import com.caramba.ordertool.notifications.NotificationManager;
+import com.caramba.ordertool.notifications.NotificationType;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
@@ -362,8 +364,10 @@ public class FireStoreConfig {
                     }
                     System.out.println("recommendation added");
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+            } catch (ExecutionException e) {
+                NotificationManager.addExceptionError(e);
+            } catch (InterruptedException e){
+                NotificationManager.add(new Notification(NotificationType.INFO, "File export was canceled"));
             }
         }
         closeDb();
