@@ -126,7 +126,6 @@ public class FireStoreConfig {
      */
     public void saveProductQuantityHistory(ProductList productList){
         LocalDate now = LocalDate.now();
-        Date date = new Date();
         for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
             String k = entry.getKey();
             Product p = entry.getValue();
@@ -175,22 +174,6 @@ public class FireStoreConfig {
         }
         closeDb();
         return result;
-    }
-
-    public void addSale(com.google.cloud.Timestamp timestamp, String productId, int amount){
-        dbConnect();
-        HashMap<String, com.google.cloud.Timestamp> map = new HashMap<>();
-        map.put("date", timestamp);
-        ApiFuture<DocumentReference> promise = db.collection("Sales").add(map);
-        try {
-            DocumentReference docref = promise.get();
-            HashMap<String, Integer> amountMap = new HashMap<>();
-            amountMap.put("amount", amount);
-            docref.collection("SalesList").document(productId).set(amountMap);
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        closeDb();
     }
 
 
