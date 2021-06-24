@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -166,15 +167,28 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
     }
 
 
-    public void savePDF(){
+    public void saveFile(){
         Stage stage = OrderTool.getMainStage();
-        DirectoryChooser chooser = new DirectoryChooser();
-        File selectedDirectory = chooser.showDialog(stage);
+        FileChooser chooser = new FileChooser();
+        String pdfFileDescription = "PDF file";
+        String csvFileDescription = "CSV file";
+        FileChooser.ExtensionFilter csvFilter = new FileChooser.ExtensionFilter(csvFileDescription, "*.csv");
+        FileChooser.ExtensionFilter pdfFilter = new FileChooser.ExtensionFilter(pdfFileDescription, "*.pdf");
+        chooser.getExtensionFilters().add(csvFilter);
+        chooser.getExtensionFilters().add(pdfFilter);
+        chooser.setInitialFileName("Orderadvies " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")));
+        File selectedFile = chooser.showSaveDialog(stage);
+        String selectedFileType = chooser.getSelectedExtensionFilter().getDescription();
 
-        if(selectedDirectory != null){
-            PDFCreator creator = new PDFCreator(selectedDirectory.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
-            creator.addProducts();
-            creator.save();
+        if(selectedFile != null){
+            if(selectedFileType.equals(pdfFileDescription)){
+                PDFCreator creator = new PDFCreator(selectedFile.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
+                creator.addProducts();
+                creator.save();
+            }else if(selectedFileType.equals(csvFileDescription)){
+                CSVCreator creator = new CSVCreator();
+                creator.saveRecommendation(selectedFile.getAbsolutePath(), OrderTool.getRecommendations().getRecommendations().get(Integer.parseInt(this.recommendation_label.getId())));
+            }
         }else{
             System.out.println("The process was cancelled");
         }

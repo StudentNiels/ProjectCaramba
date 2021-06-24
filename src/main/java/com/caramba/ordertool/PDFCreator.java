@@ -46,13 +46,13 @@ public class PDFCreator {
         }
     }
 */
-    private PDFCreator(String path, String filename, Recommendation recommendation){
-        this.filename = filename;
+    public PDFCreator(String path, Recommendation recommendation){
+        this.filename = path.substring(path.lastIndexOf("/") + 1);
         this.path = path;
         this.recommendation = recommendation;
         //create the file
         try{
-            File f = new File(getFullPath());
+            File f = new File(path);
             if(f.getParentFile().mkdirs()){
                 NotificationManager.add(new Notification(NotificationType.INFO, "Created new directory"));
             }
@@ -68,10 +68,6 @@ public class PDFCreator {
         this(path, "Orderlist-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", suppliers);
     }
 */
-    public PDFCreator(String path, Recommendation recommendation){
-        this(path, "Recommendation-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd-HH-mm-ss")) + ".pdf", recommendation);
-    }
-
     public void addProducts(){
         PDPage page = new PDPage(PDRectangle.A4);
 
@@ -180,17 +176,9 @@ public class PDFCreator {
         return result;
     }
 
-    private String getFullPath(){
-        String s = path;
-        if(!path.endsWith("/")){
-            s = s + "/";
-        }
-        return s + filename;
-    }
-
     public void save(){
         try{
-            document.save(getFullPath());
+            document.save(path);
             document.close();
             NotificationManager.add(new Notification(NotificationType.INFO, filename + " was saved successfully"));
         }catch (IOException e) {
