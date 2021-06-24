@@ -328,7 +328,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
         lineChartProductTimeLine.getData().clear();
         //get the data from the table
         ObservableList<ProductDetailsTableData> tableData = tableProductDetails.getItems();
-        ArrayList<String> colorOrder = new ArrayList();
+        ArrayList<String> colorOrder = new ArrayList<>();
         for (ProductDetailsTableData ProductDetailsTableData : tableData) {
             //only display selected data
             if (ProductDetailsTableData.getCheckboxToggleVisible().isSelected()) {

@@ -113,7 +113,7 @@ public class RecommendedOrdersController implements Initializable, ViewControlle
 
                 //products
                 //create the table and columns
-                TableView<ProductQuantityPair> table = (TableView<ProductQuantityPair>) pane.getContent().lookup("#tableRecommendedProducts");
+                @SuppressWarnings("unchecked") TableView<ProductQuantityPair> table = (TableView<ProductQuantityPair>) pane.getContent().lookup("#tableRecommendedProducts");
                 TableColumn<ProductQuantityPair, String> colProductNum = new TableColumn<>("Artikel nummer");
                 colProductNum.setCellValueFactory(new PropertyValueFactory<>("productNum"));
                 TableColumn<ProductQuantityPair, String> colProductDescription = new TableColumn<>("Artikel beschrijving");

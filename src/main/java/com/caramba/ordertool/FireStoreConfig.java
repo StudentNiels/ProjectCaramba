@@ -48,7 +48,7 @@ public class FireStoreConfig {
                 }
             }
 
-            FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
+            FirebaseOptions options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
             FirebaseApp.initializeApp(options);
         } catch (IOException e) {
             NotificationManager.addExceptionError(e);

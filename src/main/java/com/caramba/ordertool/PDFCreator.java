@@ -102,8 +102,6 @@ public class PDFCreator {
                 row.createCell(32, String.valueOf(amount));
                 productCount = productCount + 1;
             }
-            y = table.draw() - lineSpace;
-            tableCount = tableCount + 1;
             cs.close();
         } catch (IOException e) {
             NotificationManager.addExceptionError(e);
