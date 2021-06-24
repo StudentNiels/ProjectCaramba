@@ -33,7 +33,8 @@ public class FireStoreConfig {
                 try {
                     serviceAccount = new FileInputStream("/car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
                 }catch (FileNotFoundException e2){
-                    throw e2;
+                    NotificationManager.add(new Notification(NotificationType.ERROR, "Could not find firebase credentials. Please place the account credentials json in the same directory as the OrderTool jar"));
+                    System.exit(1);
                 }
             }
 
