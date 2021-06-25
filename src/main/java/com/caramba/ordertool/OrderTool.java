@@ -40,7 +40,7 @@ public class OrderTool extends javafx.application.Application {
         sales = config.retrieveAllSales();
         suppliers = config.retrieveAllSuppliers();
         OrderAlgorithm algo = new OrderAlgorithm();
-        config.addRecommendations(algo.createRecommendations());
+        config.addRecommendations(algo.createRecommendations(sales, products, suppliers));
         recommendations = config.getRecommendations();
         NotificationManager.show(new Notification(NotificationType.INFO, "Finished loading from firebase"));
     }

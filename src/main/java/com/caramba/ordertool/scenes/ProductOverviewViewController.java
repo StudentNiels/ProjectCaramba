@@ -258,7 +258,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
                 monthToStart = 1;
             }
             for (int m = monthToStart; m <= 12; m++) {
-                int amount = orderAlgo.getProjectedSaleAmount(productID, YearMonth.of(year.getValue(), m));
+                int amount = orderAlgo.getProjectedSaleAmount(OrderTool.getSales(), productID, YearMonth.of(year.getValue(), m));
                 projectedSalesTableData.setValue(m, amount);
             }
         }
