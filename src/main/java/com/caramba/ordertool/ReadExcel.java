@@ -1,3 +1,5 @@
+package com.caramba.ordertool;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -8,7 +10,7 @@ import java.io.*;
 
 public class ReadExcel
 {
-public static void main(String args[]) throws IOException
+public static void main(String[] args) throws IOException
 {
     //obtaining input bytes from a file
     try (InputStream inp = new FileInputStream("C:\\Users\\Simon the Aryan\\Downloads\\VoorraadBestellingen.xlsx"))
