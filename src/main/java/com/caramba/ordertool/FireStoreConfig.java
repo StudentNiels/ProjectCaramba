@@ -2,6 +2,7 @@ package com.caramba.ordertool;
 
 import com.caramba.ordertool.models.*;
 import com.caramba.ordertool.notifications.Notification;
+import com.caramba.ordertool.notifications.Notification;
 import com.caramba.ordertool.notifications.NotificationManager;
 import com.caramba.ordertool.notifications.NotificationType;
 import com.google.api.core.ApiFuture;
@@ -35,18 +36,18 @@ public class FireStoreConfig {
     private Firestore db;
 
     /**
+     * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (firebase.json)
      * Establish the connection
-     * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
      */
     public void fireStoreConfig() {
         try {
             FileInputStream serviceAccount = null;
-            try {
-                serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
-            } catch (FileNotFoundException e) {
+            try{
+                serviceAccount = new FileInputStream("./././firebase.json");
+            }catch (FileNotFoundException e){
                 try {
-                    serviceAccount = new FileInputStream("/car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
-                } catch (FileNotFoundException e2) {
+                    serviceAccount = new FileInputStream("/firebase.json");
+                }catch (FileNotFoundException e2){
                     NotificationManager.show(new Notification(NotificationType.ERROR, "Could not find firebase credentials. Please place the account credentials json in the same directory as the OrderTool jar"));
                     System.exit(1);
                 }
