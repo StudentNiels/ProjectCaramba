@@ -24,16 +24,16 @@ public class FireStoreConfig {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
-     * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (car-nl-firebase-adminsdk-6aga3-db41e98ceb.json)
+     * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (firebase.json)
      */
     public void fireStoreConfig(){
         try {
             FileInputStream serviceAccount = null;
             try{
-                serviceAccount = new FileInputStream("./././car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
+                serviceAccount = new FileInputStream("./././firebase.json");
             }catch (FileNotFoundException e){
                 try {
-                    serviceAccount = new FileInputStream("/car-nl-firebase-adminsdk-6aga3-db41e98ceb.json");
+                    serviceAccount = new FileInputStream("/firebase.json");
                 }catch (FileNotFoundException e2){
                     throw e2;
                 }
