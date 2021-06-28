@@ -17,7 +17,7 @@ class MedianYearTest {
     SalesList oneYearSales;
     LocalDateTime startDate;
     final int yearsToLookForward = 5;
-    String productID = "testID";
+    final String productID = "testID";
     @BeforeEach
     void setup(){
         //add products
