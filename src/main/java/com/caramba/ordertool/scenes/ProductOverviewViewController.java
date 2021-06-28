@@ -215,7 +215,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     /**
-     *Shows the amount sales of the past 12 months
+     *Shows the amount sales of the past 6 months
      */
     private ProductDetailsTableData getSalesPast6Months(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
         ProductDetailsTableData past6MonthsTableData = createProductDetailsTableData(displayName, color, isDashed);
