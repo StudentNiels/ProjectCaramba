@@ -1,6 +1,10 @@
 package com.caramba.ordertool.scenes;
 
-import com.caramba.ordertool.*;
+import com.caramba.ordertool.OrderTool;
+import com.caramba.ordertool.models.Product;
+import com.caramba.ordertool.models.ProductList;
+import com.caramba.ordertool.models.Supplier;
+import com.caramba.ordertool.models.SupplierList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,7 +35,9 @@ public class SupplierController implements Initializable, ViewController {
     private TableColumn<Product, Integer> colProductDescription;
 
 
-
+    /**
+     * Sets up the supplier view by creating the cellValueFactories and binding the click event
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colSupplierName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -42,30 +48,34 @@ public class SupplierController implements Initializable, ViewController {
 
         tableSuppliers.setOnMouseClicked((MouseEvent event) -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                 showProducts(tableSuppliers.getSelectionModel().getSelectedItem());
+                showProducts(tableSuppliers.getSelectionModel().getSelectedItem());
             }
         });
     }
 
+    /**
+     * Updates the data in the tables
+     */
     @Override
     public void update() {
         SupplierList suppliers = OrderTool.getSuppliers();
         ObservableList<Supplier> observableList = FXCollections.observableArrayList();
-        for (Supplier supplier : suppliers.getSuppliers().values()) {
-            observableList.add(supplier);
-        }
-        tableSuppliers.setItems(observableList);;
+        observableList.addAll(suppliers.getSuppliers().values());
+        tableSuppliers.setItems(observableList);
     }
 
-    public void showProducts(Supplier supplier){
-        if(supplier != null){
+    /**
+     * Shows the products offered by the specified supplier in the table
+     *
+     * @param supplier the supplier of wich to show the products for
+     */
+    public void showProducts(Supplier supplier) {
+        if (supplier != null) {
             ProductList productList = supplier.getProducts();
             ObservableList<Product> observableList = FXCollections.observableArrayList();
-            for (Product product : productList.getProducts().values()) {
-                observableList.add(product);
-            }
+            observableList.addAll(productList.getProducts().values());
             tableProducts.setItems(observableList);
-        }else{
+        } else {
             tableProducts.setItems(null);
         }
     }

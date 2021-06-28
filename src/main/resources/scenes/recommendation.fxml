@@ -45,56 +45,60 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-
-<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="untitled" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.caramba.ordertool.scenes.RecommendedOrdersController">
-   <graphic>
-      <CheckBox fx:id="checkConfirm" mnemonicParsing="false" />
-   </graphic>
-   <content>
-      <VBox prefHeight="300.0" prefWidth="600.0">
-         <children>
-            <GridPane alignment="TOP_CENTER" prefHeight="50.0">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="288.0" minWidth="10.0" prefWidth="277.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="403.0" minWidth="10.0" prefWidth="303.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="NEVER" />
-                  <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="30.0" vgrow="NEVER" />
-               </rowConstraints>
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Aaangemaakt op:" textAlignment="CENTER" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ter voorbereiding voor verwachte verkopen in:" textAlignment="CENTER" GridPane.rowIndex="2" />
-                  <Text fx:id="textCreatedDate" strokeType="OUTSIDE" strokeWidth="0.0" text="(Datum niet beschikbaar)" GridPane.columnIndex="1" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Leverancier:" GridPane.rowIndex="1" />
-                  <Text fx:id="textSupplier" strokeType="OUTSIDE" strokeWidth="0.0" text="(Leverancier onbekend)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uiterste besteldatum:" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                  <Text fx:id="textFinalOrderDate" strokeType="OUTSIDE" strokeWidth="0.0" text="Onbekend (Levertijd onbekend)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Text fx:id="textOrderForDate" strokeType="OUTSIDE" strokeWidth="0.0" text="(Onbekend)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-               </children>
-            </GridPane>
-            <Separator prefWidth="200.0" />
-            <TableView fx:id="tableRecommendedProducts" prefHeight="300.0" prefWidth="200.0">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </TableView>
-            <HBox alignment="TOP_RIGHT">
-               <children>
-                  <Label fx:id="recommendation_label" text="Label" visible="false">
-                     <HBox.margin>
-                        <Insets right="4.0" top="4.0" />
-                     </HBox.margin>
-                  </Label>
-                  <Button fx:id="savePDF_button" mnemonicParsing="false" onAction="#savePDF" text="Opslaan als PDF..." />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </HBox>
-         </children>
-      </VBox>
-   </content>
+<!--suppress JavaFxUnresolvedFxIdReference -->
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            text="untitled" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.caramba.ordertool.scenes.RecommendedOrdersController">
+    <graphic>
+        <CheckBox fx:id="checkConfirm" mnemonicParsing="false"/>
+    </graphic>
+    <VBox prefHeight="300.0" prefWidth="600.0">
+        <GridPane alignment="TOP_CENTER" prefHeight="50.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="288.0" minWidth="10.0" prefWidth="277.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="403.0" minWidth="10.0" prefWidth="303.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0"
+                                vgrow="NEVER"/>
+                <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0"
+                                vgrow="NEVER"/>
+                <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="25.0"
+                                vgrow="NEVER"/>
+                <RowConstraints fillHeight="false" maxHeight="25.0" minHeight="25.0" prefHeight="30.0"
+                                vgrow="NEVER"/>
+            </rowConstraints>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Aangemaakt op:" textAlignment="CENTER"/>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ter voorbereiding voor verwachte verkopen in:"
+                  textAlignment="CENTER" GridPane.rowIndex="2"/>
+            <Text fx:id="textCreatedDate" strokeType="OUTSIDE" strokeWidth="0.0" text="(Datum niet beschikbaar)"
+                  GridPane.columnIndex="1"/>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Leverancier:" GridPane.rowIndex="1"/>
+            <Text fx:id="textSupplier" strokeType="OUTSIDE" strokeWidth="0.0" text="(Leverancier onbekend)"
+                  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Uiterste besteldatum:" GridPane.columnSpan="2"
+                  GridPane.rowIndex="3"/>
+            <Text fx:id="textFinalOrderDate" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Onbekend (Levertijd onbekend)" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <Text fx:id="textOrderForDate" strokeType="OUTSIDE" strokeWidth="0.0" text="(Onbekend)"
+                  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+        <Separator prefWidth="200.0"/>
+        <TableView fx:id="tableRecommendedProducts" prefHeight="300.0" prefWidth="200.0">
+            <VBox.margin>
+                <Insets/>
+            </VBox.margin>
+        </TableView>
+        <HBox alignment="TOP_RIGHT">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </VBox.margin>
+            <Label fx:id="recommendation_label" text="Label" visible="false">
+                <HBox.margin>
+                    <Insets right="4.0" top="4.0"/>
+                </HBox.margin>
+            </Label>
+            <Button fx:id="savePDF_button" mnemonicParsing="false" onAction="#saveFile" text="Opslaan als..."/>
+        </HBox>
+    </VBox>
 </TitledPane>

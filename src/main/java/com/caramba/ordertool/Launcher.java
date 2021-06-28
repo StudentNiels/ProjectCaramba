@@ -1,25 +1,8 @@
 package com.caramba.ordertool;
 
 public class Launcher {
-
+    //we require a launcher class because this project isn't modular. (The libraries we use have split packages)
     public static void main(String[] args) {
-
-        if(args.length > 1 && args[0].equals("commandline")){
-            switch (args[0]){
-                case "gui" -> OrderTool.main(removeFirstArg(args));
-            }
-        }else{
-            OrderTool.main(args);
-        }
-    }
-
-    private static String[] removeFirstArg(String[] args){
-        if(args.length > 1){
-            String [] newArgs = new String[args.length - 1];
-            System.arraycopy(args, 1, newArgs, 0, args.length - 1);
-            return newArgs;
-        }else{
-            return args;
-        }
+        OrderTool.main(args);
     }
 }

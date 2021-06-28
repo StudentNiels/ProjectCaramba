@@ -2,10 +2,11 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'org.beryx.runtime' version '1.12.5'
 }
 
 group 'org.example'
-version '1.0-SNAPSHOT'
+version '0.1'
 
 repositories {
     mavenCentral()
@@ -23,17 +24,14 @@ dependencies {
     implementation 'org.openjfx:javafx:17-ea+9'
 }
 
-test {
-    useJUnitPlatform()
+javafx {
+    modules = [ 'javafx.controls' ]
 }
 
-jar{
-    manifest {
-        attributes "Main-Class": "com.caramba.ordertool.Launcher"
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+mainClassName = 'com.caramba.ordertool.Launcher'
+
+test {
+    useJUnitPlatform()
 }
 
 javafx {
