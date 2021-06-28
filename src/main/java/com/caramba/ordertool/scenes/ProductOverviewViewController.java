@@ -317,7 +317,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             tableData.add(getMedianYearData(productID, selectedYear));
             tableData.add(getSalesData("Verkopen dit jaar", productID, selectedYear, true, "#64b000"));
             tableData.add(getProjectedSalesData(productID, selectedYear));
-            tableData.add(getSalesData("Verkopen afeglopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false, "#009917"));
+            tableData.add(getSalesData("Verkopen afgelopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false, "#009917"));
             tableData.add(getProductQuantity(productID, selectedYear));
 
             //update the table
