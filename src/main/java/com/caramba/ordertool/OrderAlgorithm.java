@@ -100,13 +100,13 @@ public class OrderAlgorithm {
         for (Sale sale : saleslist.getSales()) {
             int amount = sale.getAmountByID(productID);
 
-            for (int i = 0; i < 12; i++) {
+            for (int i = 1; i <= 12; i++) {
                 if (YearMonth.from(sale.getDate()).equals(YearMonth.now().minusMonths(i))) {
                     averageSoldLast12Months = averageSoldLast12Months + amount;
                 }
             }
         }
-        averageSoldLast12Months = averageSoldLast12Months / 12;
+        averageSoldLast12Months = Math.round((float) averageSoldLast12Months / 12);
         return averageSoldLast12Months;
     }
 
