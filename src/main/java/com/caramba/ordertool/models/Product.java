@@ -56,6 +56,15 @@ public class Product {
         return quantity;
     }
 
+    /**
+     * The amount of units of this product that are currently in stock.
+     *
+     * @param quantity the stock quantity to set
+     */
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     //endregion
 
 }
