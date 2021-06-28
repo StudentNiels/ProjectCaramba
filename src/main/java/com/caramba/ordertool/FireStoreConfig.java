@@ -1,32 +1,44 @@
 package com.caramba.ordertool;
 
+import com.caramba.ordertool.models.*;
+import com.caramba.ordertool.notifications.Notification;
 import com.caramba.ordertool.notifications.NotificationManager;
+import com.caramba.ordertool.notifications.NotificationType;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.*;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Manages the connection to firebase
+ */
 public class FireStoreConfig {
 
     private Firestore db;
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * The SDK of Firebase Admin is implemented here, a json file with credentials is already present (firebase.json)
+     * Establish the connection
      */
-    public void fireStoreConfig(){
+    public void fireStoreConfig() {
         try {
             FileInputStream serviceAccount = null;
             try{
@@ -35,225 +47,90 @@ public class FireStoreConfig {
                 try {
                     serviceAccount = new FileInputStream("/firebase.json");
                 }catch (FileNotFoundException e2){
-                    throw e2;
+                    NotificationManager.show(new Notification(NotificationType.ERROR, "Could not find firebase credentials. Please place the account credentials json in the same directory as the OrderTool jar"));
+                    System.exit(1);
                 }
             }
-
-            FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
+            FirebaseOptions options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
             FirebaseApp.initializeApp(options);
+        } catch (IOException e) {
+            NotificationManager.showExceptionError(e);
         }
-        catch (IOException e) {
-            NotificationManager.addExceptionError(e);
-        }
-
-        //region Template interactions
-        /*
-        //Create product document
-        HashMap<String, Object> setupP = setupProductDocument("Zomer", 10, "Naturado Onbemeste Tuinaarde 20 liter", "1234568", 60);
-        addProductDocument("Products", "1236", setupP);
-
-        //Create sales document
-        HashMap<String, Object> setupS = setupSalesDocument("1234568", getTimeStamp());
-        addSalesDocument("1234", setupS);
-
-        //Create supplier document
-        HashMap<String, Object> setupSup = setupSuppliersDocument(21, "Bremen");
-        addSuppliersDocument("00002", setupSup);
-
-        //Read individual
-        readFromDB("Products", "123456");
-
-        //List all products or sales or suppliers
-        retrieveAllProducts();
-        retrieveAllSales();
-        retrieveAllSuppliers();
-
-        //Update a field of a product, sale, supplier
-        updateDocument("Products", "1234", "Supply", 70);
-
-        //Delete a document from a collection
-        deleteDocument("Sales", "1234");
-
-        //Delete an entire collection in batches
-        deleteCollection("test", 1);
-        */
-        // endregion
-
-        //Read individual
-        //readFromDB("Products", "c1dd2174-c207-11eb-8529-0242ac130003");
-    }
-
-
-    /**
-     * A connection method to create an often used variable to prevent duplicate code
-     * @return the database data which is use by most of the methods in the class
-     */
-    public Firestore dbConnect() {
         db = FirestoreClient.getFirestore();
-        return db;
     }
 
-    /**
-     * Get timestamp in a fitting format
-     */
-    private String getTimeStamp(){
-        Date date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        return dateFormat.format(timestamp);
-    }
-
-    /**
-     * A method to setup a product to be added to the database
-     * param attention required - starts out FALSE
-     * @return the hashmap which can be added to the database with the correct method
-     */
-    public HashMap setupProductDocument(String description, String productNum, int quantity) {
-        HashMap<String, Object> docData = new HashMap<>();
-        docData.put("description", description);
-        docData.put("productNum", productNum);
-        docData.put("quantity", quantity);
-        return docData;
-    }
-
-    /**
-     * A method to setup a product to be added to the database
-     * param attention required - starts out FALSE
-     * @return the hashmap which can be added to the database with the correct method
-     */
-    public HashMap<String, Object> setupSalesDocument(String product_nr, String timeStamp) {
-        HashMap<String, Object> docData = new HashMap<>();
-        docData.put("Product_NR", product_nr);
-        docData.put("Sell_Date", timeStamp);
-        return docData;
-    }
-
-    /**
-     * A method to setup a product to be added to the database
-     * param attention required - starts out FALSE
-     * @return the hashmap which can be added to the database with the correct method
-     */
-    public HashMap setupSuppliersDocument(int avgDeliveryTime, String name) {
-        HashMap<String, Object> docData = new HashMap<>();
-        docData.put("avgDeliveryTime", avgDeliveryTime);
-        docData.put("name", name);
-        return docData;
-    }
-
-    /**
-     * Adds a document of information about a product to the database
-     * @param productDocument
-     * @param docData
-     * 
-     */
-    public void addProductDocument(String collection, String productDocument, HashMap docData){
-        dbConnect();
-        ApiFuture<WriteResult> future = db.collection(collection).document(productDocument).set(docData);
-        try{
-            System.out.println("Update time : " + future.get().getUpdateTime());
-        }catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
-     * Adds a document of information about a product to the database
-     * 
-     */
-    public void addSalesDocument(String salesDocument, HashMap docData) {
-        dbConnect();
-        ApiFuture<WriteResult> future = db.collection("Sales").document(salesDocument).set(docData);
-        try {
-            System.out.println("Update time : " + future.get().getUpdateTime());
-        }catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
-     * Adds a document of information about a product to the database
-     * @param suppliersDocument insert the supplier number
-     * 
-     */
-    public void addSuppliersDocument(String suppliersDocument, HashMap docData){
-        dbConnect();
-        ApiFuture<WriteResult> future = db.collection("Suppliers").document(suppliersDocument).set(docData);
-        try{
-            System.out.println("Update time : " + future.get().getUpdateTime());
-        }catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
 
     /**
      * Make a list of all the products
+     *
+     * @return ProductList with all products in firebase
      */
-    public ProductList retrieveAllProducts(){
+    public ProductList retrieveAllProducts() {
         ProductList result = new ProductList();
-        dbConnect();
         Iterable<DocumentReference> collections = db.collection("Products").listDocuments();
         for (DocumentReference collRef : collections) {
             ApiFuture<DocumentSnapshot> promise = collRef.get();
             try {
                 DocumentSnapshot docSnapshot = promise.get();
-                if(docSnapshot.exists()){
+                if (docSnapshot.exists()) {
                     Product p = docSnapshot.toObject(Product.class);
                     result.add(collRef.getId(), p);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                NotificationManager.showExceptionError(e);
             }
         }
         //save to history
         saveProductQuantityHistory(result);
-        closeDb();
         return result;
     }
 
     /**
      * Saves the current quantity of the product to the history of this year and month.
-     *
      * This is currently run every time the products are retrieved
      * Ideally this should be run automatically once at the end of the month instead
      * This could be probably be done using firebase's 'scheduled functions' feature
      * However this feature is exclusive to the paid plan of firebase, which we don't currently have access to
+     *
+     * @param productList products to save stock history of
      */
-    public void saveProductQuantityHistory(ProductList productList){
+    public void saveProductQuantityHistory(ProductList productList) {
         LocalDate now = LocalDate.now();
-        Date date = new Date();
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         for (Map.Entry<String, Product> entry : productList.getProducts().entrySet()) {
             String k = entry.getKey();
             Product p = entry.getValue();
             Map<String, Integer> data = new HashMap<>();
             data.put("quantity", p.getQuantity());
-            db.collection("Products").document(k).collection("History").document(toString().valueOf(now.getYear())).collection("Months").document(Integer.toString(now.getMonth().getValue())).set(data);
+            db.collection("Products").document(k).collection("History").document(String.valueOf(now.getYear())).collection("Months").document(Integer.toString(now.getMonth().getValue())).set(data);
         }
     }
 
     /**
      * Make a list of all the Sales
+     *
+     * @return SalesList with all sales in firebase
      */
-    public Saleslist retrieveAllSales(){
-        Saleslist result = new Saleslist();
-        dbConnect();
+    public SalesList retrieveAllSales() {
+        SalesList result = new SalesList();
         Iterable<DocumentReference> collections = db.collection("Sales").listDocuments();
-        for (DocumentReference collRef : collections)
-        {
+        for (DocumentReference collRef : collections) {
             //add subcollection to hashmap
             HashMap<String, Integer> products = new HashMap<>();
             Iterable<DocumentReference> subCollections = collRef.collection("SalesList").listDocuments();
-            for(DocumentReference subRef : subCollections){
+            for (DocumentReference subRef : subCollections) {
                 ApiFuture<DocumentSnapshot> promise = subRef.get();
-                try{
+                try {
                     DocumentSnapshot docSnapshot = promise.get();
-                    if(docSnapshot.exists()){
-                        products.put(subRef.getId(), docSnapshot.getLong("amount").intValue());
+                    if (docSnapshot.exists()) {
+                        Long amountLong = docSnapshot.getLong("amount");
+                        int amount = 0;
+                        if (amountLong != null) {
+                            amount = amountLong.intValue();
+                        }
+                        products.put(subRef.getId(), amount);
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                    NotificationManager.showExceptionError(e);
                 }
             }
 
@@ -261,59 +138,44 @@ public class FireStoreConfig {
             ApiFuture<DocumentSnapshot> promise = collRef.get();
             try {
                 DocumentSnapshot docSnapshot = promise.get();
-                if(docSnapshot.exists()){
+                if (docSnapshot.exists()) {
                     Date d = docSnapshot.getDate("date");
-                    Sale s = new Sale(products, d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                    result.addToSalesList(s);
+                    if (d != null) {
+                        Sale s = new Sale(products, d.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                        result.addToSalesList(s);
+                    }
                 }
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                NotificationManager.showExceptionError(e);
             }
         }
-        closeDb();
         return result;
-    }
-
-    public void addSale(com.google.cloud.Timestamp timestamp, String productId, int amount){
-        dbConnect();
-        HashMap<String, com.google.cloud.Timestamp> map = new HashMap<>();
-        map.put("date", timestamp);
-        ApiFuture<DocumentReference> promise = db.collection("Sales").add(map);
-        try {
-            DocumentReference docref = promise.get();
-            HashMap<String, Integer> amountMap = new HashMap<>();
-            amountMap.put("amount", amount);
-            docref.collection("SalesList").document(productId).set(amountMap);
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        closeDb();
     }
 
 
     /**
      * Make a list of all the suppliers
+     *
+     * @return SupplierList with all suppliers in firebase
      */
-    public SupplierList retrieveAllSuppliers(){
+    public SupplierList retrieveAllSuppliers() {
         SupplierList result = new SupplierList();
-        dbConnect();
         Iterable<DocumentReference> collections = db.collection("Suppliers").listDocuments();
-        for (DocumentReference collRef : collections)
-        {
+        for (DocumentReference collRef : collections) {
             //add subcollection to arraylist
             ArrayList<Product> products = new ArrayList<>();
             Iterable<DocumentReference> subCollections = collRef.collection("products").listDocuments();
-            for (DocumentReference subRef : subCollections){
+            for (DocumentReference subRef : subCollections) {
                 ApiFuture<DocumentSnapshot> promise = subRef.get();
-                try{
+                try {
                     DocumentSnapshot docSnapshot = promise.get();
-                    if(docSnapshot.exists()){
+                    if (docSnapshot.exists()) {
                         String id = subRef.getId();
                         Product product = OrderTool.getProducts().get(id);
                         products.add(product);
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                    NotificationManager.showExceptionError(e);
                 }
             }
 
@@ -321,33 +183,37 @@ public class FireStoreConfig {
             ApiFuture<DocumentSnapshot> promise = collRef.get();
             try {
                 DocumentSnapshot docSnapshot = promise.get();
-                if(docSnapshot.exists()){
-                    Integer avg = docSnapshot.getDouble("avgDeliveryTime").intValue();
+                if (docSnapshot.exists()) {
+                    Double avgDouble = docSnapshot.getDouble("avgDeliveryTime");
+                    int avg = 0;
+                    if (avgDouble != null) {
+                        avg = avgDouble.intValue();
+                    }
                     String n = docSnapshot.getString("name");
                     Supplier s = new Supplier(n, avg);
                     int i;
-                    for(i = 0; i < products.size();i++)
-                    {
+                    for (i = 0; i < products.size(); i++) {
                         s.addProduct(products.get(i));
                     }
                     result.add(collRef.getId(), s);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                NotificationManager.showExceptionError(e);
             }
         }
-        closeDb();
         return result;
     }
 
     /**
-     * @return The amount of products sold in a certain YearMonth according to the db
+     * Returns the amount of products in stock in certain YearMonth according to the db
      * Goes through the database to retrieve years and months for each product
-     * For each month the product's supply is beind retreived
+     * For each month the product's supply is behind retrieved
      * This will be used in the graph and table of the program
+     *
+     * @param productId the id of the product to get the stock quantity history of
+     * @return hashmap with the YearMonth of the product's history as key and the amount of units in stock at that point as value
      */
     public Map<YearMonth, Integer> getProductHistoryQuantity(String productId) {
-        dbConnect();
         Map<YearMonth, Integer> result = new HashMap<>();
         Iterable<DocumentReference> years = db.collection("Products").document(productId).collection("History").listDocuments();
         for (DocumentReference yearDocReference : years) {
@@ -356,31 +222,36 @@ public class FireStoreConfig {
                 ApiFuture<DocumentSnapshot> promise = monthDocReference.get();
                 try {
                     DocumentSnapshot docSnapshot = promise.get();
-                    if (docSnapshot.exists()){
+                    if (docSnapshot.exists()) {
                         try {
                             int month = Integer.parseInt(monthDocReference.getId());
                             int year = Integer.parseInt(yearDocReference.getId());
                             Long quantity = docSnapshot.getLong("quantity");
-                            if(quantity != null) {
+                            if (quantity != null) {
                                 result.put(YearMonth.of(year, month), Math.toIntExact(quantity));
                             }
-                        }catch (NumberFormatException e){
-                            e.printStackTrace();
+                        } catch (NumberFormatException e) {
+                            NotificationManager.show(new Notification(NotificationType.WARNING, "The database contains an invalid value. Please check if the database formatted correctly."));
                         }
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+                    NotificationManager.showExceptionError(e);
                 }
             }
         }
         return result;
     }
-                //Suppliers and products need to be loaded before recommendations!
-    public RecommendationList getRecommendations(){
+
+    /**
+     * Retrieves all recommendations from the database
+     * Suppliers and products need to be loaded before recommendations!
+     *
+     * @return recommendationList containing all recommendations from firebase
+     */
+    public RecommendationList getRecommendations() {
         SupplierList suppliers = OrderTool.getSuppliers();
         ProductList products = OrderTool.getProducts();
         RecommendationList result = new RecommendationList();
-        dbConnect();
         for (Map.Entry<String, Supplier> supplierEntry : suppliers.getSuppliers().entrySet()) {
             String supplierKey = supplierEntry.getKey();
             Supplier supplier = supplierEntry.getValue();
@@ -396,13 +267,18 @@ public class FireStoreConfig {
                     try {
                         com.google.cloud.Timestamp timestamp = (com.google.cloud.Timestamp) monthDoc.get().get("creationDate");
                         isConfirmed = (Boolean) monthDoc.get().get("isConfirmed");
-                        creationDate = timestamp.toDate();
+                        if (timestamp != null) {
+                            creationDate = timestamp.toDate();
+                        }
                     } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
+                        NotificationManager.showExceptionError(e);
                     }
-                    LocalDateTime creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    LocalDateTime creationLocalDateTime = null;
+                    if (creationDate != null) {
+                        creationLocalDateTime = creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    }
                     Recommendation rec = new Recommendation(supplier, YearMonth.of(year, month), creationLocalDateTime);
-                    if(isConfirmed != null){
+                    if (isConfirmed != null) {
                         rec.setConfirmed(isConfirmed);
                     }
                     Iterable<DocumentReference> productDocumentReferences = monthDocumentReference.collection("products").listDocuments();
@@ -410,11 +286,16 @@ public class FireStoreConfig {
                         String productID = productDocumentReference.getId();
                         Integer productQuantity = null;
                         try {
-                            productQuantity = Math.toIntExact((Long) productDocumentReference.get().get().get("quantity"));
+                            ApiFuture<DocumentSnapshot> promise = productDocumentReference.get();
+                            DocumentSnapshot docSnapshot = promise.get();
+                            Long quantityLong = docSnapshot.getLong("quantity");
+                            if (quantityLong != null) {
+                                productQuantity = quantityLong.intValue();
+                            }
                         } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
+                            NotificationManager.showExceptionError(e);
                         }
-                        if(productQuantity != null && productQuantity != 0){
+                        if (productQuantity != null && productQuantity != 0) {
                             Product p = products.get(productID);
                             rec.addProductToRecommendation(p, productQuantity);
                         }
@@ -423,24 +304,33 @@ public class FireStoreConfig {
                 }
             }
         }
-        closeDb();
         return result;
     }
 
-    public void confirmRecommendation(Recommendation recommendation, boolean isConfirmed){
+    /**
+     * Set a recommendation to confirmed or not confirmed in the database, without overwriting the entire entry
+     *
+     * @param recommendation the recommendation to change the confirmed field of
+     * @param isConfirmed    value to set the confirmed field to
+     */
+    public void confirmRecommendation(Recommendation recommendation, boolean isConfirmed) {
         //get key of the supplier
         String supplierKey = null;
         for (Map.Entry<String, Supplier> supplierEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
-            if(supplierEntry.getValue() == recommendation.getSupplier()){
+            if (supplierEntry.getValue() == recommendation.getSupplier()) {
                 supplierKey = supplierEntry.getKey();
                 break;
             }
+        }
+        if (supplierKey == null) {
+            NotificationManager.show(new Notification(NotificationType.ERROR, "This recommendation is coupled to a supplier that doesn't exist."));
+            return;
         }
         YearMonth yearMonthToOrderFor = recommendation.getYearMonthToOrderFor();
         ApiFuture<DocumentSnapshot> promise = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(yearMonthToOrderFor.getYear())).collection("months").document(Integer.toString(yearMonthToOrderFor.getMonthValue())).get();
         try {
             Map<String, Object> data = promise.get().getData();
-            if(data != null){
+            if (data != null) {
                 data.put("isConfirmed", isConfirmed);
                 db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(yearMonthToOrderFor.getYear())).collection("months").document(Integer.toString(yearMonthToOrderFor.getMonthValue())).set(data).get();
             }
@@ -452,19 +342,20 @@ public class FireStoreConfig {
 
     /**
      * Adds a recommendationList to the database. Does not overwrite if a recommendation of the Supplier and YearMonth already exist.
+     *
+     * @param recommendationList recommendations to add
      */
-    public void addRecommendations(RecommendationList recommendationList){
-        dbConnect();
+    public void addRecommendations(RecommendationList recommendationList) {
         for (Recommendation recommendation : recommendationList.getRecommendations()) {
             //get key of the supplier
             String supplierKey = null;
             for (Map.Entry<String, Supplier> supplierEntry : OrderTool.getSuppliers().getSuppliers().entrySet()) {
-                if(supplierEntry.getValue() == recommendation.getSupplier()){
+                if (supplierEntry.getValue() == recommendation.getSupplier()) {
                     supplierKey = supplierEntry.getKey();
                     break;
                 }
             }
-            if(supplierKey == null){
+            if (supplierKey == null) {
                 break;
             }
             YearMonth date = recommendation.getYearMonthToOrderFor();
@@ -477,7 +368,7 @@ public class FireStoreConfig {
             ApiFuture<DocumentSnapshot> promise = db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).get();
             try {
                 DocumentSnapshot doc = promise.get();
-                if(!doc.exists()){
+                if (!doc.exists()) {
                     db.collection("Suppliers").document(supplierKey).collection("recommendations").document(Integer.toString(date.getYear())).collection("months").document(Integer.toString(date.getMonthValue())).set(data);
                     for (Map.Entry<Product, Integer> entry : recommendation.getProductRecommendation().entrySet()) {
                         data.clear();
@@ -487,96 +378,13 @@ public class FireStoreConfig {
                         //wait until the write is finished
                         writeResult.get();
                     }
-                    System.out.println("recommendation added");
+                    NotificationManager.show(new Notification(NotificationType.INFO, "Recommendation Added"));
                 }
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+            } catch (ExecutionException e) {
+                NotificationManager.showExceptionError(e);
+            } catch (InterruptedException e) {
+                NotificationManager.show(new Notification(NotificationType.INFO, "File export was canceled"));
             }
-        }
-        closeDb();
-    }
-
-
-    /**
-     * Read out a specific product, product's sales date or supplier
-     */
-    public void readFromDB(String collection, String documentNumber){
-        dbConnect();
-        DocumentReference docRef = db.collection(collection).document(documentNumber);
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-        DocumentSnapshot document = null;
-        try {
-            document = future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        try {
-            System.out.println("Document: " + document.getData());
-        } catch(Exception e) {
-            System.out.println("No document found");
-        }
-        closeDb();
-    }
-
-    /**
-     * Update a field inside a product or supplier or sales data
-     */
-    public void updateDocument(String collectionName, String documentNumber, String fieldType, Object value){
-    dbConnect();
-    DocumentReference docRef = db.collection(collectionName).document(documentNumber);
-    HashMap<String, Object> update = new HashMap<>();
-    update.put(fieldType, value);
-
-    ApiFuture<WriteResult> updateData = docRef.update(update);
-        try {
-            System.out.println("Update time : " + updateData.get().getUpdateTime());
-        } catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
-     * Delete a document from one of the collections
-     */
-    public void deleteDocument(String collection, String documentNumber){
-    dbConnect();
-    ApiFuture<WriteResult> writeResult = db.collection(collection).document(documentNumber).delete();
-        try {
-            System.out.println("Update time : " + writeResult.get().getUpdateTime());
-        } catch (InterruptedException | ExecutionException e) {
-            NotificationManager.addExceptionError(e);
-        }
-        closeDb();
-    }
-
-    /**
-     * Delete a collection in batches to prevent out-of-memory errors
-     */
-    public void deleteCollection(String collection, int batchSize){
-        try {
-            dbConnect();
-            CollectionReference colRef = db.collection(collection);
-            // retrieve a small batch of documents to avoid out-of-memory errors
-            ApiFuture<QuerySnapshot> future = colRef.limit(batchSize).get();
-            int deleted = 0;
-            // future.get() blocks on document retrieval
-            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-            for (QueryDocumentSnapshot document : documents) {
-                document.getReference().delete();
-                ++deleted;
-            }
-        } catch (Exception e) {
-            System.err.println("Error deleting collection : " + e.getMessage());
-        }
-        closeDb();
-    }
-
-    private void closeDb(){
-        try{
-            //db.close();
-        }catch(Exception e){
-            NotificationManager.addExceptionError(e);
         }
     }
 }

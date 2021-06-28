@@ -1,95 +1,68 @@
 package com.caramba.ordertool.notifications;
 
+import javafx.scene.control.Alert;
+
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
+/**
+ * Displays incoming notifications
+ */
 public class NotificationManager {
-    private static final ArrayList<Notification> notifications = new ArrayList<>();
-
-    //#region delegate methods
-    public static int size() {
-        return notifications.size();
-    }
-
-    public static boolean isEmpty() {
-        return notifications.isEmpty();
-    }
-
-    public static boolean contains(Object o) {
-        //noinspection SuspiciousMethodCalls
-        return notifications.contains(o);
-    }
-
-    public static Notification get(int index) {
-        return notifications.get(index);
-    }
-
-    public static Notification remove(int index) {
-        return notifications.remove(index);
-    }
-
-    public static void clear() {
-        notifications.clear();
-    }
-
-    public static boolean containsAll(Collection<Notification> c) {
-        return notifications.containsAll(c);
-    }
     //#endregion
 
-    public static Notification getLast(){
-        return get(size() - 1);
-    }
-
-    public static ArrayList<Notification> getByType(NotificationType type){
-        ArrayList<Notification> result = new ArrayList<>();
-        for (Notification n : notifications) {
-            if(n.getType() == type){
-                result.add(n);
-            }
+    /**
+     * Display the specified notification in the way(s) determined by their type
+     *
+     * @param notification notification to show
+     */
+    public static void show(Notification notification) {
+        NotificationType t = notification.getType();
+        if (t.printToConsole) {
+            printToConsole(notification);
         }
-        return result;
+        if (t.showPopUp) {
+            showPopUp(notification);
+        }
     }
 
-    public static void add(Notification notification) {
-        notifications.add(notification);
-        printLatest();
+    /**
+     * Show an error notification with the stacktrace of the specified exception
+     *
+     * @param e exception to create notification of
+     */
+    public static void showExceptionError(Exception e) {
+        show(new Notification(NotificationType.ERROR, Arrays.toString(e.getStackTrace())));
     }
 
-    public static void Display(int index){
-        try{
-            Notification n = notifications.get(index);
-            NotificationType t = n.getType();
-            if(t.printToConsole){
-                printToConsole(n);
-            }
-        }catch (IndexOutOfBoundsException e){
-            addExceptionError(e);
-         }
-    }
-
-    public static void addExceptionError(Exception e){
-        e.printStackTrace();
-        add(new Notification(NotificationType.ERROR, Arrays.toString(e.getStackTrace())));
-    }
-
-    public static void printToConsole(Notification n){
+    /**
+     * Prints the notification to console
+     *
+     * @param notification notification to print
+     */
+    private static void printToConsole(Notification notification) {
         DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String s = "[" + n.getTimestamp().format(f) + "] " +
-                n.getType().toString() + ": " +
-                n.getContents();
+        String s = "[" + notification.getTimestamp().format(f) + "] " +
+                notification.getType().toString() + ": " +
+                notification.getContents();
         System.out.println(s);
     }
 
-    public static void printAllToConsole(){
-        for(Notification n : notifications){
-            printToConsole(n);
+    /**
+     * Shows the notification in a javafx alert dialog. The thread is blocked until it's closed.
+     *
+     * @param notification notification to show
+     */
+    private static void showPopUp(Notification notification) {
+        NotificationType type = notification.getType();
+        Alert.AlertType alertType = Alert.AlertType.NONE;
+        switch (type) {
+            case ERROR -> alertType = Alert.AlertType.ERROR;
+            case INFO -> alertType = Alert.AlertType.INFORMATION;
+            case WARNING -> alertType = Alert.AlertType.WARNING;
         }
-    }
-
-    public static void printLatest(){
-        printToConsole(getLast());
+        Alert alert = new Alert(alertType);
+        alert.setContentText(notification.getContents());
+        alert.showAndWait();
     }
 }
