@@ -120,7 +120,7 @@ public class OrderAlgorithm {
      */
     public int getProjectedStock(SalesList allSales, ProductList allProducts, String productID, YearMonth date) {
         if (date.isBefore(YearMonth.now())) {
-            throw new InvalidParameterException("The given date is not in the future");
+            throw new IllegalArgumentException("The given date is not in the future");
         }
         Product p = allProducts.get(productID);
         YearMonth now = YearMonth.now();
@@ -149,7 +149,7 @@ public class OrderAlgorithm {
      */
     public int getProjectedSaleAmount(SalesList allSales, String productID, YearMonth date) {
         if (date.isBefore(YearMonth.now())) {
-            throw new InvalidParameterException("The given date is not in the future");
+            throw new IllegalArgumentException("The given date is not in the future");
         }
         YearMonth now = YearMonth.now();
         HashMap<YearMonth, Integer> dateAmountMap = allSales.getDateAmountMap(productID);
