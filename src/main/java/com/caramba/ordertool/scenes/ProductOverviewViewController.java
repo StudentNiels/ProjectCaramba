@@ -267,6 +267,54 @@ public class ProductOverviewViewController implements Initializable, ViewControl
     }
 
     /**
+     *Shows the amount sales of the past 12 months
+     */
+    private ProductDetailsTableData getSalesPast12Months(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
+        ProductDetailsTableData past12MonthsTableData = createProductDetailsTableData(displayName, color, isDashed);
+
+        if(selectedYear.equals(Year.now())){
+            for (YearMonth m = YearMonth.now().minusMonths(12); m.isBefore(YearMonth.now()); m = m.plusMonths(1)) {
+                int amount = orderAlgo.getSoldLast12Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
+                past12MonthsTableData.setValue(m.getMonthValue(), amount);
+            }
+        }
+        past12MonthsTableData.getCheckboxToggleVisible().setSelected(selectedByDefault);
+        return past12MonthsTableData;
+    }
+
+    /**
+     *Shows the amount sales of the past 6 months
+     */
+    private ProductDetailsTableData getSalesPast6Months(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
+        ProductDetailsTableData past6MonthsTableData = createProductDetailsTableData(displayName, color, isDashed);
+
+        if(selectedYear.equals(Year.now())){
+            for (YearMonth m = YearMonth.now().minusMonths(6); m.isBefore(YearMonth.now()); m = m.plusMonths(1)) {
+                int amount = orderAlgo.getSoldLast6Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
+                past6MonthsTableData.setValue(m.getMonthValue(), amount);
+            }
+        }
+        past6MonthsTableData.getCheckboxToggleVisible().setSelected(selectedByDefault);
+        return past6MonthsTableData;
+    }
+
+    /**
+     *Shows the amount sales of the past 3 months
+     */
+    private ProductDetailsTableData getSalesPast3Months(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
+        ProductDetailsTableData past3MonthsTableData = createProductDetailsTableData(displayName, color, isDashed);
+
+        if(selectedYear.equals(Year.now())){
+            for (YearMonth m = YearMonth.now().minusMonths(3); m.isBefore(YearMonth.now()); m = m.plusMonths(1)) {
+                int amount = orderAlgo.getSoldLast3Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
+                past3MonthsTableData.setValue(m.getMonthValue(), amount);
+            }
+        }
+        past3MonthsTableData.getCheckboxToggleVisible().setSelected(selectedByDefault);
+        return past3MonthsTableData;
+    }
+
+    /**
      * Shows the supply of a product at the end of the month
      * Inserts the data from the database into the table underneath the graph.
      */
@@ -319,6 +367,9 @@ public class ProductOverviewViewController implements Initializable, ViewControl
             tableData.add(getProjectedSalesData(productID, selectedYear));
             tableData.add(getSalesData("Verkopen afgelopen jaar (" + selectedYear.minusYears(1) + ")", productID, selectedYear.minusYears(1), false, "#009917"));
             tableData.add(getProductQuantity(productID, selectedYear));
+            tableData.add(getSalesPast12Months("Gemidelde verkopen afeglopen 12 maanden per maand (" + selectedYear + ")", productID, selectedYear, false, "#800080", false));
+            tableData.add(getSalesPast6Months("Gemidelde verkopen afeglopen 6 maanden per maand (" + selectedYear + ")", productID, selectedYear, false, "#800080", false));
+            tableData.add(getSalesPast3Months("Gemidelde verkopen afeglopen 3 maanden per maand (" + selectedYear + ")", productID, selectedYear, false, "#800080", false));
 
             //update the table
             tableProductDetails.getItems().clear();
