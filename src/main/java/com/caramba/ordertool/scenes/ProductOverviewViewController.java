@@ -238,7 +238,7 @@ public class ProductOverviewViewController implements Initializable, ViewControl
 
         if(selectedYear.equals(Year.now())){
             for (YearMonth m = YearMonth.now().minusMonths(3); m.isBefore(YearMonth.now()); m = m.plusMonths(1)) {
-                int amount = orderAlgo.getSoldLast6Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
+                int amount = orderAlgo.getSoldLast3Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
                 past3MonthsTableData.setValue(m.getMonthValue(), amount);
             }
         }
