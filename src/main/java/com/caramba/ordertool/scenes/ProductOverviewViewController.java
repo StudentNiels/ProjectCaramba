@@ -271,10 +271,10 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      */
     private ProductDetailsTableData getSalesPast12Months(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
         ProductDetailsTableData past12MonthsTableData = createProductDetailsTableData(displayName, color, isDashed);
-
+        SalesList sales = OrderTool.getSales();
         if(selectedYear.equals(Year.now())){
             for (YearMonth m = YearMonth.now().minusMonths(12); m.isBefore(YearMonth.now()); m = m.plusMonths(1)) {
-                int amount = orderAlgo.getSoldLast12Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
+                int amount = sales.getSoldLast12Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
                 past12MonthsTableData.setValue(m.getMonthValue(), amount);
             }
         }
@@ -287,10 +287,10 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      */
     private ProductDetailsTableData getSalesPast6Months(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
         ProductDetailsTableData past6MonthsTableData = createProductDetailsTableData(displayName, color, isDashed);
-
+        SalesList sales = OrderTool.getSales();
         if(selectedYear.equals(Year.now())){
             for (YearMonth m = YearMonth.now().minusMonths(6); m.isBefore(YearMonth.now()); m = m.plusMonths(1)) {
-                int amount = orderAlgo.getSoldLast6Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
+                int amount = sales.getSoldLast6Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
                 past6MonthsTableData.setValue(m.getMonthValue(), amount);
             }
         }
@@ -303,10 +303,10 @@ public class ProductOverviewViewController implements Initializable, ViewControl
      */
     private ProductDetailsTableData getSalesPast3Months(String displayName, String productID, Year year, boolean selectedByDefault, String color, boolean isDashed){
         ProductDetailsTableData past3MonthsTableData = createProductDetailsTableData(displayName, color, isDashed);
-
+        SalesList sales = OrderTool.getSales();
         if(selectedYear.equals(Year.now())){
             for (YearMonth m = YearMonth.now().minusMonths(3); m.isBefore(YearMonth.now()); m = m.plusMonths(1)) {
-                int amount = orderAlgo.getSoldLast3Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
+                int amount = sales.getSoldLast3Months(productID, YearMonth.of(year.getValue(), m.getMonth().getValue()));
                 past3MonthsTableData.setValue(m.getMonthValue(), amount);
             }
         }
