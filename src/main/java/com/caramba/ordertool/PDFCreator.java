@@ -114,6 +114,7 @@ public class PDFCreator {
                 row.createCell(32, String.valueOf(amount));
                 productCount = productCount + 1;
             }
+            table.draw();
             cs.close();
         } catch (IOException e) {
             NotificationManager.showExceptionError(e);
